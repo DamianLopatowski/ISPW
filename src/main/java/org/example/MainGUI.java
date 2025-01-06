@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class MainGUI extends JFrame {
     private JTextField nomeField;
-    private JTextField quantitàField;
+    private JTextField quantitaField;
     private JTextField scaffaleField;
     private JTextField codiceBarreField;
     private JTextField sogliaField; // Campo per la soglia
@@ -48,7 +48,7 @@ public class MainGUI extends JFrame {
 
 // Inizializza i campi di input
         nomeField = new JTextField(15);
-        quantitàField = new JTextField(5);
+        quantitaField = new JTextField(5);
         scaffaleField = new JTextField(10);
         codiceBarreField = new JTextField(10);
         sogliaField = new JTextField(); // Inizializza il campo della soglia
@@ -80,7 +80,7 @@ public class MainGUI extends JFrame {
         gbc.gridy = 1;
         inputPanel.add(new JLabel("Quantità:"), gbc);
         gbc.gridx = 1;
-        inputPanel.add(quantitàField, gbc);
+        inputPanel.add(quantitaField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -184,7 +184,7 @@ public class MainGUI extends JFrame {
 
                 // Valida la quantità
                 try {
-                    quantità = Integer.parseInt(quantitàField.getText());
+                    quantità = Integer.parseInt(quantitaField.getText());
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Inserisci una quantità valida!");
                     return;
@@ -247,7 +247,7 @@ public class MainGUI extends JFrame {
                 int quantità;
 
                 try {
-                    quantità = Integer.parseInt(quantitàField.getText());
+                    quantità = Integer.parseInt(quantitaField.getText());
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Inserisci una quantità valida!");
                     return;
@@ -401,7 +401,7 @@ public class MainGUI extends JFrame {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow >= 0) {
                         nomeField.setText((String) tableModel.getValueAt(selectedRow, 0));
-                        quantitàField.setText(String.valueOf(tableModel.getValueAt(selectedRow, 1)));
+                        quantitaField.setText(String.valueOf(tableModel.getValueAt(selectedRow, 1)));
                         scaffaleField.setText((String) tableModel.getValueAt(selectedRow, 2));
                         codiceBarreField.setText((String) tableModel.getValueAt(selectedRow, 3));
                         prezzoAcquistoField.setText(String.valueOf(tableModel.getValueAt(selectedRow, 4))); // Aggiunto
@@ -416,20 +416,22 @@ public class MainGUI extends JFrame {
     }
 
     private void updateProdotti() {
-        // Pulisce il modello della tabella e aggiunge i nuovi prodotti
-        tableModel.setRowCount(0);
-        for (Prodotto prodotto : prodotti) {
-            tableModel.addRow(new Object[]{
-                    prodotto.getNome(),
-                    prodotto.getQuantita(),
-                    prodotto.getScaffale(),
-                    prodotto.getCodiceBarre(),
-                    prodotto.getPrezzoAcquisto(), // Aggiunto
-                    prodotto.getPrezzoVendita() // Aggiunto
-            });
-        }
+        tableModel.setRowCount(0); // Pulisce il modello della tabella
+        prodotti.forEach(this::aggiungiRigaTabella);
         table.repaint(); // Rinfresca la tabella per applicare i colori
     }
+
+    private void aggiungiRigaTabella(Prodotto prodotto) {
+        tableModel.addRow(new Object[]{
+                prodotto.getNome(),
+                prodotto.getQuantita(),
+                prodotto.getScaffale(),
+                prodotto.getCodiceBarre(),
+                prodotto.getPrezzoAcquisto(),
+                prodotto.getPrezzoVendita()
+        });
+    }
+
 
     private void verificaAvvisi() {
         avvisiArea.setText(""); // Pulisci gli avvisi
@@ -452,7 +454,7 @@ public class MainGUI extends JFrame {
 
     private void clearFields() {
         nomeField.setText("");
-        quantitàField.setText("");
+        quantitaField.setText("");
         scaffaleField.setText("");
         codiceBarreField.setText("");
         sogliaField.setText("");
