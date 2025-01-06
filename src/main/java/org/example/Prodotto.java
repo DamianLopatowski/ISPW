@@ -1,78 +1,114 @@
 package org.example;
-public class Prodotto { //ciao
-    private String nome;
-    private int quantita;
-    private String scaffale;
-    private String codiceBarre;
-    private int soglia;
-    private double prezzoAcquisto; // Nuovo attributo
-    private double prezzoVendita;   // Nuovo attributo
 
+import javafx.beans.property.*;
+
+public class Prodotto {
+    private StringProperty nome;
+    private IntegerProperty quantita;
+    private StringProperty scaffale;
+    private StringProperty codiceBarre;
+    private IntegerProperty soglia;
+    private DoubleProperty prezzoAcquisto;
+    private DoubleProperty prezzoVendita;
+
+    // Costruttore
     public Prodotto(String nome, int quantita, String scaffale, String codiceBarre, double prezzoAcquisto, double prezzoVendita) {
-        this.nome = nome;
-        this.quantita = quantita;
-        this.scaffale = scaffale;
-        this.codiceBarre = codiceBarre;
-        this.soglia = 0; // Soglia di default
-        this.prezzoAcquisto = prezzoAcquisto; // Imposta il prezzo di acquisto
-        this.prezzoVendita = prezzoVendita;   // Imposta il prezzo di vendita
+        this.nome = new SimpleStringProperty(nome);
+        this.quantita = new SimpleIntegerProperty(quantita);
+        this.scaffale = new SimpleStringProperty(scaffale);
+        this.codiceBarre = new SimpleStringProperty(codiceBarre);
+        this.soglia = new SimpleIntegerProperty(0); // Soglia iniziale
+        this.prezzoAcquisto = new SimpleDoubleProperty(prezzoAcquisto);
+        this.prezzoVendita = new SimpleDoubleProperty(prezzoVendita);
     }
 
-    // Getter e Setter per tutti i campi inclusi i nuovi attributi
-    public String getNome() {
+    // Getter e Setter per le proprietà
+    public StringProperty nomeProperty() {
         return nome;
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.nome.set(nome);
     }
 
-    public int getQuantita() {
+    public String getNome() {
+        return nome.get();
+    }
+
+    public IntegerProperty quantitaProperty() {
         return quantita;
     }
 
     public void setQuantita(int quantita) {
-        this.quantita = quantita;
+        this.quantita.set(quantita);
     }
 
-    public String getScaffale() {
+    public int getQuantita() {
+        return quantita.get();
+    }
+
+    public StringProperty scaffaleProperty() {
         return scaffale;
     }
 
     public void setScaffale(String scaffale) {
-        this.scaffale = scaffale;
+        this.scaffale.set(scaffale);
     }
 
-    public String getCodiceBarre() {
+    public String getScaffale() {
+        return scaffale.get();
+    }
+
+    public StringProperty codiceBarreProperty() {
         return codiceBarre;
     }
 
     public void setCodiceBarre(String codiceBarre) {
-        this.codiceBarre = codiceBarre;
+        this.codiceBarre.set(codiceBarre);
     }
 
-    public int getSoglia() {
+    public String getCodiceBarre() {
+        return codiceBarre.get();
+    }
+
+    public IntegerProperty sogliaProperty() {
         return soglia;
     }
 
     public void setSoglia(int soglia) {
-        this.soglia = soglia;
+        this.soglia.set(soglia);
     }
 
-    public double getPrezzoAcquisto() {
-        return prezzoAcquisto; // Aggiunto
+    public int getSoglia() {
+        return soglia.get();
+    }
+
+    public DoubleProperty prezzoAcquistoProperty() {
+        return prezzoAcquisto;
     }
 
     public void setPrezzoAcquisto(double prezzoAcquisto) {
-        this.prezzoAcquisto = prezzoAcquisto; // Aggiunto
+        this.prezzoAcquisto.set(prezzoAcquisto);
     }
 
-    public double getPrezzoVendita() {
-        return prezzoVendita; // Aggiunto
+    public double getPrezzoAcquisto() {
+        return prezzoAcquisto.get();
+    }
+
+    public DoubleProperty prezzoVenditaProperty() {
+        return prezzoVendita;
     }
 
     public void setPrezzoVendita(double prezzoVendita) {
-        this.prezzoVendita = prezzoVendita; // Aggiunto
+        this.prezzoVendita.set(prezzoVendita);
+    }
+
+    public double getPrezzoVendita() {
+        return prezzoVendita.get();
+    }
+
+    @Override
+    public String toString() {
+        return nome.get() + ", Quantità: " + quantita.get() + ", Prezzo Acquisto: " + prezzoAcquisto.get();
     }
 }
-

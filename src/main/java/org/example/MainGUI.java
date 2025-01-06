@@ -1,357 +1,247 @@
 package org.example;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
-import java.util.List;
-import java.util.Map;
+import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import javax.swing.JOptionPane;
 
-public class MainGUI extends JFrame {
-    private JTextField nomeField;
-    private JTextField quantitaField;
-    private JTextField scaffaleField;
-    private JTextField codiceBarreField;
-    private JTextField sogliaField;
-    private JTextField prezzoAcquistoField;
-    private JTextField prezzoVenditaField;
-    private JTextArea avvisiArea;
-    private DefaultTableModel tableModel;
-    private JTable table;
-    private transient GestioneFile gestioneFile;
-    private transient List<Prodotto> prodotti;
+public class MainGUI extends Application {
+    private TableView<Prodotto> table;
+    private TextField nomeField, quantitaField, scaffaleField, codiceBarreField, sogliaField, prezzoAcquistoField, prezzoVenditaField;
+    private TextArea avvisiArea;
+    private ObservableList<Prodotto> prodotti;
+    private GestioneFile gestioneFile;
 
-    private JButton aggiungiButton;
-    private JButton rimuoviButton;
-    private JButton cercaButton;
-    private JButton aggiornaSogliaButton;
-    private JButton aggiornaPrezzoButton;
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-    public MainGUI(String filePath) {
-        gestioneFile = new GestioneFile(filePath);
-        prodotti = gestioneFile.leggiProdotti();
+    @Override
+    public void start(Stage stage) {
+        gestioneFile = new GestioneFile("prodotti.txt");
+        prodotti = FXCollections.observableArrayList(gestioneFile.leggiProdotti());
 
-        tableModel = new DefaultTableModel(
-                new String[]{"Nome", "Quantità", "Scaffale", "Codice a Barre", "Prezzo Acquisto", "Prezzo Vendita"},
-                0
-        );
-        table = new JTable(tableModel) {
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component c = super.prepareRenderer(renderer, row, column);
-                String nomeProdotto = (String) getValueAt(row, 0);
-                int totaleQuantita = ProdottoUtility.calcolaQuantitaTotale(prodotti).getOrDefault(nomeProdotto, 0);
+        // Setup TableView
+        table = new TableView<>();
+        TableColumn<Prodotto, String> nomeColumn = new TableColumn<>("Nome");
+        nomeColumn.setCellValueFactory(cellData -> cellData.getValue().nomeProperty());
 
-                if (totaleQuantita < getThresholdForProduct(nomeProdotto)) {
-                    c.setBackground(Color.RED);
-                    c.setForeground(Color.WHITE);
-                } else {
-                    c.setBackground(Color.WHITE);
-                    c.setForeground(Color.BLACK);
-                }
-                return c;
-            }
-        };
+        TableColumn<Prodotto, Integer> quantitaColumn = new TableColumn<>("Quantità");
+        quantitaColumn.setCellValueFactory(cellData -> cellData.getValue().quantitaProperty().asObject());
 
-        table.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && table.getSelectedRow() >= 0) {
-                nomeField.setText((String) tableModel.getValueAt(table.getSelectedRow(), 0));
-                quantitaField.setText(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 1)));
-                scaffaleField.setText((String) tableModel.getValueAt(table.getSelectedRow(), 2));
-                codiceBarreField.setText((String) tableModel.getValueAt(table.getSelectedRow(), 3));
-                prezzoAcquistoField.setText(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 4)));
-                prezzoVenditaField.setText(String.valueOf(tableModel.getValueAt(table.getSelectedRow(), 5)));
-            }
-        });
+        TableColumn<Prodotto, String> scaffaleColumn = new TableColumn<>("Scaffale");
+        scaffaleColumn.setCellValueFactory(cellData -> cellData.getValue().scaffaleProperty());
 
-        setTitle("Gestione Prodotti");
-        setSize(800, 500);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        TableColumn<Prodotto, String> codiceBarreColumn = new TableColumn<>("Codice a Barre");
+        codiceBarreColumn.setCellValueFactory(cellData -> cellData.getValue().codiceBarreProperty());
 
-        JPanel inputPanel = createInputPanel();
-        add(inputPanel, BorderLayout.NORTH);
+        TableColumn<Prodotto, Double> prezzoAcquistoColumn = new TableColumn<>("Prezzo Acquisto");
+        prezzoAcquistoColumn.setCellValueFactory(cellData -> cellData.getValue().prezzoAcquistoProperty().asObject());
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
+        TableColumn<Prodotto, Double> prezzoVenditaColumn = new TableColumn<>("Prezzo Vendita");
+        prezzoVenditaColumn.setCellValueFactory(cellData -> cellData.getValue().prezzoVenditaProperty().asObject());
 
-        avvisiArea = new JTextArea(5, 30);
+        table.getColumns().addAll(nomeColumn, quantitaColumn, scaffaleColumn, codiceBarreColumn, prezzoAcquistoColumn, prezzoVenditaColumn);
+        table.setItems(prodotti);
+
+        // Layout for form input
+        VBox vbox = new VBox(10);
+        nomeField = new TextField();
+        quantitaField = new TextField();
+        scaffaleField = new TextField();
+        codiceBarreField = new TextField();
+        sogliaField = new TextField();
+        prezzoAcquistoField = new TextField();
+        prezzoVenditaField = new TextField();
+        avvisiArea = new TextArea();
         avvisiArea.setEditable(false);
-        add(new JScrollPane(avvisiArea), BorderLayout.SOUTH);
 
-        setupListeners();
-        updateProdotti();
-        verificaAvvisi();
-    }
+        // Buttons
+        Button aggiungiButton = new Button("Aggiungi Prodotto");
+        Button rimuoviButton = new Button("Rimuovi Prodotto");
+        Button cercaButton = new Button("Cerca Prodotto");
+        Button aggiornaSogliaButton = new Button("Aggiorna Soglia");
+        Button aggiornaPrezzoButton = new Button("Aggiorna Prezzo");
 
-    private JPanel createInputPanel() {
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        // Event handlers
+        aggiungiButton.setOnAction(e -> aggiungiProdotto());
+        rimuoviButton.setOnAction(e -> rimuoviProdotto());
+        cercaButton.setOnAction(e -> cercaProdotto());
+        aggiornaSogliaButton.setOnAction(e -> aggiornaSoglia());
+        aggiornaPrezzoButton.setOnAction(e -> aggiornaPrezzo());
 
-        addFieldToPanel(inputPanel, gbc, "Nome:", nomeField = new JTextField(15), 0);
-        addFieldToPanel(inputPanel, gbc, "Quantità:", quantitaField = new JTextField(5), 1);
-        addFieldToPanel(inputPanel, gbc, "Scaffale:", scaffaleField = new JTextField(10), 2);
-        addFieldToPanel(inputPanel, gbc, "Codice a barre:", codiceBarreField = new JTextField(10), 3);
-        addFieldToPanel(inputPanel, gbc, "Soglia per avviso:", sogliaField = new JTextField(), 4);
-        addFieldToPanel(inputPanel, gbc, "Prezzo Acquisto:", prezzoAcquistoField = new JTextField(10), 5);
-        addFieldToPanel(inputPanel, gbc, "Prezzo Vendita:", prezzoVenditaField = new JTextField(10), 6);
+        // Form layout
+        HBox hboxButtons = new HBox(10, aggiungiButton, rimuoviButton, cercaButton, aggiornaSogliaButton, aggiornaPrezzoButton);
+        vbox.getChildren().addAll(
+                new Label("Nome:"), nomeField,
+                new Label("Quantità:"), quantitaField,
+                new Label("Scaffale:"), scaffaleField,
+                new Label("Codice a barre:"), codiceBarreField,
+                new Label("Soglia:"), sogliaField,
+                new Label("Prezzo Acquisto:"), prezzoAcquistoField,
+                new Label("Prezzo Vendita:"), prezzoVenditaField,
+                hboxButtons,
+                new Label("Avvisi:"), avvisiArea,
+                table
+        );
 
-        addButtonsToPanel(inputPanel, gbc);
-
-        return inputPanel;
-    }
-
-    private void addFieldToPanel(JPanel panel, GridBagConstraints gbc, String label, JTextField field, int gridY) {
-        gbc.gridx = 0;
-        gbc.gridy = gridY;
-        panel.add(new JLabel(label), gbc);
-        gbc.gridx = 1;
-        panel.add(field, gbc);
-    }
-
-    private void addButtonsToPanel(JPanel panel, GridBagConstraints gbc) {
-        aggiungiButton = new JButton("Aggiungi Prodotto");
-        rimuoviButton = new JButton("Rimuovi Prodotto");
-        cercaButton = new JButton("Cerca Prodotto");
-        aggiornaSogliaButton = new JButton("Aggiorna Soglia");
-        aggiornaPrezzoButton = new JButton("Aggiorna Prezzo");
-
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(aggiungiButton, gbc);
-
-        gbc.gridy = 8;
-        panel.add(rimuoviButton, gbc);
-
-        gbc.gridy = 9;
-        panel.add(cercaButton, gbc);
-
-        gbc.gridy = 10;
-        panel.add(aggiornaSogliaButton, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridwidth = 1;
-        gbc.gridy = 7;
-        panel.add(aggiornaPrezzoButton, gbc);
-    }
-
-    private void setupListeners() {
-        aggiungiButton.addActionListener(e -> aggiungiProdotto());
-        rimuoviButton.addActionListener(e -> rimuoviProdotto());
-        cercaButton.addActionListener(e -> cercaProdotto());
-        aggiornaSogliaButton.addActionListener(e -> aggiornaSoglia());
-        aggiornaPrezzoButton.addActionListener(e -> aggiornaPrezzo());
+        // Scene setup
+        Scene scene = new Scene(vbox, 800, 600);
+        stage.setScene(scene);
+        stage.setTitle("Gestione Prodotti");
+        stage.show();
     }
 
     private void aggiungiProdotto() {
         String nome = nomeField.getText();
+        String quantitaText = quantitaField.getText();
+        String scaffale = scaffaleField.getText();
         String codiceBarre = codiceBarreField.getText();
-        int quantita;
+        String prezzoAcquistoText = prezzoAcquistoField.getText();
+        String prezzoVenditaText = prezzoVenditaField.getText();
+        String sogliaText = sogliaField.getText();
 
-        try {
-            quantita = Integer.parseInt(quantitaField.getText());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Inserisci una quantità valida!");
+        // Controllo se i campi numerici sono validi
+        if (nome.isEmpty() || quantitaText.isEmpty() || scaffale.isEmpty() || codiceBarre.isEmpty() || prezzoAcquistoText.isEmpty() || prezzoVenditaText.isEmpty() || sogliaText.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Tutti i campi devono essere riempiti!");
             return;
         }
 
+        // Prova a convertire la quantità
+        int quantita;
+        try {
+            quantita = Integer.parseInt(quantitaText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "La quantità deve essere un numero valido!");
+            return;
+        }
+
+        // Prova a convertire i prezzi
         double prezzoAcquisto = 0;
         double prezzoVendita = 0;
-        boolean prezzoAcquistoInserito = !prezzoAcquistoField.getText().isEmpty();
-        boolean prezzoVenditaInserito = !prezzoVenditaField.getText().isEmpty();
-
-        if (prezzoAcquistoInserito) {
-            try {
-                prezzoAcquisto = Double.parseDouble(prezzoAcquistoField.getText());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Inserisci un prezzo di acquisto valido!");
-                return;
-            }
+        try {
+            prezzoAcquisto = Double.parseDouble(prezzoAcquistoText);
+            prezzoVendita = Double.parseDouble(prezzoVenditaText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "I prezzi devono essere numeri validi!");
+            return;
         }
 
-        if (prezzoVenditaInserito) {
-            try {
-                prezzoVendita = Double.parseDouble(prezzoVenditaField.getText());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Inserisci un prezzo di vendita valido!");
-                return;
-            }
+        // Prova a convertire la soglia
+        int soglia;
+        try {
+            soglia = Integer.parseInt(sogliaText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "La soglia deve essere un numero valido!");
+            return;
         }
 
-        ProdottoUpdateRequest updateRequest = new ProdottoUpdateRequest(nome, codiceBarre, quantita, prezzoAcquistoInserito, prezzoAcquisto, prezzoVenditaInserito, prezzoVendita);
-        ProdottoUtility.aggiornaQuantitaProdotto(prodotti, updateRequest);
+        // Crea il nuovo prodotto
+        Prodotto prodotto = new Prodotto(nome, quantita, scaffale, codiceBarre, prezzoAcquisto, prezzoVendita);
+        prodotto.setSoglia(soglia);
+        prodotti.add(prodotto);
         gestioneFile.scriviProdotti(prodotti);
-        updateProdotti();
         clearFields();
-        verificaAvvisi();
     }
-
 
     private void rimuoviProdotto() {
         String nome = nomeField.getText();
-        String codice = codiceBarreField.getText();
-        String scaffale = scaffaleField.getText();
-        int quantita;
-
-        try {
-            quantita = Integer.parseInt(quantitaField.getText());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Inserisci una quantità valida!");
-            return;
+        for (Prodotto prodotto : prodotti) {
+            if (prodotto.getNome().equalsIgnoreCase(nome)) {
+                prodotti.remove(prodotto);
+                gestioneFile.scriviProdotti(prodotti);
+                break;
+            }
         }
-
-        if (!ProdottoUtility.rimuoviQuantitaProdotto(prodotti, nome, codice, quantita, scaffale)) {
-            JOptionPane.showMessageDialog(null, "Prodotto non trovato o quantità insufficiente!");
-        } else {
-            gestioneFile.scriviProdotti(prodotti);
-            updateProdotti();
-            clearFields();
-            verificaAvvisi();
-        }
+        clearFields();
     }
 
     private void cercaProdotto() {
         String nome = nomeField.getText();
-        String codice = codiceBarreField.getText();
         StringBuilder risultati = new StringBuilder();
-
         for (Prodotto prodotto : prodotti) {
-            if (prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice)) {
-                risultati.append("Prodotto: ").append(prodotto.getNome())
-                        .append(", Quantità: ").append(prodotto.getQuantita())
-                        .append(", Scaffale: ").append(prodotto.getScaffale())
-                        .append(", Codice a barre: ").append(prodotto.getCodiceBarre())
-                        .append(", Prezzo Acquisto: ").append(prodotto.getPrezzoAcquisto())
-                        .append(", Prezzo Vendita: ").append(prodotto.getPrezzoVendita()).append("\n");
+            if (prodotto.getNome().equalsIgnoreCase(nome)) {
+                risultati.append(prodotto.toString()).append("\n");
             }
         }
-
         if (risultati.length() == 0) {
-            risultati.append("Prodotto non trovato!");
+            risultati.append("Prodotto non trovato.");
         }
-
-        JOptionPane.showMessageDialog(null, risultati.toString());
+        avvisiArea.setText(risultati.toString());
     }
 
     private void aggiornaSoglia() {
         String nome = nomeField.getText();
-        String codice = codiceBarreField.getText();
+        String sogliaText = sogliaField.getText();
 
-        for (Prodotto prodotto : prodotti) {
-            if (prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice)) {
-                try {
-                    int nuovaSoglia = Integer.parseInt(sogliaField.getText());
-                    prodotto.setSoglia(nuovaSoglia);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "Inserisci una soglia valida!");
-                    return;
-                }
-            }
+        // Controllo che la soglia sia un numero valido
+        if (nome.isEmpty() || sogliaText.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Tutti i campi devono essere riempiti!");
+            return;
         }
 
-        gestioneFile.scriviProdotti(prodotti);
-        updateProdotti();
+        int soglia;
+        try {
+            soglia = Integer.parseInt(sogliaText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "La soglia deve essere un numero valido!");
+            return;
+        }
+
+        for (Prodotto prodotto : prodotti) {
+            if (prodotto.getNome().equalsIgnoreCase(nome)) {
+                prodotto.setSoglia(soglia);
+                gestioneFile.scriviProdotti(prodotti);
+                break;
+            }
+        }
         clearFields();
-        verificaAvvisi();
     }
 
     private void aggiornaPrezzo() {
         String nome = nomeField.getText();
-        String codice = codiceBarreField.getText();
+        String prezzoAcquistoText = prezzoAcquistoField.getText();
+        String prezzoVenditaText = prezzoVenditaField.getText();
 
-        double nuovoPrezzoAcquisto = 0;
-        double nuovoPrezzoVendita = 0;
-        boolean prezzoAcquistoAggiornato = false;
-        boolean prezzoVenditaAggiornato = false;
-
-        try {
-            if (!prezzoAcquistoField.getText().isEmpty()) {
-                nuovoPrezzoAcquisto = Double.parseDouble(prezzoAcquistoField.getText());
-                prezzoAcquistoAggiornato = true;
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Inserisci un prezzo di acquisto valido!");
+        // Controllo che i campi dei prezzi siano validi
+        if (nome.isEmpty() || prezzoAcquistoText.isEmpty() || prezzoVenditaText.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Tutti i campi devono essere riempiti!");
             return;
         }
 
+        double prezzoAcquisto;
+        double prezzoVendita;
         try {
-            if (!prezzoVenditaField.getText().isEmpty()) {
-                nuovoPrezzoVendita = Double.parseDouble(prezzoVenditaField.getText());
-                prezzoVenditaAggiornato = true;
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Inserisci un prezzo di vendita valido!");
+            prezzoAcquisto = Double.parseDouble(prezzoAcquistoText);
+            prezzoVendita = Double.parseDouble(prezzoVenditaText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "I prezzi devono essere numeri validi!");
             return;
         }
 
         for (Prodotto prodotto : prodotti) {
-            if (prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice)) {
-                if (prezzoAcquistoAggiornato) {
-                    prodotto.setPrezzoAcquisto(nuovoPrezzoAcquisto);
-                }
-                if (prezzoVenditaAggiornato) {
-                    prodotto.setPrezzoVendita(nuovoPrezzoVendita);
-                }
+            if (prodotto.getNome().equalsIgnoreCase(nome)) {
+                prodotto.setPrezzoAcquisto(prezzoAcquisto);
+                prodotto.setPrezzoVendita(prezzoVendita);
+                gestioneFile.scriviProdotti(prodotti);
                 break;
             }
         }
-
-        gestioneFile.scriviProdotti(prodotti);
-        updateProdotti();
         clearFields();
-        verificaAvvisi();
-    }
-
-    private void updateProdotti() {
-        tableModel.setRowCount(0);
-        prodotti.forEach(this::aggiungiRigaTabella);
-        table.repaint();
-    }
-
-    private void aggiungiRigaTabella(Prodotto prodotto) {
-        tableModel.addRow(new Object[]{
-                prodotto.getNome(),
-                prodotto.getQuantita(),
-                prodotto.getScaffale(),
-                prodotto.getCodiceBarre(),
-                prodotto.getPrezzoAcquisto(),
-                prodotto.getPrezzoVendita()
-        });
-    }
-
-    private void verificaAvvisi() {
-        avvisiArea.setText("");
-        Map<String, Integer> quantitaPerNome = ProdottoUtility.calcolaQuantitaTotale(prodotti);
-        StringBuilder avvisi = new StringBuilder();
-        ProdottoUtility.verificaSoglieProdotti(prodotti, quantitaPerNome, avvisi);
-        avvisiArea.setText(avvisi.toString());
     }
 
     private void clearFields() {
-        nomeField.setText("");
-        quantitaField.setText("");
-        scaffaleField.setText("");
-        codiceBarreField.setText("");
-        sogliaField.setText("");
-        prezzoAcquistoField.setText("");
-        prezzoVenditaField.setText("");
-    }
-
-    private int getThresholdForProduct(String nome) {
-        for (Prodotto prodotto : prodotti) {
-            if (prodotto.getNome().equalsIgnoreCase(nome)) {
-                return prodotto.getSoglia();
-            }
-        }
-        return Integer.MAX_VALUE;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainGUI("prodotti.txt").setVisible(true));
+        nomeField.clear();
+        quantitaField.clear();
+        scaffaleField.clear();
+        codiceBarreField.clear();
+        sogliaField.clear();
+        prezzoAcquistoField.clear();
+        prezzoVenditaField.clear();
     }
 }

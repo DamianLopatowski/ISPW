@@ -38,6 +38,7 @@ public class ProdottoUtility {
 
         return quantitaPerNome;
     }
+
     public static boolean rimuoviQuantitaProdotto(List<Prodotto> prodotti, String nome, String codice, int quantita, String scaffale) {
         for (Prodotto prodotto : prodotti) {
             if ((prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice)) && prodotto.getScaffale().equalsIgnoreCase(scaffale)) {
@@ -52,7 +53,6 @@ public class ProdottoUtility {
         }
         return false;
     }
-
 
     public static void verificaSoglieProdotti(List<Prodotto> prodotti, Map<String, Integer> quantitaPerNome, StringBuilder avvisi) {
         for (Prodotto prodotto : prodotti) {
