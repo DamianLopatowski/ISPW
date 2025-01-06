@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public class MainGUI extends JFrame {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 String nomeProdotto = (String) getValueAt(row, 0);
-                int totaleQuantita = getTotalQuantityByName(nomeProdotto);
+                int totaleQuantita = ProdottoUtility.calcolaQuantitaTotale(prodotti).getOrDefault(nomeProdotto, 0);
 
                 if (totaleQuantita < getThresholdForProduct(nomeProdotto)) {
                     c.setBackground(Color.RED);
@@ -65,17 +64,14 @@ public class MainGUI extends JFrame {
             }
         });
 
-        // Imposta la finestra
         setTitle("Gestione Prodotti");
         setSize(800, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Configura pannello di input
         JPanel inputPanel = createInputPanel();
         add(inputPanel, BorderLayout.NORTH);
 
-        // Configura tabella e area avvisi
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
@@ -83,7 +79,6 @@ public class MainGUI extends JFrame {
         avvisiArea.setEditable(false);
         add(new JScrollPane(avvisiArea), BorderLayout.SOUTH);
 
-        // Aggiungi listener e aggiorna dati
         setupListeners();
         updateProdotti();
         verificaAvvisi();
@@ -96,7 +91,6 @@ public class MainGUI extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Configura campi
         addFieldToPanel(inputPanel, gbc, "Nome:", nomeField = new JTextField(15), 0);
         addFieldToPanel(inputPanel, gbc, "Quantità:", quantitaField = new JTextField(5), 1);
         addFieldToPanel(inputPanel, gbc, "Scaffale:", scaffaleField = new JTextField(10), 2);
@@ -105,7 +99,6 @@ public class MainGUI extends JFrame {
         addFieldToPanel(inputPanel, gbc, "Prezzo Acquisto:", prezzoAcquistoField = new JTextField(10), 5);
         addFieldToPanel(inputPanel, gbc, "Prezzo Vendita:", prezzoVenditaField = new JTextField(10), 6);
 
-        // Configura pulsanti
         addButtonsToPanel(inputPanel, gbc);
 
         return inputPanel;
@@ -157,7 +150,6 @@ public class MainGUI extends JFrame {
 
     private void aggiungiProdotto() {
         String nome = nomeField.getText();
-        String scaffale = scaffaleField.getText();
         String codiceBarre = codiceBarreField.getText();
         int quantita;
 
@@ -191,28 +183,7 @@ public class MainGUI extends JFrame {
             }
         }
 
-        boolean prodottoEsistente = false;
-        for (Prodotto prodotto : prodotti) {
-            if ((prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codiceBarre))
-                    && prodotto.getScaffale().equalsIgnoreCase(scaffale)) {
-                prodotto.setQuantita(prodotto.getQuantita() + quantita);
-                if (prezzoAcquistoInserito) prodotto.setPrezzoAcquisto(prezzoAcquisto);
-                if (prezzoVenditaInserito) prodotto.setPrezzoVendita(prezzoVendita);
-                prodottoEsistente = true;
-                break;
-            }
-        }
-
-        if (!prodottoEsistente) {
-            Prodotto nuovoProdotto = new Prodotto(nome, quantita, scaffale, codiceBarre, prezzoAcquisto, prezzoVendita);
-            try {
-                int soglia = Integer.parseInt(sogliaField.getText());
-                nuovoProdotto.setSoglia(soglia);
-            } catch (NumberFormatException ignored) {
-            }
-            prodotti.add(nuovoProdotto);
-        }
-
+        ProdottoUtility.aggiornaQuantitaProdotto(prodotti, nome, codiceBarre, quantita, prezzoAcquistoInserito, prezzoAcquisto, prezzoVenditaInserito, prezzoVendita);
         gestioneFile.scriviProdotti(prodotti);
         updateProdotti();
         clearFields();
@@ -232,26 +203,8 @@ public class MainGUI extends JFrame {
             return;
         }
 
-        boolean prodottoTrovato = false;
-        for (Prodotto prodotto : prodotti) {
-            if ((prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice))
-                    && prodotto.getScaffale().equalsIgnoreCase(scaffale)) {
-                prodottoTrovato = true;
-                if (prodotto.getQuantita() >= quantita) {
-                    prodotto.setQuantita(prodotto.getQuantita() - quantita);
-                    if (prodotto.getQuantita() < 0) {
-                        prodotto.setQuantita(0);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Quantità da rimuovere superiore alla quantità disponibile!");
-                    return;
-                }
-                break;
-            }
-        }
-
-        if (!prodottoTrovato) {
-            JOptionPane.showMessageDialog(null, "Prodotto non trovato!");
+        if (!ProdottoUtility.rimuoviQuantitaProdotto(prodotti, nome, codice, quantita, scaffale)) {
+            JOptionPane.showMessageDialog(null, "Prodotto non trovato o quantità insufficiente!");
         } else {
             gestioneFile.scriviProdotti(prodotti);
             updateProdotti();
@@ -371,18 +324,10 @@ public class MainGUI extends JFrame {
 
     private void verificaAvvisi() {
         avvisiArea.setText("");
-        Map<String, Integer> quantitàPerNome = new HashMap<>();
-
-        for (Prodotto prodotto : prodotti) {
-            quantitàPerNome.put(prodotto.getNome(),
-                    quantitàPerNome.getOrDefault(prodotto.getNome(), 0) + prodotto.getQuantita());
-        }
-
-        for (Prodotto prodotto : prodotti) {
-            if (quantitàPerNome.get(prodotto.getNome()) < prodotto.getSoglia()) {
-                avvisiArea.append("Attenzione: " + prodotto.getNome() + " è sotto la soglia minima!\n");
-            }
-        }
+        Map<String, Integer> quantitaPerNome = ProdottoUtility.calcolaQuantitaTotale(prodotti);
+        StringBuilder avvisi = new StringBuilder();
+        ProdottoUtility.verificaSoglieProdotti(prodotti, quantitaPerNome, avvisi);
+        avvisiArea.setText(avvisi.toString());
     }
 
     private void clearFields() {
@@ -393,16 +338,6 @@ public class MainGUI extends JFrame {
         sogliaField.setText("");
         prezzoAcquistoField.setText("");
         prezzoVenditaField.setText("");
-    }
-
-    private int getTotalQuantityByName(String nome) {
-        int totale = 0;
-        for (Prodotto prodotto : prodotti) {
-            if (prodotto.getNome().equalsIgnoreCase(nome)) {
-                totale += prodotto.getQuantita();
-            }
-        }
-        return totale;
     }
 
     private int getThresholdForProduct(String nome) {
