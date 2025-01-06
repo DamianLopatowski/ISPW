@@ -183,12 +183,14 @@ public class MainGUI extends JFrame {
             }
         }
 
-        ProdottoUtility.aggiornaQuantitaProdotto(prodotti, nome, codiceBarre, quantita, prezzoAcquistoInserito, prezzoAcquisto, prezzoVenditaInserito, prezzoVendita);
+        ProdottoUpdateRequest updateRequest = new ProdottoUpdateRequest(nome, codiceBarre, quantita, prezzoAcquistoInserito, prezzoAcquisto, prezzoVenditaInserito, prezzoVendita);
+        ProdottoUtility.aggiornaQuantitaProdotto(prodotti, updateRequest);
         gestioneFile.scriviProdotti(prodotti);
         updateProdotti();
         clearFields();
         verificaAvvisi();
     }
+
 
     private void rimuoviProdotto() {
         String nome = nomeField.getText();
