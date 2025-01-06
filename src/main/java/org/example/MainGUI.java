@@ -1,7 +1,6 @@
 package org.example;
 
 import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -15,11 +14,12 @@ public class MainGUI extends Application {
     // Definizione della costante
     private static final String CAMPI_VUOTI_MSG = "Tutti i campi devono essere riempiti!";
 
-    private TableView<Prodotto> table;
-    private TextField nomeField, quantitaField, scaffaleField, codiceBarreField, sogliaField, prezzoAcquistoField, prezzoVenditaField;
-    private TextArea avvisiArea;
     private ObservableList<Prodotto> prodotti;
     private GestioneFile gestioneFile;
+
+    // Variabili globali per i campi di input
+    private TextField nomeField, quantitaField, scaffaleField, codiceBarreField, sogliaField, prezzoAcquistoField, prezzoVenditaField;
+    private TextArea avvisiArea;
 
     public static void main(String[] args) {
         launch(args);
@@ -31,7 +31,7 @@ public class MainGUI extends Application {
         prodotti = FXCollections.observableArrayList(gestioneFile.leggiProdotti());
 
         // Setup TableView
-        table = new TableView<>();
+        TableView<Prodotto> table = new TableView<>();
         TableColumn<Prodotto, String> nomeColumn = new TableColumn<>("Nome");
         nomeColumn.setCellValueFactory(cellData -> cellData.getValue().nomeProperty());
 
@@ -53,8 +53,7 @@ public class MainGUI extends Application {
         table.getColumns().addAll(nomeColumn, quantitaColumn, scaffaleColumn, codiceBarreColumn, prezzoAcquistoColumn, prezzoVenditaColumn);
         table.setItems(prodotti);
 
-        // Layout for form input
-        VBox vbox = new VBox(10);
+        // Dichiarazione separata delle variabili
         nomeField = new TextField();
         quantitaField = new TextField();
         scaffaleField = new TextField();
@@ -81,6 +80,7 @@ public class MainGUI extends Application {
 
         // Form layout
         HBox hboxButtons = new HBox(10, aggiungiButton, rimuoviButton, cercaButton, aggiornaSogliaButton, aggiornaPrezzoButton);
+        VBox vbox = new VBox(10);
         vbox.getChildren().addAll(
                 new Label("Nome:"), nomeField,
                 new Label("Quantità:"), quantitaField,
