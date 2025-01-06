@@ -25,7 +25,7 @@ public class MainGUI extends JFrame {
     private JTable table; // Dichiarazione della tabella
     private transient GestioneFile gestioneFile;
     private transient List<Prodotto> prodotti;
-    public MainGUI(String filePath, String sogliaFilePath) {
+    public MainGUI(String filePath) {
         gestioneFile = new GestioneFile(filePath);
         prodotti = gestioneFile.leggiProdotti();
 
@@ -478,6 +478,6 @@ public class MainGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainGUI("prodotti.txt", "soglie.txt").setVisible(true));
+        SwingUtilities.invokeLater(() -> new MainGUI("prodotti.txt").setVisible(true));
     }
 }
