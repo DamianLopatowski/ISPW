@@ -149,14 +149,11 @@ public class MainGUI extends JFrame {
                 Component c = super.prepareRenderer(renderer, row, column);
                 String nomeProdotto = (String) getValueAt(row, 0);
                 int totaleQuantità = getTotalQuantityByName(nomeProdotto);
+                boolean isSottoSoglia = totaleQuantità < getThresholdForProduct(nomeProdotto);
 
-                if (totaleQuantità < getThresholdForProduct(nomeProdotto)) {
-                    c.setBackground(Color.RED); // Colora di rosso se sotto soglia
-                    c.setForeground(Color.WHITE); // Testo bianco per contrasto
-                } else {
-                    c.setBackground(Color.WHITE); // Colore normale se non sotto soglia
-                    c.setForeground(Color.BLACK);
-                }
+                c.setBackground(isSottoSoglia ? Color.RED : Color.WHITE);
+                c.setForeground(isSottoSoglia ? Color.WHITE : Color.BLACK);
+
                 return c;
             }
         };
