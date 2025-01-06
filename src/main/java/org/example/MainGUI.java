@@ -25,7 +25,6 @@ public class MainGUI extends JFrame {
     private JTable table; // Dichiarazione della tabella
     private transient GestioneFile gestioneFile;
     private transient List<Prodotto> prodotti;
-
     public MainGUI(String filePath, String sogliaFilePath) {
         gestioneFile = new GestioneFile(filePath);
         prodotti = gestioneFile.leggiProdotti();
