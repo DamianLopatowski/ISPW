@@ -24,7 +24,7 @@ public class MainGUI extends JFrame {
     private DefaultTableModel tableModel; // Modello per la tabella
     private JTable table; // Dichiarazione della tabella
     private transient GestioneFile gestioneFile;
-    private List<Prodotto> prodotti;
+    private transient List<Prodotto> prodotti;
 
     private JButton aggiornaPrezzoButton; // Pulsante per aggiornare il prezzo
 
