@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GestioneFile {
-    private String filePath;
+    private final String filePath;
 
     public GestioneFile(String filePath) {
         this.filePath = filePath;
@@ -19,13 +19,13 @@ public class GestioneFile {
                 String[] dati = linea.split(",");
                 if (dati.length == 7) { // Modificato da 6 a 7 per includere la soglia
                     String nome = dati[0];
-                    int quantità = Integer.parseInt(dati[1]);
+                    int quantita = Integer.parseInt(dati[1]);
                     String scaffale = dati[2];
                     String codiceBarre = dati[3];
                     double prezzoAcquisto = Double.parseDouble(dati[4]);
                     double prezzoVendita = Double.parseDouble(dati[5]);
                     int soglia = Integer.parseInt(dati[6]); // Leggi la soglia
-                    Prodotto prodotto = new Prodotto(nome, quantità, scaffale, codiceBarre, prezzoAcquisto, prezzoVendita);
+                    Prodotto prodotto = new Prodotto(nome, quantita, scaffale, codiceBarre, prezzoAcquisto, prezzoVendita);
                     prodotto.setSoglia(soglia); // Imposta la soglia
                     prodotti.add(prodotto);
                 }
