@@ -6,6 +6,11 @@ import java.util.HashMap;
 
 public class ProdottoUtility {
 
+    // Costruttore privato per evitare l'istanza della classe
+    private ProdottoUtility() {
+        // Costruttore privato
+    }
+
     public static void aggiornaQuantitaProdotto(List<Prodotto> prodotti, ProdottoUpdateRequest request) {
         boolean prodottoEsistente = false;
 
@@ -24,6 +29,7 @@ public class ProdottoUtility {
         }
 
         if (!prodottoEsistente) {
+            // Aggiungi un nuovo prodotto solo se non esiste
             Prodotto nuovoProdotto = new Prodotto(request.getNome(), request.getQuantita(), "", request.getCodiceBarre(), request.getPrezzoAcquisto(), request.getPrezzoVendita());
             prodotti.add(nuovoProdotto);
         }
