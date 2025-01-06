@@ -122,7 +122,43 @@ public class MainGUI extends Application {
             return;
         }
 
-        // Prova a convertire la quantità
+        // Verifica se il nome o il codice a barre esistono già
+        for (Prodotto prodotto : prodotti) {
+            if (prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codiceBarre)) {
+                // Se il prodotto esiste con lo stesso scaffale, aggiorna la quantità
+                if (prodotto.getScaffale().equalsIgnoreCase(scaffale)) {
+                    prodotto.setQuantita(prodotto.getQuantita() + Integer.parseInt(quantitaText));
+                    prodotto.setPrezzoAcquisto(Double.parseDouble(prezzoAcquistoText));
+                    prodotto.setPrezzoVendita(Double.parseDouble(prezzoVenditaText));
+                    prodotto.setSoglia(Integer.parseInt(sogliaText));
+
+                    // Scrive i dati aggiornati nel file
+                    gestioneFile.scriviProdotti(prodotti);
+                    clearFields();
+                    JOptionPane.showMessageDialog(null, "Prodotto esistente aggiornato con successo.");
+                } else {
+                    // Se il prodotto è in un scaffale diverso, aggiungi la quantità al nuovo scaffale
+                    Prodotto prodottoScaffaleDiverso = new Prodotto(
+                            nome,
+                            Integer.parseInt(quantitaText),
+                            scaffale,
+                            codiceBarre,
+                            Double.parseDouble(prezzoAcquistoText),
+                            Double.parseDouble(prezzoVenditaText)
+                    );
+                    prodottoScaffaleDiverso.setSoglia(Integer.parseInt(sogliaText));
+
+                    // Aggiungi il nuovo prodotto
+                    prodotti.add(prodottoScaffaleDiverso);
+                    gestioneFile.scriviProdotti(prodotti);
+                    clearFields();
+                    JOptionPane.showMessageDialog(null, "Nuovo prodotto aggiunto con scaffale diverso.");
+                }
+                return;
+            }
+        }
+
+        // Se il prodotto non esiste, lo aggiungi come nuovo prodotto
         int quantita;
         try {
             quantita = Integer.parseInt(quantitaText);
@@ -131,7 +167,6 @@ public class MainGUI extends Application {
             return;
         }
 
-        // Prova a convertire i prezzi
         double prezzoAcquisto = 0;
         double prezzoVendita = 0;
         try {
@@ -142,7 +177,6 @@ public class MainGUI extends Application {
             return;
         }
 
-        // Prova a convertire la soglia
         int soglia;
         try {
             soglia = Integer.parseInt(sogliaText);
@@ -151,7 +185,7 @@ public class MainGUI extends Application {
             return;
         }
 
-        // Crea il nuovo prodotto
+        // Crea un nuovo prodotto e aggiungilo alla lista
         Prodotto prodotto = new Prodotto(nome, quantita, scaffale, codiceBarre, prezzoAcquisto, prezzoVendita);
         prodotto.setSoglia(soglia);
         prodotti.add(prodotto);
