@@ -149,21 +149,15 @@ public class MainGUI extends JFrame {
                 Component c = super.prepareRenderer(renderer, row, column);
                 String nomeProdotto = (String) getValueAt(row, 0);
                 int totaleQuantità = getTotalQuantityByName(nomeProdotto);
-                int soglia = getThresholdForProduct(nomeProdotto);
 
-                applyCellStyle(c, totaleQuantità < soglia);
+                if (totaleQuantità < getThresholdForProduct(nomeProdotto)) {
+                    c.setBackground(Color.RED); // Colora di rosso se sotto soglia
+                    c.setForeground(Color.WHITE); // Testo bianco per contrasto
+                } else {
+                    c.setBackground(Color.WHITE); // Colore normale se non sotto soglia
+                    c.setForeground(Color.BLACK);
+                }
                 return c;
-            }
-
-            /**
-             * Applica lo stile alla cella in base al fatto che sia sotto soglia.
-             *
-             * @param component La cella da stilizzare
-             * @param isSottoSoglia Se il prodotto è sotto la soglia
-             */
-            private void applyCellStyle(Component component, boolean isSottoSoglia) {
-                component.setBackground(isSottoSoglia ? Color.RED : Color.WHITE);
-                component.setForeground(isSottoSoglia ? Color.WHITE : Color.BLACK);
             }
         };
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Permetti solo una selezione alla volta
