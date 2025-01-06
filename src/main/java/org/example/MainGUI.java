@@ -148,9 +148,9 @@ public class MainGUI extends JFrame {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 String nomeProdotto = (String) getValueAt(row, 0);
-                int totaleQuantità = getTotalQuantityByName(nomeProdotto);
+                int totaleQuantita = getTotalQuantityByName(nomeProdotto);
 
-                if (totaleQuantità < getThresholdForProduct(nomeProdotto)) {
+                if (totaleQuantita < getThresholdForProduct(nomeProdotto)) {
                     c.setBackground(Color.RED); // Colora di rosso se sotto soglia
                     c.setForeground(Color.WHITE); // Testo bianco per contrasto
                 } else {
@@ -176,11 +176,11 @@ public class MainGUI extends JFrame {
                 String nome = nomeField.getText();
                 String scaffale = scaffaleField.getText();
                 String codiceBarre = codiceBarreField.getText();
-                int quantità;
+                int quantita;
 
                 // Valida la quantità
                 try {
-                    quantità = Integer.parseInt(quantitaField.getText());
+                    quantita = Integer.parseInt(quantitaField.getText());
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Inserisci una quantità valida!");
                     return;
@@ -208,7 +208,7 @@ public class MainGUI extends JFrame {
                 for (Prodotto prodotto : prodotti) {
                     if ((prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codiceBarre))
                             && prodotto.getScaffale().equalsIgnoreCase(scaffale)) {
-                        prodotto.setQuantita(prodotto.getQuantita() + quantità); // Aggiungi la quantità
+                        prodotto.setQuantita(prodotto.getQuantita() + quantita); // Aggiungi la quantità
                         prodottoEsistente = true;
                         break; // Esci dal ciclo
                     }
@@ -216,7 +216,7 @@ public class MainGUI extends JFrame {
 
                 if (!prodottoEsistente) {
                     // Aggiungi un nuovo prodotto
-                    Prodotto nuovoProdotto = new Prodotto(nome, quantità, scaffale, codiceBarre, prezzoAcquisto, prezzoVendita);
+                    Prodotto nuovoProdotto = new Prodotto(nome, quantita, scaffale, codiceBarre, prezzoAcquisto, prezzoVendita);
                     // Imposta la soglia se fornita
                     try {
                         int soglia = Integer.parseInt(sogliaField.getText());
@@ -240,10 +240,10 @@ public class MainGUI extends JFrame {
                 String nome = nomeField.getText();
                 String codice = codiceBarreField.getText();
                 String scaffale = scaffaleField.getText();
-                int quantità;
+                int quantita;
 
                 try {
-                    quantità = Integer.parseInt(quantitaField.getText());
+                    quantita = Integer.parseInt(quantitaField.getText());
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Inserisci una quantità valida!");
                     return;
@@ -256,8 +256,8 @@ public class MainGUI extends JFrame {
                     if ((prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice))
                             && prodotto.getScaffale().equalsIgnoreCase(scaffale)) {
                         prodottoTrovato = true;
-                        if (prodotto.getQuantita() >= quantità) {
-                            prodotto.setQuantita(prodotto.getQuantita() - quantità);
+                        if (prodotto.getQuantita() >= quantita) {
+                            prodotto.setQuantita(prodotto.getQuantita() - quantita);
                             if (prodotto.getQuantita() < 0) {
                                 prodotto.setQuantita(0); // Non dovrebbe mai succedere
                             }
