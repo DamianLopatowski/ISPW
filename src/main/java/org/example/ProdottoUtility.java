@@ -48,14 +48,12 @@ public class ProdottoUtility {
     public static boolean rimuoviQuantitaProdotto(List<Prodotto> prodotti, String nome, String codice, int quantita, String scaffale) {
         for (Prodotto prodotto : prodotti) {
             // Unire le due condizioni "if" in una sola
-            if ((prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice)) && prodotto.getScaffale().equalsIgnoreCase(scaffale)) {
-                if (prodotto.getQuantita() >= quantita) {
-                    prodotto.setQuantita(prodotto.getQuantita() - quantita);
-                    if (prodotto.getQuantita() < 0) {
-                        prodotto.setQuantita(0);
-                    }
-                    return true;
+            if ((prodotto.getNome().equalsIgnoreCase(nome) || prodotto.getCodiceBarre().equalsIgnoreCase(codice)) && prodotto.getScaffale().equalsIgnoreCase(scaffale) && prodotto.getQuantita() >= quantita) {
+                prodotto.setQuantita(prodotto.getQuantita() - quantita);
+                if (prodotto.getQuantita() < 0) {
+                    prodotto.setQuantita(0);
                 }
+                return true;
             }
         }
         return false;
