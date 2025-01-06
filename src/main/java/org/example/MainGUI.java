@@ -23,7 +23,7 @@ public class MainGUI extends JFrame {
     private JTextArea avvisiArea; // Area di testo per gli avvisi
     private DefaultTableModel tableModel; // Modello per la tabella
     private JTable table; // Dichiarazione della tabella
-    private GestioneFile gestioneFile;
+    private transient GestioneFile gestioneFile;
     private List<Prodotto> prodotti;
 
     private JButton aggiornaPrezzoButton; // Pulsante per aggiornare il prezzo
