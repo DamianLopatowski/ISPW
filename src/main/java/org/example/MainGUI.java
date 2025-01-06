@@ -32,7 +32,7 @@ public class MainGUI extends JFrame {
         // Imposta la finestra
         setTitle("Gestione Prodotti");
         setSize(800, 500); // Modificato per adattarsi a più colonne
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Pannello di input
