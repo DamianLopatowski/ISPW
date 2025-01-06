@@ -11,6 +11,10 @@ import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 
 public class MainGUI extends Application {
+
+    // Definizione della costante
+    private static final String CAMPI_VUOTI_MSG = "Tutti i campi devono essere riempiti!";
+
     private TableView<Prodotto> table;
     private TextField nomeField, quantitaField, scaffaleField, codiceBarreField, sogliaField, prezzoAcquistoField, prezzoVenditaField;
     private TextArea avvisiArea;
@@ -108,7 +112,7 @@ public class MainGUI extends Application {
 
         // Controllo se i campi numerici sono validi
         if (nome.isEmpty() || quantitaText.isEmpty() || scaffale.isEmpty() || codiceBarre.isEmpty() || prezzoAcquistoText.isEmpty() || prezzoVenditaText.isEmpty() || sogliaText.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Tutti i campi devono essere riempiti!");
+            JOptionPane.showMessageDialog(null, CAMPI_VUOTI_MSG);
             return;
         }
 
@@ -181,7 +185,7 @@ public class MainGUI extends Application {
 
         // Controllo che la soglia sia un numero valido
         if (nome.isEmpty() || sogliaText.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Tutti i campi devono essere riempiti!");
+            JOptionPane.showMessageDialog(null, CAMPI_VUOTI_MSG);
             return;
         }
 
@@ -210,7 +214,7 @@ public class MainGUI extends Application {
 
         // Controllo che i campi dei prezzi siano validi
         if (nome.isEmpty() || prezzoAcquistoText.isEmpty() || prezzoVenditaText.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Tutti i campi devono essere riempiti!");
+            JOptionPane.showMessageDialog(null, CAMPI_VUOTI_MSG);
             return;
         }
 
