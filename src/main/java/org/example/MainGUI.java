@@ -18,7 +18,13 @@ public class MainGUI extends Application {
     private GestioneFile gestioneFile;
 
     // Variabili globali per i campi di input
-    private TextField nomeField, quantitaField, scaffaleField, codiceBarreField, sogliaField, prezzoAcquistoField, prezzoVenditaField;
+    private TextField nomeField;
+    private TextField quantitaField;
+    private TextField scaffaleField;
+    private TextField codiceBarreField;
+    private TextField sogliaField;
+    private TextField prezzoAcquistoField;
+    private TextField prezzoVenditaField;
     private TextArea avvisiArea;
 
     public static void main(String[] args) {
