@@ -26,9 +26,6 @@ public class MainGUI extends JFrame {
     private transient GestioneFile gestioneFile;
     private transient List<Prodotto> prodotti;
 
-    private JButton aggiornaPrezzoButton; // Pulsante per aggiornare il prezzo
-
-
     public MainGUI(String filePath, String sogliaFilePath) {
         gestioneFile = new GestioneFile(filePath);
         prodotti = gestioneFile.leggiProdotti();
