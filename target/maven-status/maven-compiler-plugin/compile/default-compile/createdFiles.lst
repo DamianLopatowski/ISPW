@@ -1,5 +1,7 @@
-org\example\GestioneFile.class
-org\example\Prodotto.class
-org\example\MainGUI.class
-org\example\ProdottoUpdateRequest.class
-org\example\ProdottoUtility.class
+org\example\LoginPage.class
+org\example\GestionePage.class
+org\example\DatabaseUtils.class
+org\example\DatabaseConnection.class
+org\example\GestisciProdottiPage$Product.class
+org\example\GestisciProdottiPage.class
+org\example\InternetCheck.class
