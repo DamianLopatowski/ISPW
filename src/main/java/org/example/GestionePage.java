@@ -5,15 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.beans.property.SimpleObjectProperty;
-
-import javafx.scene.control.cell.PropertyValueFactory; // Import this to use PropertyValueFactory
 
 import java.sql.*;
 import java.io.File;
