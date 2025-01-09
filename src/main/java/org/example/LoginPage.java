@@ -18,74 +18,15 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Crea i componenti dell'interfaccia
-        TextField usernameField = new TextField();
-        PasswordField passwordField = new PasswordField();
-        Button loginButton = new Button("Login");
-
-        // Crea i RadioButton per scegliere il tipo di login
-        ToggleGroup loginTypeGroup = new ToggleGroup();
-        RadioButton onlineLogin = new RadioButton("Login con Database");
-        onlineLogin.setToggleGroup(loginTypeGroup);
-        onlineLogin.setSelected(true); // Imposta il login con il database come predefinito
-        RadioButton offlineLogin = new RadioButton("Login Offline");
-        offlineLogin.setToggleGroup(loginTypeGroup);
-
-        // Verifica la connessione e disabilita l'opzione "Login con Database" se offline
-        if (!InternetCheck.isConnected()) {
-            onlineLogin.setDisable(true); // Disabilita l'opzione se non c'è connessione
-            offlineLogin.setSelected(true); // Imposta automaticamente la modalità offline
-        }
-
-        // Imposta l'azione di login
-        loginButton.setOnAction(e -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-
-            // Verifica la modalità di login selezionata
-            if (onlineLogin.isSelected()) {
-                if (InternetCheck.isConnected()) {
-                    if (DatabaseUtils.verifyCredentials(username, password)) {
-                        isOffline = false;  // Modalità online
-                        showMainPage(primaryStage);
-                    } else {
-                        showAlert("Login fallito", "Credenziali non corrette.");
-                    }
-                } else {
-                    showAlert("Connessione non disponibile", "Internet non disponibile per il login con il database.");
-                }
-            } else {
-                // Modalità offline
-                isOffline = true;  // Modalità offline
-                if ("admin".equals(username) && "password123".equals(password)) {
-                    showMainPage(primaryStage);
-                } else {
-                    showAlert("Login fallito", "Credenziali non corrette.");
-                }
-            }
-        });
-
-        // Layout migliorato
-        VBox layout = new VBox(15,
-                new Label("Username:"),
-                usernameField,
-                new Label("Password:"),
-                passwordField,
-                onlineLogin,
-                offlineLogin,
-                loginButton
-        );
-        layout.setAlignment(Pos.CENTER);
-        layout.setStyle("-fx-background-color: #f2f2f2; -fx-padding: 20;");
-
-        Scene scene = new Scene(layout, 400, 300);
+        // Crea la scena di login
+        Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(loginScene);
         primaryStage.show();
     }
 
     public Scene createLoginScene(Stage primaryStage) {
-        // Ritorna la scena di login (con RadioButton per scegliere online/offline)
+        // Crea i componenti dell'interfaccia di login
         TextField usernameField = new TextField();
         PasswordField passwordField = new PasswordField();
         Button loginButton = new Button("Login");
