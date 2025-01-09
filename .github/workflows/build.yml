@@ -44,5 +44,5 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.sources=src \
             -Dsonar.language=php \
-            -Dsonar.php.version=7.4  # Usa la versione corretta di PHP
-            -Dsonar.php.file.suffixes=php,php3,php4,php5,phtml,inc  # Aggiungi i suffissi per i file PHP
+            -Dsonar.php.version=7.4 \
+            -Dsonar.php.file.suffixes="php,php3,php4,php5,phtml,inc"  # Corretta sintassi con i parametri
