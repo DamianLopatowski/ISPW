@@ -77,6 +77,20 @@
                     <mainClass>org.example.LoginPage</mainClass> <!-- Cambia con il nome della tua classe principale -->
                 </configuration>
             </plugin>
+
+            <!-- Plugin SonarQube per l'analisi PHP -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.10.0.2594</version> <!-- Versione aggiornata -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>sonar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
