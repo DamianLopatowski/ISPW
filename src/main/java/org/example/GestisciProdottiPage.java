@@ -1,6 +1,5 @@
 package org.example;
 
-import org.example.ProductTable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,13 +9,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.*;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 public class GestisciProdottiPage {
 
