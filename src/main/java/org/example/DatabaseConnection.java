@@ -29,8 +29,8 @@ public class DatabaseConnection {
             String password = properties.getProperty("db.password");
             return DriverManager.getConnection(url, username, password);
         } catch (SQLException | IOException e) {
-            // Utilizzo del logger per registrare l'errore
-            logger.log(Level.SEVERE, "Errore di connessione: " + e.getMessage(), e);
+            // Utilizzo del logger con formattazione corretta e lambda per ritardare la concatenazione della stringa
+            logger.log(Level.SEVERE, () -> String.format("Errore di connessione: %s", e.getMessage()));
             return null;
         }
     }
