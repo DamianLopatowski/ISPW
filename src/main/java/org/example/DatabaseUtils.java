@@ -4,12 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class DatabaseUtils {
 
+    private static final Logger LOGGER = Logger.getLogger(DatabaseUtils.class.getName());
+
+    // Costruttore privato per evitare l'istanza della classe
+    private DatabaseUtils() {
+        throw new UnsupportedOperationException("Non è possibile creare istanze di questa classe");
+    }
+
     public static boolean verifyCredentials(String username, String password) {
-        // Prepara la query SQL per verificare le credenziali
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+        // Prepara la query SQL per verificare le credenziali (selezioniamo solo i campi necessari)
+        String query = "SELECT username FROM users WHERE username = ? AND password = ?";
 
         try (Connection conn = DatabaseConnection.connectToDatabase();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -21,14 +29,10 @@ public class DatabaseUtils {
             // Esegui la query e ottieni il risultato
             ResultSet rs = stmt.executeQuery();
 
-            // Se c'è almeno un risultato, le credenziali sono corrette
-            if (rs.next()) {
-                return true;
-            } else {
-                return false;
-            }
+            // Restituisce true se c'è almeno un risultato
+            return rs.next();
         } catch (SQLException e) {
-            System.out.println("Errore durante la verifica delle credenziali: " + e.getMessage());
+            LOGGER.severe("Errore durante la verifica delle credenziali: " + e.getMessage());
             return false;
         }
     }
