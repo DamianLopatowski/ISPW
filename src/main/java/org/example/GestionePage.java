@@ -70,10 +70,14 @@ public class GestionePage {
                         nomeField.getText(),
                         scaffaleField.getText(),
                         codiceBarreField.getText(),
-                        Integer.parseInt(quantitaField.getText()),
-                        Integer.parseInt(sogliaField.getText()),
-                        Double.parseDouble(prezzoAcquistoField.getText()),
-                        Double.parseDouble(prezzoVenditaField.getText()),
+                        new DettagliProdotto(
+                                Double.parseDouble(prezzoAcquistoField.getText()),
+                                Double.parseDouble(prezzoVenditaField.getText())
+                        ),
+                        new QuantitaProdotto(
+                                Integer.parseInt(quantitaField.getText()),
+                                Integer.parseInt(sogliaField.getText())
+                        ),
                         imageBytes
                 );
                 eseguiOperazioneDatabase(prodotto);
@@ -151,7 +155,7 @@ public class GestionePage {
     private void aggiornaProdotto(Connection conn, Prodotto prodotto) throws SQLException {
         String updateQuery = "UPDATE prodotti SET quantita = quantita + ?, immagine = ? WHERE nome = ? OR codice_a_barre = ?";
         try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
-            updateStmt.setInt(1, prodotto.getQuantita());
+            updateStmt.setInt(1, prodotto.getQuantitaProdotto().getQuantita());
             updateStmt.setBytes(2, prodotto.getImmagine());
             updateStmt.setString(3, prodotto.getNome());
             updateStmt.setString(4, prodotto.getCodiceBarre());
@@ -164,12 +168,12 @@ public class GestionePage {
         String insertQuery = "INSERT INTO prodotti (nome, quantita, scaffale, codice_a_barre, soglia, prezzo_acquisto, prezzo_vendita, immagine) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
             insertStmt.setString(1, prodotto.getNome());
-            insertStmt.setInt(2, prodotto.getQuantita());
+            insertStmt.setInt(2, prodotto.getQuantitaProdotto().getQuantita());
             insertStmt.setString(3, prodotto.getScaffale());
             insertStmt.setString(4, prodotto.getCodiceBarre());
-            insertStmt.setInt(5, prodotto.getSoglia());
-            insertStmt.setDouble(6, prodotto.getPrezzoAcquisto());
-            insertStmt.setDouble(7, prodotto.getPrezzoVendita());
+            insertStmt.setInt(5, prodotto.getQuantitaProdotto().getSoglia());
+            insertStmt.setDouble(6, prodotto.getDettagliProdotto().getPrezzoAcquisto());
+            insertStmt.setDouble(7, prodotto.getDettagliProdotto().getPrezzoVendita());
             insertStmt.setBytes(8, prodotto.getImmagine());
             insertStmt.executeUpdate();
         }

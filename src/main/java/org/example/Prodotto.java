@@ -4,20 +4,17 @@ public class Prodotto {
     private String nome;
     private String scaffale;
     private String codiceBarre;
-    private int quantita;
-    private int soglia;
-    private double prezzoAcquisto;
-    private double prezzoVendita;
+    private DettagliProdotto dettagliProdotto;
+    private QuantitaProdotto quantitaProdotto;
     private byte[] immagine;
 
-    public Prodotto(String nome, String scaffale, String codiceBarre, int quantita, int soglia, double prezzoAcquisto, double prezzoVendita, byte[] immagine) {
+    // Costruttore
+    public Prodotto(String nome, String scaffale, String codiceBarre, DettagliProdotto dettagliProdotto, QuantitaProdotto quantitaProdotto, byte[] immagine) {
         this.nome = nome;
         this.scaffale = scaffale;
         this.codiceBarre = codiceBarre;
-        this.quantita = quantita;
-        this.soglia = soglia;
-        this.prezzoAcquisto = prezzoAcquisto;
-        this.prezzoVendita = prezzoVendita;
+        this.dettagliProdotto = dettagliProdotto;
+        this.quantitaProdotto = quantitaProdotto;
         this.immagine = immagine;
     }
 
@@ -33,20 +30,12 @@ public class Prodotto {
         return codiceBarre;
     }
 
-    public int getQuantita() {
-        return quantita;
+    public DettagliProdotto getDettagliProdotto() {
+        return dettagliProdotto;
     }
 
-    public int getSoglia() {
-        return soglia;
-    }
-
-    public double getPrezzoAcquisto() {
-        return prezzoAcquisto;
-    }
-
-    public double getPrezzoVendita() {
-        return prezzoVendita;
+    public QuantitaProdotto getQuantitaProdotto() {
+        return quantitaProdotto;
     }
 
     public byte[] getImmagine() {
