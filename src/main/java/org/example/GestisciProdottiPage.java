@@ -24,6 +24,14 @@ public class GestisciProdottiPage {
     private TableView<Product> negozioTable;
 
     private static final String MAGAZZINO = "Magazzino";
+    private static final String NEGOZIO = "Negozio";
+    private static final String QUANTITA = "quantita";
+    private static final String SCAFFALE = "scaffale";
+    private static final String CODICE_A_BARRE = "codice_a_barre";
+    private static final String SOGLIA = "soglia";
+    private static final String PREZZO_ACQUISTO = "prezzo_acquisto";
+    private static final String PREZZO_VENDITA  = "prezzo_vendita";
+
 
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
@@ -43,16 +51,16 @@ public class GestisciProdottiPage {
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
 
         loadProducts(magazzinoTable, MAGAZZINO);
-        loadProducts(negozioTable, "Negozio");
+        loadProducts(negozioTable, NEGOZIO);
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchProducts(newValue, magazzinoTable, MAGAZZINO);
-            searchProducts(newValue, negozioTable, "Negozio");
+            searchProducts(newValue, negozioTable, NEGOZIO);
         });
 
         VBox vbox = new VBox(15, backButton, gestioneButton, searchField,
                 new Label(MAGAZZINO), magazzinoTable,
-                new Label("Negozio"), negozioTable);
+                new Label(NEGOZIO), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setStyle("-fx-padding: 20;");
 
@@ -83,22 +91,22 @@ public class GestisciProdottiPage {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("nome"));
 
         TableColumn<Product, Integer> quantityColumn = new TableColumn<>("Quantità");
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantita"));
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>(QUANTITA));
 
         TableColumn<Product, String> shelfColumn = new TableColumn<>("Scaffale");
-        shelfColumn.setCellValueFactory(new PropertyValueFactory<>("scaffale"));
+        shelfColumn.setCellValueFactory(new PropertyValueFactory<>(SCAFFALE));
 
         TableColumn<Product, String> barcodeColumn = new TableColumn<>("Codice a Barre");
-        barcodeColumn.setCellValueFactory(new PropertyValueFactory<>("codice_a_barre"));
+        barcodeColumn.setCellValueFactory(new PropertyValueFactory<>(CODICE_A_BARRE));
 
         TableColumn<Product, Integer> thresholdColumn = new TableColumn<>("Soglia");
-        thresholdColumn.setCellValueFactory(new PropertyValueFactory<>("soglia"));
+        thresholdColumn.setCellValueFactory(new PropertyValueFactory<>(SOGLIA));
 
         TableColumn<Product, Double> purchasePriceColumn = new TableColumn<>("Prezzo Acquisto");
-        purchasePriceColumn.setCellValueFactory(new PropertyValueFactory<>("prezzo_acquisto"));
+        purchasePriceColumn.setCellValueFactory(new PropertyValueFactory<>(PREZZO_ACQUISTO));
 
         TableColumn<Product, Double> salePriceColumn = new TableColumn<>("Prezzo Vendita");
-        salePriceColumn.setCellValueFactory(new PropertyValueFactory<>("prezzo_vendita"));
+        salePriceColumn.setCellValueFactory(new PropertyValueFactory<>(PREZZO_VENDITA));
 
         // Icona del secchio per eliminare il prodotto
         TableColumn<Product, Void> deleteColumn = new TableColumn<>("Azioni");
@@ -212,12 +220,12 @@ public class GestisciProdottiPage {
                         while (rs.next()) {
                             Product product = new Product(
                                     rs.getString("nome"),
-                                    rs.getInt("quantita"),
-                                    rs.getString("scaffale"),
-                                    rs.getString("codice_a_barre"),
-                                    rs.getInt("soglia"),
-                                    rs.getDouble("prezzo_acquisto"),
-                                    rs.getDouble("prezzo_vendita"),
+                                    rs.getInt(QUANTITA),
+                                    rs.getString(SCAFFALE),
+                                    rs.getString(CODICE_A_BARRE),
+                                    rs.getInt(SOGLIA),
+                                    rs.getDouble(PREZZO_ACQUISTO),
+                                    rs.getDouble(PREZZO_VENDITA),
                                     rs.getBytes("immagine")
                             );
                             table.getItems().add(product);
@@ -249,12 +257,12 @@ public class GestisciProdottiPage {
                         while (rs.next()) {
                             Product product = new Product(
                                     rs.getString("nome"),
-                                    rs.getInt("quantita"),
-                                    rs.getString("scaffale"),
-                                    rs.getString("codice_a_barre"),
-                                    rs.getInt("soglia"),
-                                    rs.getDouble("prezzo_acquisto"),
-                                    rs.getDouble("prezzo_vendita"),
+                                    rs.getInt(QUANTITA),
+                                    rs.getString(SCAFFALE),
+                                    rs.getString(CODICE_A_BARRE),
+                                    rs.getInt(SOGLIA),
+                                    rs.getDouble(PREZZO_ACQUISTO),
+                                    rs.getDouble(PREZZO_VENDITA),
                                     rs.getBytes("immagine")
                             );
                             table.getItems().add(product);
