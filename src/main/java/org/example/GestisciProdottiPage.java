@@ -67,7 +67,7 @@ public class GestisciProdottiPage {
     private void loadProducts(TableView<Product> table, String categoria) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
-                String query = "SELECT * FROM prodotti WHERE categoria = ?";
+                String query = "SELECT nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine FROM prodotti WHERE categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, categoria);
                     try (ResultSet rs = stmt.executeQuery()) {
@@ -99,7 +99,7 @@ public class GestisciProdottiPage {
         table.getItems().clear();
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
-                String query = "SELECT * FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codiceAbarre LIKE ?) AND categoria = ?";
+                String query = "SELECT nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codiceAbarre LIKE ?) AND categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     String searchPattern = "%" + searchTerm + "%";
                     stmt.setString(1, searchPattern);
