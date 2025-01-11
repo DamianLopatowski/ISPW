@@ -66,7 +66,17 @@ public class GestionePage {
         aggiungiButton.setOnAction(e -> {
             if (inputValido(nomeField, codiceBarreField, scaffaleField, quantitaField, prezzoAcquistoField, prezzoVenditaField)) {
                 byte[] imageBytes = caricaImmagine(imageFiles[0]);
-                eseguiOperazioneDatabase(nomeField, codiceBarreField, scaffaleField, quantitaField, sogliaField, prezzoAcquistoField, prezzoVenditaField, imageBytes);
+                Prodotto prodotto = new Prodotto(
+                        nomeField.getText(),
+                        scaffaleField.getText(),
+                        codiceBarreField.getText(),
+                        Integer.parseInt(quantitaField.getText()),
+                        Integer.parseInt(sogliaField.getText()),
+                        Double.parseDouble(prezzoAcquistoField.getText()),
+                        Double.parseDouble(prezzoVenditaField.getText()),
+                        imageBytes
+                );
+                eseguiOperazioneDatabase(prodotto);
             }
         });
 
@@ -118,17 +128,17 @@ public class GestionePage {
     }
 
     // Metodo per eseguire l'operazione di database (aggiornamento o inserimento)
-    private void eseguiOperazioneDatabase(TextField nomeField, TextField codiceBarreField, TextField scaffaleField, TextField quantitaField, TextField sogliaField, TextField prezzoAcquistoField, TextField prezzoVenditaField, byte[] imageBytes) {
+    private void eseguiOperazioneDatabase(Prodotto prodotto) {
         try (Connection conn = DatabaseConnection.connectToDatabase()) {
             String query = "SELECT nome, codice_a_barre FROM prodotti WHERE nome = ? OR codice_a_barre = ?";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, nomeField.getText());
-                stmt.setString(2, codiceBarreField.getText());
+                stmt.setString(1, prodotto.getNome());
+                stmt.setString(2, prodotto.getCodiceBarre());
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
-                        aggiornaProdotto(conn, quantitaField, imageBytes, nomeField, codiceBarreField);
+                        aggiornaProdotto(conn, prodotto);
                     } else {
-                        inserisciProdotto(conn, nomeField, scaffaleField, quantitaField, codiceBarreField, sogliaField, prezzoAcquistoField, prezzoVenditaField, imageBytes);
+                        inserisciProdotto(conn, prodotto);
                     }
                 }
             }
@@ -138,29 +148,29 @@ public class GestionePage {
     }
 
     // Metodo per aggiornare il prodotto nel database
-    private void aggiornaProdotto(Connection conn, TextField quantitaField, byte[] imageBytes, TextField nomeField, TextField codiceBarreField) throws SQLException {
+    private void aggiornaProdotto(Connection conn, Prodotto prodotto) throws SQLException {
         String updateQuery = "UPDATE prodotti SET quantita = quantita + ?, immagine = ? WHERE nome = ? OR codice_a_barre = ?";
         try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
-            updateStmt.setInt(1, Integer.parseInt(quantitaField.getText()));
-            updateStmt.setBytes(2, imageBytes);
-            updateStmt.setString(3, nomeField.getText());
-            updateStmt.setString(4, codiceBarreField.getText());
+            updateStmt.setInt(1, prodotto.getQuantita());
+            updateStmt.setBytes(2, prodotto.getImmagine());
+            updateStmt.setString(3, prodotto.getNome());
+            updateStmt.setString(4, prodotto.getCodiceBarre());
             updateStmt.executeUpdate();
         }
     }
 
     // Metodo per inserire un nuovo prodotto nel database
-    private void inserisciProdotto(Connection conn, TextField nomeField, TextField scaffaleField, TextField quantitaField, TextField codiceBarreField, TextField sogliaField, TextField prezzoAcquistoField, TextField prezzoVenditaField, byte[] imageBytes) throws SQLException {
+    private void inserisciProdotto(Connection conn, Prodotto prodotto) throws SQLException {
         String insertQuery = "INSERT INTO prodotti (nome, quantita, scaffale, codice_a_barre, soglia, prezzo_acquisto, prezzo_vendita, immagine) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
-            insertStmt.setString(1, nomeField.getText());
-            insertStmt.setInt(2, Integer.parseInt(quantitaField.getText()));
-            insertStmt.setString(3, scaffaleField.getText());
-            insertStmt.setString(4, codiceBarreField.getText());
-            insertStmt.setInt(5, Integer.parseInt(sogliaField.getText()));
-            insertStmt.setDouble(6, Double.parseDouble(prezzoAcquistoField.getText()));
-            insertStmt.setDouble(7, Double.parseDouble(prezzoVenditaField.getText()));
-            insertStmt.setBytes(8, imageBytes);
+            insertStmt.setString(1, prodotto.getNome());
+            insertStmt.setInt(2, prodotto.getQuantita());
+            insertStmt.setString(3, prodotto.getScaffale());
+            insertStmt.setString(4, prodotto.getCodiceBarre());
+            insertStmt.setInt(5, prodotto.getSoglia());
+            insertStmt.setDouble(6, prodotto.getPrezzoAcquisto());
+            insertStmt.setDouble(7, prodotto.getPrezzoVendita());
+            insertStmt.setBytes(8, prodotto.getImmagine());
             insertStmt.executeUpdate();
         }
     }

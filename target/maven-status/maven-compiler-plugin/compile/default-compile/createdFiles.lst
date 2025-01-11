@@ -5,6 +5,7 @@ org\example\DatabaseUtils.class
 org\example\GestisciProdottiPage$2.class
 org\example\DatabaseConnection.class
 org\example\GestisciProdottiPage$Product.class
+org\example\Prodotto.class
 org\example\GestisciProdottiPage.class
 org\example\ImageViewWindow.class
 org\example\InternetCheck.class
