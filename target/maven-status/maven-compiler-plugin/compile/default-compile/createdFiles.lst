@@ -1,8 +1,8 @@
-org\example\GestisciProdottiPage$1.class
+org\example\ProductTable$1.class
 org\example\GestionePage.class
 org\example\QuantitaProdotto.class
 org\example\DettagliProdotto.class
-org\example\GestisciProdottiPage$2.class
+org\example\ProductTable$2.class
 org\example\DatabaseConnection.class
 org\example\Prodotto.class
 org\example\GestisciProdottiPage.class
@@ -10,4 +10,5 @@ org\example\ImageViewWindow.class
 org\example\InternetCheck.class
 org\example\LoginPage.class
 org\example\DatabaseUtils.class
+org\example\ProductTable.class
 org\example\GestisciProdottiPage$Product.class

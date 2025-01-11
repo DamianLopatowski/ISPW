@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.ProductTable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -44,8 +45,8 @@ public class GestisciProdottiPage {
         searchField.setPromptText("Cerca un prodotto...");
 
         // Inizializzazione delle tabelle
-        magazzinoTable = createProductTable();
-        negozioTable = createProductTable();
+        magazzinoTable = ProductTable.createProductTable(this);
+        negozioTable = ProductTable.createProductTable(this);
 
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
@@ -69,146 +70,7 @@ public class GestisciProdottiPage {
         primaryStage.show();
     }
 
-    private TableView<Product> createProductTable() {
-        TableView<Product> table = new TableView<>();
 
-        TableColumn<Product, ImageView> imageColumn = new TableColumn<>("Immagine");
-        imageColumn.setCellValueFactory(cellData -> {
-            Product product = cellData.getValue();
-            ImageView imageView = new ImageView();
-            imageView.setFitWidth(50);
-            imageView.setFitHeight(50);
-            imageView.setPreserveRatio(true);
-
-            if (product.getImmagine() != null) {
-                imageView.setImage(new Image(new ByteArrayInputStream(product.getImmagine())));
-            }
-
-            return new SimpleObjectProperty<>(imageView);
-        });
-
-        TableColumn<Product, String> nameColumn = new TableColumn<>("Nome");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("nome"));
-
-        TableColumn<Product, Integer> quantityColumn = new TableColumn<>("Quantità");
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>(QUANTITA));
-
-        TableColumn<Product, String> shelfColumn = new TableColumn<>("Scaffale");
-        shelfColumn.setCellValueFactory(new PropertyValueFactory<>(SCAFFALE));
-
-        TableColumn<Product, String> barcodeColumn = new TableColumn<>("Codice a Barre");
-        barcodeColumn.setCellValueFactory(new PropertyValueFactory<>(CODICE_A_BARRE));
-
-        TableColumn<Product, Integer> thresholdColumn = new TableColumn<>("Soglia");
-        thresholdColumn.setCellValueFactory(new PropertyValueFactory<>(SOGLIA));
-
-        TableColumn<Product, Double> purchasePriceColumn = new TableColumn<>("Prezzo Acquisto");
-        purchasePriceColumn.setCellValueFactory(new PropertyValueFactory<>(PREZZO_ACQUISTO));
-
-        TableColumn<Product, Double> salePriceColumn = new TableColumn<>("Prezzo Vendita");
-        salePriceColumn.setCellValueFactory(new PropertyValueFactory<>(PREZZO_VENDITA));
-
-        // Icona del secchio per eliminare il prodotto
-        TableColumn<Product, Void> deleteColumn = new TableColumn<>("Azioni");
-        deleteColumn.setCellFactory(param -> new TableCell<Product, Void>() {
-            private final ImageView trashIcon = new ImageView(loadImage("/icons/trash-icon.png"));
-
-            {
-                trashIcon.setFitWidth(20);
-                trashIcon.setFitHeight(20);
-                trashIcon.setPreserveRatio(true);
-            }
-
-            @Override
-            public void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(trashIcon);
-                    setOnMouseClicked(event -> {
-                        Product product = getTableView().getItems().get(getIndex());
-                        // Finestra di conferma per l'eliminazione
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        alert.setTitle("Conferma Eliminazione");
-                        alert.setHeaderText("Sei sicuro di voler eliminare questo prodotto?");
-                        alert.setContentText(product.getNome());
-                        alert.showAndWait().ifPresent(response -> {
-                            if (response == ButtonType.OK) {
-                                deleteProductFromDatabase(product);
-                                refreshTable();  // Ricarica i dati dopo eliminazione
-                            }
-                        });
-                    });
-                }
-            }
-        });
-
-        // Icona della penna per modificare il prodotto
-        TableColumn<Product, Void> editColumn = new TableColumn<>("Modifica");
-        editColumn.setCellFactory(param -> new TableCell<Product, Void>() {
-            private final ImageView penIcon = new ImageView(loadImage("/icons/pen-icon.png"));
-
-            {
-                penIcon.setFitWidth(20);
-                penIcon.setFitHeight(20);
-                penIcon.setPreserveRatio(true);
-            }
-
-            @Override
-            public void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(penIcon);
-                    setOnMouseClicked(event -> {
-                        Product product = getTableView().getItems().get(getIndex());
-                        // Apertura della finestra di modifica del prodotto
-                        openEditProductDialog(product);
-                        refreshTable();  // Ricarica i dati dopo modifica
-                    });
-                }
-            }
-        });
-
-        table.getColumns().addAll(imageColumn, nameColumn, quantityColumn, shelfColumn, barcodeColumn, thresholdColumn, purchasePriceColumn, salePriceColumn, deleteColumn, editColumn);
-
-        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        table.getSelectionModel().clearSelection();
-
-        // Gestiamo il clic sulla riga per aprire l'immagine solo se è stata cliccata la cella contenente l'immagine
-        table.setRowFactory(tv -> {
-            TableRow<Product> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                // Se il clic è stato fatto sulla cella dell'immagine (e non sulle icone di modifica o eliminazione)
-                if (!row.isEmpty()) {
-                    // Verifica se il clic non è stato fatto su un'icona di modifica o eliminazione
-                    if (event.getTarget() instanceof TableCell) {
-                        TableCell<Product, ?> cell = (TableCell<Product, ?>) event.getTarget();
-                        if (cell.getTableColumn().getText().equals("Immagine")) {
-                            // Cliccato sulla cella dell'immagine, apri l'immagine
-                            Product product = row.getItem();
-                            ImageViewWindow.openImageInNewWindow(product.getImmagine());
-                        }
-                    }
-                }
-            });
-            return row;
-        });
-
-        return table;
-    }
-
-    private Image loadImage(String path) {
-        InputStream inputStream = getClass().getResourceAsStream(path);
-        if (inputStream != null) {
-            return new Image(inputStream);
-        } else {
-            System.out.println("Immagine non trovata: " + path);
-            return null;
-        }
-    }
 
     private void loadProducts(TableView<Product> table, String categoria) {
         if (!LoginPage.isOffline && InternetCheck.isConnected()) {
@@ -283,7 +145,7 @@ public class GestisciProdottiPage {
     }
 
     // Elimina il prodotto dal database
-    private void deleteProductFromDatabase(Product product) {
+    public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
                 String query = "DELETE FROM prodotti WHERE codice_a_barre = ?";
@@ -300,7 +162,7 @@ public class GestisciProdottiPage {
     }
 
     // Apre il dialogo per modificare il prodotto
-    private void openEditProductDialog(Product product) {
+    public void openEditProductDialog(Product product) {
         TextField nameField = new TextField(product.getNome());
         TextField quantityField = new TextField(String.valueOf(product.getQuantita()));
         TextField shelfField = new TextField(product.getScaffale());
@@ -376,7 +238,7 @@ public class GestisciProdottiPage {
     }
 
     // Ricarica la tabella dei prodotti dopo modifiche o eliminazioni
-    private void refreshTable() {
+    public void refreshTable() {
         magazzinoTable.getItems().clear();
         negozioTable.getItems().clear();
         loadProducts(magazzinoTable, MAGAZZINO);  // Ricarica i prodotti per la tabella Magazzino
