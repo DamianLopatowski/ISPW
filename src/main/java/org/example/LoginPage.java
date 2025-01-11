@@ -64,6 +64,7 @@ public class LoginPage extends Application {
         return new Scene(layout, 400, 300);
     }
 
+
     private void handleLogin(String username, String password, boolean isOnlineLogin, Stage primaryStage) {
         if (isOnlineLogin) {
             handleOnlineLogin(username, password, primaryStage);
