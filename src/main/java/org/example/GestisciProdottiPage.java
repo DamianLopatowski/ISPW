@@ -22,10 +22,10 @@ public class GestisciProdottiPage {
     private static final String NEGOZIO = "Negozio";
     private static final String QUANTITA = "quantita";
     private static final String SCAFFALE = "scaffale";
-    private static final String CODICE_A_BARRE = "codice_a_barre";
+    private static final String CODICE_A_BARRE = "codiceAbarre";
     private static final String SOGLIA = "soglia";
-    private static final String PREZZO_ACQUISTO = "prezzo_acquisto";
-    private static final String PREZZO_VENDITA  = "prezzo_vendita";
+    private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
+    private static final String PREZZO_VENDITA  = "prezzoVendita";
 
 
     public void start(Stage primaryStage) {
@@ -106,7 +106,7 @@ public class GestisciProdottiPage {
         table.getItems().clear();
         if (!LoginPage.isOffline && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
-                String query = "SELECT * FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codice_a_barre LIKE ?) AND categoria = ?";
+                String query = "SELECT * FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codiceAbarre LIKE ?) AND categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     String searchPattern = "%" + searchTerm + "%";
                     stmt.setString(1, searchPattern);
@@ -146,7 +146,7 @@ public class GestisciProdottiPage {
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
-                String query = "DELETE FROM prodotti WHERE codice_a_barre = ?";
+                String query = "DELETE FROM prodotti WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, product.getCodiceAbarre());
                     stmt.executeUpdate();
@@ -216,7 +216,7 @@ public class GestisciProdottiPage {
     private void saveProductToDatabase(Product product) {
         if (!LoginPage.isOffline && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
-                String query = "UPDATE prodotti SET nome = ?, quantita = ?, scaffale = ?, codice_a_barre = ?, soglia = ?, prezzo_acquisto = ?, prezzo_vendita = ? WHERE codice_a_barre = ?";
+                String query = "UPDATE prodotti SET nome = ?, quantita = ?, scaffale = ?, codiceAbarre = ?, soglia = ?, prezzoAcquisto = ?, prezzoVendita = ? WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, product.getNome());
                     stmt.setInt(2, product.getQuantita());
@@ -253,14 +253,14 @@ public class GestisciProdottiPage {
         private final SimpleDoubleProperty prezzoVendita;
         private final SimpleObjectProperty<byte[]> immagine;
 
-        public Product(String nome, int quantita, String scaffale, String codice_a_barre, int soglia, double prezzo_acquisto, double prezzo_vendita, byte[] immagine) {
+        public Product(String nome, int quantita, String scaffale, String codiceAbarre, int soglia, double prezzoAcquisto, double prezzoVendita, byte[] immagine) {
             this.nome = new SimpleStringProperty(nome);
             this.quantita = new SimpleIntegerProperty(quantita);
             this.scaffale = new SimpleStringProperty(scaffale);
-            this.codiceAbarre = new SimpleStringProperty(codice_a_barre);
+            this.codiceAbarre = new SimpleStringProperty(codiceAbarre);
             this.soglia = new SimpleIntegerProperty(soglia);
-            this.prezzoAcquisto = new SimpleDoubleProperty(prezzo_acquisto);
-            this.prezzoVendita = new SimpleDoubleProperty(prezzo_vendita);
+            this.prezzoAcquisto = new SimpleDoubleProperty(prezzoAcquisto);
+            this.prezzoVendita = new SimpleDoubleProperty(prezzoVendita);
             this.immagine = new SimpleObjectProperty<>(immagine);
         }
 

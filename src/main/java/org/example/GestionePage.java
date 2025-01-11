@@ -134,7 +134,7 @@ public class GestionePage {
     // Metodo per eseguire l'operazione di database (aggiornamento o inserimento)
     private void eseguiOperazioneDatabase(Prodotto prodotto) {
         try (Connection conn = DatabaseConnection.connectToDatabase()) {
-            String query = "SELECT nome, codice_a_barre FROM prodotti WHERE nome = ? OR codice_a_barre = ?";
+            String query = "SELECT nome, codiceAbarre FROM prodotti WHERE nome = ? OR codiceAbarre = ?";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setString(1, prodotto.getNome());
                 stmt.setString(2, prodotto.getCodiceBarre());
@@ -153,7 +153,7 @@ public class GestionePage {
 
     // Metodo per aggiornare il prodotto nel database
     private void aggiornaProdotto(Connection conn, Prodotto prodotto) throws SQLException {
-        String updateQuery = "UPDATE prodotti SET quantita = quantita + ?, immagine = ? WHERE nome = ? OR codice_a_barre = ?";
+        String updateQuery = "UPDATE prodotti SET quantita = quantita + ?, immagine = ? WHERE nome = ? OR codiceAbarref = ?";
         try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
             updateStmt.setInt(1, prodotto.getQuantitaProdotto().getQuantita());
             updateStmt.setBytes(2, prodotto.getImmagine());
@@ -165,7 +165,7 @@ public class GestionePage {
 
     // Metodo per inserire un nuovo prodotto nel database
     private void inserisciProdotto(Connection conn, Prodotto prodotto) throws SQLException {
-        String insertQuery = "INSERT INTO prodotti (nome, quantita, scaffale, codice_a_barre, soglia, prezzo_acquisto, prezzo_vendita, immagine) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO prodotti (nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
             insertStmt.setString(1, prodotto.getNome());
             insertStmt.setInt(2, prodotto.getQuantitaProdotto().getQuantita());

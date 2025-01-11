@@ -84,7 +84,7 @@ public class ProductTable {
 
     private TableColumn<GestisciProdottiPage.Product, String> createBarcodeColumn() {
         TableColumn<GestisciProdottiPage.Product, String> column = new TableColumn<>("Codice a Barre");
-        column.setCellValueFactory(new PropertyValueFactory<>("codice_a_barre"));
+        column.setCellValueFactory(new PropertyValueFactory<>("codiceAbarre"));
         return column;
     }
 
@@ -96,13 +96,13 @@ public class ProductTable {
 
     private TableColumn<GestisciProdottiPage.Product, Double> createPurchasePriceColumn() {
         TableColumn<GestisciProdottiPage.Product, Double> column = new TableColumn<>("Prezzo Acquisto");
-        column.setCellValueFactory(new PropertyValueFactory<>("prezzo_acquisto"));
+        column.setCellValueFactory(new PropertyValueFactory<>("prezzoAcquisto"));
         return column;
     }
 
     private TableColumn<GestisciProdottiPage.Product, Double> createSalePriceColumn() {
         TableColumn<GestisciProdottiPage.Product, Double> column = new TableColumn<>("Prezzo Vendita");
-        column.setCellValueFactory(new PropertyValueFactory<>("prezzo_vendita"));
+        column.setCellValueFactory(new PropertyValueFactory<>("prezzoVendita"));
         return column;
     }
 
