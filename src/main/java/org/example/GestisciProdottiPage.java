@@ -72,16 +72,14 @@ public class GestisciProdottiPage {
                     stmt.setString(1, categoria);
                     try (ResultSet rs = stmt.executeQuery()) {
                         while (rs.next()) {
-                            Product product = new Product(
-                                    rs.getString("nome"),
-                                    rs.getInt(QUANTITA),
-                                    rs.getString(SCAFFALE),
-                                    rs.getString(CODICE_A_BARRE),
-                                    rs.getInt(SOGLIA),
-                                    rs.getDouble(PREZZO_ACQUISTO),
-                                    rs.getDouble(PREZZO_VENDITA),
-                                    rs.getBytes("immagine")
-                            );
+                            Product product = new Product.Builder(rs.getString("nome"), rs.getInt(QUANTITA))
+                                    .scaffale(rs.getString(SCAFFALE))
+                                    .codiceAbarre(rs.getString(CODICE_A_BARRE))
+                                    .soglia(rs.getInt(SOGLIA))
+                                    .prezzoAcquisto(rs.getDouble(PREZZO_ACQUISTO))
+                                    .prezzoVendita(rs.getDouble(PREZZO_VENDITA))
+                                    .immagine(rs.getBytes("immagine"))
+                                    .build();
                             table.getItems().add(product);
                         }
                     }
@@ -91,7 +89,14 @@ public class GestisciProdottiPage {
             }
         } else {
             table.getItems().clear();
-            table.getItems().add(new Product("Nessun dato disponibile", 0, "-", "-", 0, 0.0, 0.0, null));
+            table.getItems().add(new Product.Builder("Nessun dato disponibile", 0)
+                    .scaffale("-")
+                    .codiceAbarre("-")
+                    .soglia(0)
+                    .prezzoAcquisto(0.0)
+                    .prezzoVendita(0.0)
+                    .immagine(null)
+                    .build());
         }
     }
 
@@ -108,16 +113,14 @@ public class GestisciProdottiPage {
                     stmt.setString(4, categoria);
                     try (ResultSet rs = stmt.executeQuery()) {
                         while (rs.next()) {
-                            Product product = new Product(
-                                    rs.getString("nome"),
-                                    rs.getInt(QUANTITA),
-                                    rs.getString(SCAFFALE),
-                                    rs.getString(CODICE_A_BARRE),
-                                    rs.getInt(SOGLIA),
-                                    rs.getDouble(PREZZO_ACQUISTO),
-                                    rs.getDouble(PREZZO_VENDITA),
-                                    rs.getBytes("immagine")
-                            );
+                            Product product = new Product.Builder(rs.getString("nome"), rs.getInt(QUANTITA))
+                                    .scaffale(rs.getString(SCAFFALE))
+                                    .codiceAbarre(rs.getString(CODICE_A_BARRE))
+                                    .soglia(rs.getInt(SOGLIA))
+                                    .prezzoAcquisto(rs.getDouble(PREZZO_ACQUISTO))
+                                    .prezzoVendita(rs.getDouble(PREZZO_VENDITA))
+                                    .immagine(rs.getBytes("immagine"))
+                                    .build();
                             table.getItems().add(product);
                         }
                     }
@@ -126,7 +129,14 @@ public class GestisciProdottiPage {
                 e.printStackTrace();
             }
         } else {
-            table.getItems().add(new Product("Nessun dato trovato", 0, "-", "-", 0, 0.0, 0.0, null));
+            table.getItems().add(new Product.Builder("Nessun dato trovato", 0)
+                    .scaffale("-")
+                    .codiceAbarre("-")
+                    .soglia(0)
+                    .prezzoAcquisto(0.0)
+                    .prezzoVendita(0.0)
+                    .immagine(null)
+                    .build());
         }
     }
 
@@ -241,15 +251,65 @@ public class GestisciProdottiPage {
         private final SimpleDoubleProperty prezzoVendita;
         private final SimpleObjectProperty<byte[]> immagine;
 
-        public Product(String nome, int quantita, String scaffale, String codiceAbarre, int soglia, double prezzoAcquisto, double prezzoVendita, byte[] immagine) {
-            this.nome = new SimpleStringProperty(nome);
-            this.quantita = new SimpleIntegerProperty(quantita);
-            this.scaffale = new SimpleStringProperty(scaffale);
-            this.codiceAbarre = new SimpleStringProperty(codiceAbarre);
-            this.soglia = new SimpleIntegerProperty(soglia);
-            this.prezzoAcquisto = new SimpleDoubleProperty(prezzoAcquisto);
-            this.prezzoVendita = new SimpleDoubleProperty(prezzoVendita);
-            this.immagine = new SimpleObjectProperty<>(immagine);
+        private Product(Builder builder) {
+            this.nome = builder.nome;
+            this.quantita = builder.quantita;
+            this.scaffale = builder.scaffale;
+            this.codiceAbarre = builder.codiceAbarre;
+            this.soglia = builder.soglia;
+            this.prezzoAcquisto = builder.prezzoAcquisto;
+            this.prezzoVendita = builder.prezzoVendita;
+            this.immagine = builder.immagine;
+        }
+
+        public static class Builder {
+            private SimpleStringProperty nome;
+            private SimpleIntegerProperty quantita;
+            private SimpleStringProperty scaffale;
+            private SimpleStringProperty codiceAbarre;
+            private SimpleIntegerProperty soglia;
+            private SimpleDoubleProperty prezzoAcquisto;
+            private SimpleDoubleProperty prezzoVendita;
+            private SimpleObjectProperty<byte[]> immagine;
+
+            public Builder(String nome, int quantita) {
+                this.nome = new SimpleStringProperty(nome);
+                this.quantita = new SimpleIntegerProperty(quantita);
+            }
+
+            public Builder scaffale(String scaffale) {
+                this.scaffale = new SimpleStringProperty(scaffale);
+                return this;
+            }
+
+            public Builder codiceAbarre(String codiceAbarre) {
+                this.codiceAbarre = new SimpleStringProperty(codiceAbarre);
+                return this;
+            }
+
+            public Builder soglia(int soglia) {
+                this.soglia = new SimpleIntegerProperty(soglia);
+                return this;
+            }
+
+            public Builder prezzoAcquisto(double prezzoAcquisto) {
+                this.prezzoAcquisto = new SimpleDoubleProperty(prezzoAcquisto);
+                return this;
+            }
+
+            public Builder prezzoVendita(double prezzoVendita) {
+                this.prezzoVendita = new SimpleDoubleProperty(prezzoVendita);
+                return this;
+            }
+
+            public Builder immagine(byte[] immagine) {
+                this.immagine = new SimpleObjectProperty<>(immagine);
+                return this;
+            }
+
+            public Product build() {
+                return new Product(this);
+            }
         }
 
         public String getNome() {
