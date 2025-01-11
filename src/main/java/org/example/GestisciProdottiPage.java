@@ -148,7 +148,7 @@ public class GestisciProdottiPage {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
                 String query = "DELETE FROM prodotti WHERE codice_a_barre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                    stmt.setString(1, product.getCodice_a_barre());
+                    stmt.setString(1, product.getCodiceAbarre());
                     stmt.executeUpdate();
                     // Refresh table after deletion
                     refreshTable();  // This reloads the data after deletion
@@ -164,10 +164,10 @@ public class GestisciProdottiPage {
         TextField nameField = new TextField(product.getNome());
         TextField quantityField = new TextField(String.valueOf(product.getQuantita()));
         TextField shelfField = new TextField(product.getScaffale());
-        TextField barcodeField = new TextField(product.getCodice_a_barre());
+        TextField barcodeField = new TextField(product.getCodiceAbarre());
         TextField thresholdField = new TextField(String.valueOf(product.getSoglia()));
-        TextField purchasePriceField = new TextField(String.valueOf(product.getPrezzo_acquisto()));
-        TextField salePriceField = new TextField(String.valueOf(product.getPrezzo_vendita()));
+        TextField purchasePriceField = new TextField(String.valueOf(product.getPrezzoAcquisto()));
+        TextField salePriceField = new TextField(String.valueOf(product.getPrezzoVendita()));
 
         // Dialogo per la modifica
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -200,10 +200,10 @@ public class GestisciProdottiPage {
                 product.setNome(nameField.getText());
                 product.setQuantita(Integer.parseInt(quantityField.getText()));
                 product.setScaffale(shelfField.getText());
-                product.setCodice_a_barre(barcodeField.getText());
+                product.setCodiceAbarre(barcodeField.getText());
                 product.setSoglia(Integer.parseInt(thresholdField.getText()));
-                product.setPrezzo_acquisto(Double.parseDouble(purchasePriceField.getText()));
-                product.setPrezzo_vendita(Double.parseDouble(salePriceField.getText()));
+                product.setPrezzoAcquisto(Double.parseDouble(purchasePriceField.getText()));
+                product.setPrezzoVendita(Double.parseDouble(salePriceField.getText()));
                 saveProductToDatabase(product);
             }
             return null;
@@ -221,11 +221,11 @@ public class GestisciProdottiPage {
                     stmt.setString(1, product.getNome());
                     stmt.setInt(2, product.getQuantita());
                     stmt.setString(3, product.getScaffale());
-                    stmt.setString(4, product.getCodice_a_barre());
+                    stmt.setString(4, product.getCodiceAbarre());
                     stmt.setInt(5, product.getSoglia());
-                    stmt.setDouble(6, product.getPrezzo_acquisto());
-                    stmt.setDouble(7, product.getPrezzo_vendita());
-                    stmt.setString(8, product.getCodice_a_barre());
+                    stmt.setDouble(6, product.getPrezzoAcquisto());
+                    stmt.setDouble(7, product.getPrezzoVendita());
+                    stmt.setString(8, product.getCodiceAbarre());
                     stmt.executeUpdate();
                     refreshTable();  // Ricarica la tabella dopo la modifica
                 }
@@ -247,20 +247,20 @@ public class GestisciProdottiPage {
         private final SimpleStringProperty nome;
         private final SimpleIntegerProperty quantita;
         private final SimpleStringProperty scaffale;
-        private final SimpleStringProperty codice_a_barre;
+        private final SimpleStringProperty codiceAbarre;
         private final SimpleIntegerProperty soglia;
-        private final SimpleDoubleProperty prezzo_acquisto;
-        private final SimpleDoubleProperty prezzo_vendita;
+        private final SimpleDoubleProperty prezzoAcquisto;
+        private final SimpleDoubleProperty prezzoVendita;
         private final SimpleObjectProperty<byte[]> immagine;
 
         public Product(String nome, int quantita, String scaffale, String codice_a_barre, int soglia, double prezzo_acquisto, double prezzo_vendita, byte[] immagine) {
             this.nome = new SimpleStringProperty(nome);
             this.quantita = new SimpleIntegerProperty(quantita);
             this.scaffale = new SimpleStringProperty(scaffale);
-            this.codice_a_barre = new SimpleStringProperty(codice_a_barre);
+            this.codiceAbarre = new SimpleStringProperty(codice_a_barre);
             this.soglia = new SimpleIntegerProperty(soglia);
-            this.prezzo_acquisto = new SimpleDoubleProperty(prezzo_acquisto);
-            this.prezzo_vendita = new SimpleDoubleProperty(prezzo_vendita);
+            this.prezzoAcquisto = new SimpleDoubleProperty(prezzo_acquisto);
+            this.prezzoVendita = new SimpleDoubleProperty(prezzo_vendita);
             this.immagine = new SimpleObjectProperty<>(immagine);
         }
 
@@ -288,12 +288,12 @@ public class GestisciProdottiPage {
             this.scaffale.set(scaffale);
         }
 
-        public String getCodice_a_barre() {
-            return codice_a_barre.get();
+        public String getCodiceAbarre() {
+            return codiceAbarre.get();
         }
 
-        public void setCodice_a_barre(String codice_a_barre) {
-            this.codice_a_barre.set(codice_a_barre);
+        public void setCodiceAbarre(String codiceAbarre) {
+            this.codiceAbarre.set(codiceAbarre);
         }
 
         public int getSoglia() {
@@ -304,20 +304,20 @@ public class GestisciProdottiPage {
             this.soglia.set(soglia);
         }
 
-        public double getPrezzo_acquisto() {
-            return prezzo_acquisto.get();
+        public double getPrezzoAcquisto() {
+            return prezzoAcquisto.get();
         }
 
-        public void setPrezzo_acquisto(double prezzo_acquisto) {
-            this.prezzo_acquisto.set(prezzo_acquisto);
+        public void setPrezzoAcquisto(double prezzoAcquisto) {
+            this.prezzoAcquisto.set(prezzoAcquisto);
         }
 
-        public double getPrezzo_vendita() {
-            return prezzo_vendita.get();
+        public double getPrezzoVendita() {
+            return prezzoVendita.get();
         }
 
-        public void setPrezzo_vendita(double prezzo_vendita) {
-            this.prezzo_vendita.set(prezzo_vendita);
+        public void setPrezzoVendita(double prezzoVendita) {
+            this.prezzoVendita.set(prezzoVendita);
         }
 
         public byte[] getImmagine() {
