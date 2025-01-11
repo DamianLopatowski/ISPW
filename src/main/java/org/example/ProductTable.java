@@ -9,12 +9,11 @@ import javafx.scene.image.ImageView;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 
-
 public class ProductTable {
 
     // Costruttore pubblico
     public ProductTable() {
-        // Inizializzazione di eventuali variabili o altre azioni, se necessarie.
+        // Non è più necessario inizializzare le icone qui
     }
 
     public TableView<GestisciProdottiPage.Product> createProductTable(GestisciProdottiPage page) {
@@ -198,5 +197,4 @@ public class ProductTable {
             return null;
         }
     }
-
 }
