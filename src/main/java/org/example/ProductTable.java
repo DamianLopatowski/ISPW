@@ -5,19 +5,17 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.logging.Logger;
 
 public class ProductTable {
 
-    // Inizializziamo i campi dell'icona per il cestino e la penna nel costruttore
     private final Image trashIconImage;
     private final Image penIconImage;
+    private static final Logger logger = Logger.getLogger(ProductTable.class.getName()); // Aggiunto il logger
 
-    // Costruttore pubblico
     public ProductTable() {
-        // Carichiamo le immagini una sola volta per ottimizzare le performance
         this.trashIconImage = loadImage("src/main/java/org/example/immagini/trash-icon.jpg");
         this.penIconImage = loadImage("src/main/java/org/example/immagini/pen-icon.jpg");
     }
@@ -114,16 +112,15 @@ public class ProductTable {
             @Override
             public void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    // Usa l'icona del cestino in tutte le celle
+                if (!empty) {
                     ImageView trashIcon = new ImageView(trashIconImage);
                     trashIcon.setFitWidth(50);
                     trashIcon.setFitHeight(50);
                     trashIcon.setPreserveRatio(true);
                     setGraphic(trashIcon);
                     setOnMouseClicked(event -> handleDeleteClick(event, page));
+                } else {
+                    setGraphic(null);
                 }
             }
         });
@@ -136,16 +133,15 @@ public class ProductTable {
             @Override
             public void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    // Usa l'icona della penna in tutte le celle
+                if (!empty) {
                     ImageView penIcon = new ImageView(penIconImage);
                     penIcon.setFitWidth(50);
                     penIcon.setFitHeight(50);
                     penIcon.setPreserveRatio(true);
                     setGraphic(penIcon);
                     setOnMouseClicked(event -> handleEditClick(event, page));
+                } else {
+                    setGraphic(null);
                 }
             }
         });
@@ -153,47 +149,44 @@ public class ProductTable {
     }
 
     private void handleRowClick(javafx.event.Event event, TableRow<GestisciProdottiPage.Product> row) {
-        if (!row.isEmpty()) {
-            if (event.getTarget() instanceof TableCell) {
-                TableCell<GestisciProdottiPage.Product, ?> cell = (TableCell<GestisciProdottiPage.Product, ?>) event.getTarget();
-                if (cell.getTableColumn().getText().equals("Immagine")) {
-                    GestisciProdottiPage.Product product = row.getItem();
-                    ImageViewWindow.openImageInNewWindow(product.getImmagine());
-                }
+        if (!row.isEmpty() && event.getTarget() instanceof TableCell) {
+            TableCell<GestisciProdottiPage.Product, ?> cell = (TableCell<GestisciProdottiPage.Product, ?>) event.getTarget();
+            if (cell.getTableColumn().getText().equals("Immagine")) {
+                GestisciProdottiPage.Product product = row.getItem();
+                ImageViewWindow.openImageInNewWindow(product.getImmagine());
             }
         }
     }
 
     private void handleDeleteClick(javafx.event.Event event, GestisciProdottiPage page) {
         TableCell<GestisciProdottiPage.Product, Void> cell = (TableCell<GestisciProdottiPage.Product, Void>) event.getSource();
-        GestisciProdottiPage.Product product = cell.getTableRow().getItem(); // Otteniamo il prodotto dalla riga
-        // Finestra di conferma per la cancellazione
+        GestisciProdottiPage.Product product = cell.getTableRow().getItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Conferma Eliminazione");
         alert.setHeaderText("Sei sicuro di voler eliminare questo prodotto?");
         alert.setContentText(product.getNome());
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                page.deleteProductFromDatabase(product); // Chiamata al metodo di cancellazione
-                page.refreshTable(); // Ricarichiamo la tabella dopo la cancellazione
+                page.deleteProductFromDatabase(product);
+                page.refreshTable();
             }
         });
     }
 
     private void handleEditClick(javafx.event.Event event, GestisciProdottiPage page) {
         TableCell<GestisciProdottiPage.Product, Void> cell = (TableCell<GestisciProdottiPage.Product, Void>) event.getSource();
-        GestisciProdottiPage.Product product = cell.getTableRow().getItem(); // Otteniamo il prodotto dalla riga
-        page.openEditProductDialog(product); // Apriamo il dialogo di modifica
-        page.refreshTable(); // Ricarichiamo la tabella dopo la modifica
+        GestisciProdottiPage.Product product = cell.getTableRow().getItem();
+        page.openEditProductDialog(product);
+        page.refreshTable();
     }
 
-    // Load image from resources
+    // Carica l'immagine dai file di risorse
     public static Image loadImage(String path) {
         File file = new File(path);
         if (file.exists()) {
             return new Image(file.toURI().toString());
         } else {
-            System.out.println("Immagine non trovata: " + path);
+            logger.warning("Immagine non trovata: " + path); // Sostituito System.out con logger
             return null;
         }
     }
