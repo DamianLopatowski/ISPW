@@ -10,23 +10,23 @@ import java.sql.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import javafx.stage.FileChooser;
 
 public class GestionePage {
 
     public void start(Stage primaryStage) {
-        // Declare primaryStage as final to avoid the lambda expression error
         final Stage finalPrimaryStage = primaryStage;
 
-        // Create the back button to return to the product management page
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
             GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-            gestisciProdottiPage.start(finalPrimaryStage); // Use the final variable here
+            gestisciProdottiPage.start(finalPrimaryStage);
         });
 
-        // Input fields for product details
         TextField nomeField = new TextField();
         nomeField.setPromptText("Nome prodotto");
 
@@ -48,21 +48,23 @@ public class GestionePage {
         TextField prezzoVenditaField = new TextField();
         prezzoVenditaField.setPromptText("Prezzo Vendita");
 
-        // Declare imageFiles as final
         final List<File>[] imageFiles = new List[1];
 
-        // For handling images
         Button uploadButton = new Button("Carica Immagine");
+        Label fileLabel = new Label();
+
         uploadButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
             imageFiles[0] = fileChooser.showOpenMultipleDialog(finalPrimaryStage);
+
+            if (imageFiles[0] != null && !imageFiles[0].isEmpty()) {
+                fileLabel.setText("File aggiunto: " + imageFiles[0].get(0).getName());
+            }
         });
 
-        // The add product button
         Button aggiungiButton = new Button("Aggiungi Prodotto");
         aggiungiButton.setOnAction(e -> {
-            // Validate the input
             if (nomeField.getText().isEmpty() && codiceBarreField.getText().isEmpty()) {
                 showAlert("Errore", "Devi inserire nome o codice a barre!");
                 return;
@@ -76,13 +78,13 @@ public class GestionePage {
 
             byte[] imageBytes = null;
             if (imageFiles[0] != null && !imageFiles[0].isEmpty()) {
-                // Convert the selected image to a byte array (BLOB)
                 try {
-                    File file = imageFiles[0].get(0); // Get the first selected file
-                    FileInputStream fis = new FileInputStream(file);
-                    imageBytes = new byte[(int) file.length()];
-                    fis.read(imageBytes);
-                    fis.close();
+                    File file = imageFiles[0].get(0);
+                    BufferedImage bufferedImage = ImageIO.read(file);
+
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    ImageIO.write(bufferedImage, "PNG", byteArrayOutputStream);
+                    imageBytes = byteArrayOutputStream.toByteArray();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -95,17 +97,15 @@ public class GestionePage {
                     stmt.setString(2, codiceBarreField.getText());
                     try (ResultSet rs = stmt.executeQuery()) {
                         if (rs.next()) {
-                            // If the product exists, update the quantity and image
                             String updateQuery = "UPDATE prodotti SET quantita = quantita + ?, immagine = ? WHERE nome = ? OR codice_a_barre = ?";
                             try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
                                 updateStmt.setInt(1, Integer.parseInt(quantitaField.getText()));
-                                updateStmt.setBytes(2, imageBytes); // Set the BLOB (image)
+                                updateStmt.setBytes(2, imageBytes);
                                 updateStmt.setString(3, nomeField.getText());
                                 updateStmt.setString(4, codiceBarreField.getText());
                                 updateStmt.executeUpdate();
                             }
                         } else {
-                            // Insert new product
                             String insertQuery = "INSERT INTO prodotti (nome, quantita, scaffale, codice_a_barre, soglia, prezzo_acquisto, prezzo_vendita, immagine) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                             try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
                                 insertStmt.setString(1, nomeField.getText());
@@ -115,7 +115,7 @@ public class GestionePage {
                                 insertStmt.setInt(5, Integer.parseInt(sogliaField.getText()));
                                 insertStmt.setDouble(6, Double.parseDouble(prezzoAcquistoField.getText()));
                                 insertStmt.setDouble(7, Double.parseDouble(prezzoVenditaField.getText()));
-                                insertStmt.setBytes(8, imageBytes); // Set the BLOB (image)
+                                insertStmt.setBytes(8, imageBytes);
                                 insertStmt.executeUpdate();
                             }
                         }
@@ -126,13 +126,12 @@ public class GestionePage {
             }
         });
 
-        // Layout the page
-        VBox vbox = new VBox(15, backButton, nomeField, scaffaleField, codiceBarreField, quantitaField, sogliaField, prezzoAcquistoField, prezzoVenditaField, uploadButton, aggiungiButton);
+        VBox vbox = new VBox(15, backButton, nomeField, scaffaleField, codiceBarreField, quantitaField, sogliaField, prezzoAcquistoField, prezzoVenditaField, uploadButton, fileLabel, aggiungiButton);
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setStyle("-fx-padding: 20;");
 
         Scene scene = new Scene(vbox, 500, 400);
-        finalPrimaryStage.setScene(scene); // Use the final variable here
+        finalPrimaryStage.setScene(scene);
         finalPrimaryStage.show();
     }
 
