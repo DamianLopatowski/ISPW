@@ -136,4 +136,14 @@ public class LoginPage extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    // Getter per isOffline
+    public static boolean isOffline() {
+        return isOffline;
+    }
+
+    // Setter per isOffline
+    private static void setOffline(boolean offline) {
+        isOffline = offline;
+    }
 }

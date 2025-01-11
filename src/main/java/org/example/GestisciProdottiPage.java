@@ -41,10 +41,9 @@ public class GestisciProdottiPage {
         // Creazione di un'istanza di ProductTable
         ProductTable productTable = new ProductTable();
 
-// Utilizzare l'istanza per creare le tabelle
+        // Utilizzare l'istanza per creare le tabelle
         magazzinoTable = productTable.createProductTable(this);
         negozioTable = productTable.createProductTable(this);
-
 
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
@@ -68,10 +67,8 @@ public class GestisciProdottiPage {
         primaryStage.show();
     }
 
-
-
     private void loadProducts(TableView<Product> table, String categoria) {
-        if (!LoginPage.isOffline && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
                 String query = "SELECT * FROM prodotti WHERE categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -104,7 +101,7 @@ public class GestisciProdottiPage {
 
     private void searchProducts(String searchTerm, TableView<Product> table, String categoria) {
         table.getItems().clear();
-        if (!LoginPage.isOffline && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
                 String query = "SELECT * FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codiceAbarre LIKE ?) AND categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -142,15 +139,13 @@ public class GestisciProdottiPage {
         gestionePage.start(primaryStage);
     }
 
-    // Elimina il prodotto dal database
     public void deleteProductFromDatabase(Product product) {
-        if (!LoginPage.isOffline && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
                 String query = "DELETE FROM prodotti WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, product.getCodiceAbarre());
                     stmt.executeUpdate();
-                    // Refresh table after deletion
                     refreshTable();  // This reloads the data after deletion
                 }
             } catch (SQLException e) {
@@ -159,7 +154,6 @@ public class GestisciProdottiPage {
         }
     }
 
-    // Apre il dialogo per modificare il prodotto
     public void openEditProductDialog(Product product) {
         TextField nameField = new TextField(product.getNome());
         TextField quantityField = new TextField(String.valueOf(product.getQuantita()));
@@ -212,9 +206,8 @@ public class GestisciProdottiPage {
         dialog.showAndWait();
     }
 
-    // Metodo per salvare le modifiche nel database
     private void saveProductToDatabase(Product product) {
-        if (!LoginPage.isOffline && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {
                 String query = "UPDATE prodotti SET nome = ?, quantita = ?, scaffale = ?, codiceAbarre = ?, soglia = ?, prezzoAcquisto = ?, prezzoVendita = ? WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -235,7 +228,6 @@ public class GestisciProdottiPage {
         }
     }
 
-    // Ricarica la tabella dei prodotti dopo modifiche o eliminazioni
     public void refreshTable() {
         magazzinoTable.getItems().clear();
         negozioTable.getItems().clear();
