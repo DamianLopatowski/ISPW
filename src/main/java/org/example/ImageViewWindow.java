@@ -9,6 +9,11 @@ import java.io.ByteArrayInputStream;
 
 public class ImageViewWindow {
 
+    // Private constructor to prevent instantiation
+    private ImageViewWindow() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated.");
+    }
+
     public static void openImageInNewWindow(byte[] imageBytes) {
         if (imageBytes != null) {
             Stage imageStage = new Stage();
