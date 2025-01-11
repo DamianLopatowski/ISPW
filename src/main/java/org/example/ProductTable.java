@@ -12,10 +12,6 @@ import java.io.File;
 
 public class ProductTable {
 
-    // Inizializzazione delle immagini come campi della classe
-    private final ImageView trashIcon = new ImageView(loadImage("src/main/java/org/example/immagini/trash-icon.jpg"));
-    private final ImageView penIcon = new ImageView(loadImage("src/main/java/org/example/immagini/pen-icon.jpg"));
-
     // Costruttore pubblico
     public ProductTable() {
         // Inizializzazione di eventuali variabili o altre azioni, se necessarie.
@@ -110,6 +106,8 @@ public class ProductTable {
     private TableColumn<GestisciProdottiPage.Product, Void> createDeleteColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Azioni");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
+            private final ImageView trashIcon = new ImageView(loadImage("src/main/java/org/example/immagini/trash-icon.jpg"));
+
             {
                 trashIcon.setFitWidth(50);
                 trashIcon.setFitHeight(50);
@@ -122,7 +120,7 @@ public class ProductTable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(trashIcon);  // Uso dell'icona già inizializzata
+                    setGraphic(trashIcon);
                     setOnMouseClicked(event -> handleDeleteClick(event, page));
                 }
             }
@@ -133,6 +131,8 @@ public class ProductTable {
     private TableColumn<GestisciProdottiPage.Product, Void> createEditColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Modifica");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
+            private final ImageView penIcon = new ImageView(loadImage("src/main/java/org/example/immagini/pen-icon.jpg"));
+
             {
                 penIcon.setFitWidth(50);
                 penIcon.setFitHeight(50);
@@ -145,7 +145,7 @@ public class ProductTable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(penIcon);  // Uso dell'icona già inizializzata
+                    setGraphic(penIcon);
                     setOnMouseClicked(event -> handleEditClick(event, page));
                 }
             }
@@ -198,4 +198,5 @@ public class ProductTable {
             return null;
         }
     }
+
 }
