@@ -46,32 +46,7 @@ public class LoginPage extends Application {
         }
 
         // Imposta l'azione di login
-        loginButton.setOnAction(e -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-
-            // Verifica la modalità di login selezionata
-            if (onlineLogin.isSelected()) {
-                if (InternetCheck.isConnected()) {
-                    if (DatabaseUtils.verifyCredentials(username, password)) {
-                        setOffline(false);  // Modalità online
-                        showMainPage(primaryStage);
-                    } else {
-                        showAlert("Login fallito", "Credenziali non corrette.");
-                    }
-                } else {
-                    showAlert("Connessione non disponibile", "Internet non disponibile per il login con il database.");
-                }
-            } else {
-                // Modalità offline
-                setOffline(true);  // Modalità offline
-                if ("admin".equals(username) && "password123".equals(password)) {
-                    showMainPage(primaryStage);
-                } else {
-                    showAlert("Login fallito", "Credenziali non corrette.");
-                }
-            }
-        });
+        loginButton.setOnAction(e -> handleLogin(usernameField.getText(), passwordField.getText(), onlineLogin.isSelected(), primaryStage));
 
         // Layout migliorato
         VBox layout = new VBox(15,
@@ -87,6 +62,37 @@ public class LoginPage extends Application {
         layout.setStyle("-fx-background-color: #f2f2f2; -fx-padding: 20;");
 
         return new Scene(layout, 400, 300);
+    }
+
+    private void handleLogin(String username, String password, boolean isOnlineLogin, Stage primaryStage) {
+        if (isOnlineLogin) {
+            handleOnlineLogin(username, password, primaryStage);
+        } else {
+            handleOfflineLogin(username, password, primaryStage);
+        }
+    }
+
+    private void handleOnlineLogin(String username, String password, Stage primaryStage) {
+        if (!InternetCheck.isConnected()) {
+            showAlert("Connessione non disponibile", "Internet non disponibile per il login con il database.");
+            return;
+        }
+
+        if (DatabaseUtils.verifyCredentials(username, password)) {
+            setOffline(false);  // Modalità online
+            showMainPage(primaryStage);
+        } else {
+            showAlert("Login fallito", "Credenziali non corrette.");
+        }
+    }
+
+    private void handleOfflineLogin(String username, String password, Stage primaryStage) {
+        setOffline(true);  // Modalità offline
+        if ("admin".equals(username) && "password123".equals(password)) {
+            showMainPage(primaryStage);
+        } else {
+            showAlert("Login fallito", "Credenziali non corrette.");
+        }
     }
 
     public void showMainPage(Stage primaryStage) {
