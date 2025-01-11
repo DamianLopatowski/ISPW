@@ -7,7 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.File;
+
 
 public class ProductTable {
 
@@ -105,11 +106,11 @@ public class ProductTable {
     private TableColumn<GestisciProdottiPage.Product, Void> createDeleteColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Azioni");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
-            private final ImageView trashIcon = new ImageView(loadImage("/icons/trash-icon.png"));
+            private final ImageView trashIcon = new ImageView(loadImage("src/main/java/org/example/immagini/trash-icon.jpg"));
 
             {
-                trashIcon.setFitWidth(20);
-                trashIcon.setFitHeight(20);
+                trashIcon.setFitWidth(50);
+                trashIcon.setFitHeight(50);
                 trashIcon.setPreserveRatio(true);
             }
 
@@ -130,11 +131,11 @@ public class ProductTable {
     private TableColumn<GestisciProdottiPage.Product, Void> createEditColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Modifica");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
-            private final ImageView penIcon = new ImageView(loadImage("/icons/pen-icon.png"));
+            private final ImageView penIcon = new ImageView(loadImage("src/main/java/org/example/immagini/pen-icon.jpg"));
 
             {
-                penIcon.setFitWidth(20);
-                penIcon.setFitHeight(20);
+                penIcon.setFitWidth(50);
+                penIcon.setFitHeight(50);
                 penIcon.setPreserveRatio(true);
             }
 
@@ -189,12 +190,13 @@ public class ProductTable {
 
     // Load image from resources
     public static Image loadImage(String path) {
-        InputStream inputStream = ProductTable.class.getResourceAsStream(path);
-        if (inputStream != null) {
-            return new Image(inputStream);
+        File file = new File(path);
+        if (file.exists()) {
+            return new Image(file.toURI().toString());
         } else {
             System.out.println("Immagine non trovata: " + path);
             return null;
         }
     }
+
 }
