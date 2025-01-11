@@ -12,7 +12,9 @@ import java.io.InputStream;
 public class ProductTable {
 
     // Costruttore pubblico
-    public ProductTable() {}
+    public ProductTable() {
+        // Inizializzazione di eventuali variabili o altre azioni, se necessarie.
+    }
 
     public TableView<GestisciProdottiPage.Product> createProductTable(GestisciProdottiPage page) {
         TableView<GestisciProdottiPage.Product> table = new TableView<>();
