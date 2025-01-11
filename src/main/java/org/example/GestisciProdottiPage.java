@@ -23,6 +23,8 @@ public class GestisciProdottiPage {
     private TableView<Product> magazzinoTable;
     private TableView<Product> negozioTable;
 
+    private static final String MAGAZZINO = "Magazzino";
+
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
         backButton.setOnAction(e -> {
@@ -40,16 +42,16 @@ public class GestisciProdottiPage {
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
 
-        loadProducts(magazzinoTable, "Magazzino");
+        loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, "Negozio");
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchProducts(newValue, magazzinoTable, "Magazzino");
+            searchProducts(newValue, magazzinoTable, MAGAZZINO);
             searchProducts(newValue, negozioTable, "Negozio");
         });
 
         VBox vbox = new VBox(15, backButton, gestioneButton, searchField,
-                new Label("Magazzino"), magazzinoTable,
+                new Label(MAGAZZINO), magazzinoTable,
                 new Label("Negozio"), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setStyle("-fx-padding: 20;");
@@ -369,7 +371,7 @@ public class GestisciProdottiPage {
     private void refreshTable() {
         magazzinoTable.getItems().clear();
         negozioTable.getItems().clear();
-        loadProducts(magazzinoTable, "Magazzino");  // Ricarica i prodotti per la tabella Magazzino
+        loadProducts(magazzinoTable, MAGAZZINO);  // Ricarica i prodotti per la tabella Magazzino
         loadProducts(negozioTable, "Negozio");     // Ricarica i prodotti per la tabella Negozio
     }
 
