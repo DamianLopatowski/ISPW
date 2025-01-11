@@ -180,14 +180,14 @@ public class ProductTable {
         page.refreshTable();
     }
 
-    // Carica l'immagine dai file di risorse
     public static Image loadImage(String path) {
         File file = new File(path);
         if (file.exists()) {
             return new Image(file.toURI().toString());
         } else {
-            logger.warning("Immagine non trovata: " + path); // Sostituito System.out con logger
+            logger.warning(() -> String.format("Immagine non trovata: %s", path)); // Usato il logger con la formattazione
             return null;
         }
     }
+
 }
