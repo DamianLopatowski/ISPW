@@ -11,9 +11,15 @@ import java.io.File;
 
 public class ProductTable {
 
+    // Inizializziamo i campi dell'icona per il cestino e la penna nel costruttore
+    private final Image trashIconImage;
+    private final Image penIconImage;
+
     // Costruttore pubblico
     public ProductTable() {
-        // Non è più necessario inizializzare le icone qui
+        // Carichiamo le immagini una sola volta per ottimizzare le performance
+        this.trashIconImage = loadImage("src/main/java/org/example/immagini/trash-icon.jpg");
+        this.penIconImage = loadImage("src/main/java/org/example/immagini/pen-icon.jpg");
     }
 
     public TableView<GestisciProdottiPage.Product> createProductTable(GestisciProdottiPage page) {
@@ -105,20 +111,17 @@ public class ProductTable {
     private TableColumn<GestisciProdottiPage.Product, Void> createDeleteColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Azioni");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
-            private final ImageView trashIcon = new ImageView(loadImage("src/main/java/org/example/immagini/trash-icon.jpg"));
-
-            {
-                trashIcon.setFitWidth(50);
-                trashIcon.setFitHeight(50);
-                trashIcon.setPreserveRatio(true);
-            }
-
             @Override
             public void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
                 } else {
+                    // Usa l'icona del cestino in tutte le celle
+                    ImageView trashIcon = new ImageView(trashIconImage);
+                    trashIcon.setFitWidth(50);
+                    trashIcon.setFitHeight(50);
+                    trashIcon.setPreserveRatio(true);
                     setGraphic(trashIcon);
                     setOnMouseClicked(event -> handleDeleteClick(event, page));
                 }
@@ -130,20 +133,17 @@ public class ProductTable {
     private TableColumn<GestisciProdottiPage.Product, Void> createEditColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Modifica");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
-            private final ImageView penIcon = new ImageView(loadImage("src/main/java/org/example/immagini/pen-icon.jpg"));
-
-            {
-                penIcon.setFitWidth(50);
-                penIcon.setFitHeight(50);
-                penIcon.setPreserveRatio(true);
-            }
-
             @Override
             public void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
                 } else {
+                    // Usa l'icona della penna in tutte le celle
+                    ImageView penIcon = new ImageView(penIconImage);
+                    penIcon.setFitWidth(50);
+                    penIcon.setFitHeight(50);
+                    penIcon.setPreserveRatio(true);
                     setGraphic(penIcon);
                     setOnMouseClicked(event -> handleEditClick(event, page));
                 }
