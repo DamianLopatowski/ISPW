@@ -11,6 +11,12 @@ public class LoginPage extends Application {
 
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
+    // Variabili di classe per i componenti
+    private TextField usernameField;
+    private PasswordField passwordField;
+    private Button loginButton;
+    private RadioButton onlineLogin;
+
     public static void main(String[] args) {
         // Avvia l'applicazione JavaFX
         launch(args);
@@ -27,13 +33,13 @@ public class LoginPage extends Application {
 
     public Scene createLoginScene(Stage primaryStage) {
         // Crea i componenti dell'interfaccia di login
-        TextField usernameField = new TextField();
-        PasswordField passwordField = new PasswordField();
-        Button loginButton = new Button("Login");
+        usernameField = new TextField();
+        passwordField = new PasswordField();
+        loginButton = new Button("Login");
 
         // Crea i RadioButton per scegliere il tipo di login
         ToggleGroup loginTypeGroup = new ToggleGroup();
-        RadioButton onlineLogin = new RadioButton("Login con Database");
+        onlineLogin = new RadioButton("Login con Database");
         onlineLogin.setToggleGroup(loginTypeGroup);
         onlineLogin.setSelected(true); // Imposta il login con il database come predefinito
         RadioButton offlineLogin = new RadioButton("Login Offline");
@@ -63,7 +69,6 @@ public class LoginPage extends Application {
 
         return new Scene(layout, 400, 300);
     }
-
 
     private void handleLogin(String username, String password, boolean isOnlineLogin, Stage primaryStage) {
         if (isOnlineLogin) {
