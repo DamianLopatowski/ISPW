@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 public class LoginPage extends Application {
 
-    public static boolean isOffline = false; // Flag per determinare se la modalità è offline
+    private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
     public static void main(String[] args) {
         // Avvia l'applicazione JavaFX
@@ -54,7 +54,7 @@ public class LoginPage extends Application {
             if (onlineLogin.isSelected()) {
                 if (InternetCheck.isConnected()) {
                     if (DatabaseUtils.verifyCredentials(username, password)) {
-                        isOffline = false;  // Modalità online
+                        setOffline(false);  // Modalità online
                         showMainPage(primaryStage);
                     } else {
                         showAlert("Login fallito", "Credenziali non corrette.");
@@ -64,7 +64,7 @@ public class LoginPage extends Application {
                 }
             } else {
                 // Modalità offline
-                isOffline = true;  // Modalità offline
+                setOffline(true);  // Modalità offline
                 if ("admin".equals(username) && "password123".equals(password)) {
                     showMainPage(primaryStage);
                 } else {
