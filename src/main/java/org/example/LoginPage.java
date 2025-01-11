@@ -11,12 +11,6 @@ public class LoginPage extends Application {
 
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
-    // Variabili di classe per i componenti
-    private TextField usernameField;
-    private PasswordField passwordField;
-    private Button loginButton;
-    private RadioButton onlineLogin;
-
     public static void main(String[] args) {
         // Avvia l'applicazione JavaFX
         launch(args);
@@ -32,14 +26,14 @@ public class LoginPage extends Application {
     }
 
     public Scene createLoginScene(Stage primaryStage) {
-        // Crea i componenti dell'interfaccia di login
-        usernameField = new TextField();
-        passwordField = new PasswordField();
-        loginButton = new Button("Login");
+        // Crea i componenti dell'interfaccia di login come variabili locali
+        TextField usernameField = new TextField();
+        PasswordField passwordField = new PasswordField();
+        Button loginButton = new Button("Login");
 
         // Crea i RadioButton per scegliere il tipo di login
         ToggleGroup loginTypeGroup = new ToggleGroup();
-        onlineLogin = new RadioButton("Login con Database");
+        RadioButton onlineLogin = new RadioButton("Login con Database");
         onlineLogin.setToggleGroup(loginTypeGroup);
         onlineLogin.setSelected(true); // Imposta il login con il database come predefinito
         RadioButton offlineLogin = new RadioButton("Login Offline");
@@ -111,10 +105,7 @@ public class LoginPage extends Application {
         Button logoutButton = new Button("Logout");
 
         // Impostazione dell'azione per il logout
-        logoutButton.setOnAction(e -> {
-            // Torna alla pagina di login con le scelte (online/offline)
-            primaryStage.setScene(createLoginScene(primaryStage));
-        });
+        logoutButton.setOnAction(e -> primaryStage.setScene(createLoginScene(primaryStage)));
 
         // Layout per i pulsanti centrali
         VBox centerLayout = new VBox(15, gestisciProdottiButton, soglieAvvisiButton, gestioneSchedeButton, gestisciOrdiniButton);
