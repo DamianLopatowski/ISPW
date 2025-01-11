@@ -25,8 +25,7 @@ public class GestisciProdottiPage {
     private static final String CODICE_A_BARRE = "codiceAbarre";
     private static final String SOGLIA = "soglia";
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
-    private static final String PREZZO_VENDITA  = "prezzoVendita";
-
+    private static final String PREZZO_VENDITA = "prezzoVendita";
 
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
@@ -38,10 +37,8 @@ public class GestisciProdottiPage {
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
 
-        // Creazione di un'istanza di ProductTable
         ProductTable productTable = new ProductTable();
 
-        // Utilizzare l'istanza per creare le tabelle
         magazzinoTable = productTable.createProductTable(this);
         negozioTable = productTable.createProductTable(this);
 
@@ -69,7 +66,7 @@ public class GestisciProdottiPage {
 
     private void loadProducts(TableView<Product> table, String categoria) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
-            try (Connection conn = DatabaseConnection.connectToDatabase()) {
+            try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "SELECT * FROM prodotti WHERE categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, categoria);
@@ -93,7 +90,6 @@ public class GestisciProdottiPage {
                 e.printStackTrace();
             }
         } else {
-            Label offlineLabel = new Label("Connessione non disponibile, i dati sono locali.");
             table.getItems().clear();
             table.getItems().add(new Product("Nessun dato disponibile", 0, "-", "-", 0, 0.0, 0.0, null));
         }
@@ -102,7 +98,7 @@ public class GestisciProdottiPage {
     private void searchProducts(String searchTerm, TableView<Product> table, String categoria) {
         table.getItems().clear();
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
-            try (Connection conn = DatabaseConnection.connectToDatabase()) {
+            try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "SELECT * FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codiceAbarre LIKE ?) AND categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     String searchPattern = "%" + searchTerm + "%";
@@ -141,12 +137,12 @@ public class GestisciProdottiPage {
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
-            try (Connection conn = DatabaseConnection.connectToDatabase()) {
+            try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "DELETE FROM prodotti WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, product.getCodiceAbarre());
                     stmt.executeUpdate();
-                    refreshTable();  // This reloads the data after deletion
+                    refreshTable();  // Reload the table after deletion
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -163,7 +159,7 @@ public class GestisciProdottiPage {
         TextField purchasePriceField = new TextField(String.valueOf(product.getPrezzoAcquisto()));
         TextField salePriceField = new TextField(String.valueOf(product.getPrezzoVendita()));
 
-        // Dialogo per la modifica
+        // Dialog for editing the product
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Modifica Prodotto");
 
@@ -190,7 +186,7 @@ public class GestisciProdottiPage {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                // Aggiorna il prodotto con i nuovi valori
+                // Update product with new values
                 product.setNome(nameField.getText());
                 product.setQuantita(Integer.parseInt(quantityField.getText()));
                 product.setScaffale(shelfField.getText());
@@ -208,7 +204,7 @@ public class GestisciProdottiPage {
 
     private void saveProductToDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
-            try (Connection conn = DatabaseConnection.connectToDatabase()) {
+            try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "UPDATE prodotti SET nome = ?, quantita = ?, scaffale = ?, codiceAbarre = ?, soglia = ?, prezzoAcquisto = ?, prezzoVendita = ? WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, product.getNome());
@@ -220,7 +216,7 @@ public class GestisciProdottiPage {
                     stmt.setDouble(7, product.getPrezzoVendita());
                     stmt.setString(8, product.getCodiceAbarre());
                     stmt.executeUpdate();
-                    refreshTable();  // Ricarica la tabella dopo la modifica
+                    refreshTable();  // Reload the table after editing
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -231,8 +227,8 @@ public class GestisciProdottiPage {
     public void refreshTable() {
         magazzinoTable.getItems().clear();
         negozioTable.getItems().clear();
-        loadProducts(magazzinoTable, MAGAZZINO);  // Ricarica i prodotti per la tabella Magazzino
-        loadProducts(negozioTable, "Negozio");     // Ricarica i prodotti per la tabella Negozio
+        loadProducts(magazzinoTable, MAGAZZINO);  // Reload products for Magazzino table
+        loadProducts(negozioTable, NEGOZIO);     // Reload products for Negozio table
     }
 
     public static class Product {

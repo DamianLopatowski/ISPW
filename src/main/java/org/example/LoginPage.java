@@ -129,8 +129,9 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-        gestisciProdottiPage.start(primaryStage); // Avvia la pagina Gestisci Prodotti
+        // Instantiate GestisciProdottiPage without passing DatabaseConnection
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
+        gestisciProdottiPage.start(primaryStage);
     }
 
     private void showAlert(String title, String message) {
