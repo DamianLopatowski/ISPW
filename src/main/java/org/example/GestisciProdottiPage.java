@@ -38,9 +38,13 @@ public class GestisciProdottiPage {
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
 
-        // Inizializzazione delle tabelle
-        magazzinoTable = ProductTable.createProductTable(this);
-        negozioTable = ProductTable.createProductTable(this);
+        // Creazione di un'istanza di ProductTable
+        ProductTable productTable = new ProductTable();
+
+// Utilizzare l'istanza per creare le tabelle
+        magazzinoTable = productTable.createProductTable(this);
+        negozioTable = productTable.createProductTable(this);
+
 
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));

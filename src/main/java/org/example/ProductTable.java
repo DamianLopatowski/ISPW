@@ -11,10 +11,10 @@ import java.io.InputStream;
 
 public class ProductTable {
 
-    // Costruttore privato
-    private ProductTable() {}
+    // Costruttore pubblico
+    public ProductTable() {}
 
-    public static TableView<GestisciProdottiPage.Product> createProductTable(GestisciProdottiPage page) {
+    public TableView<GestisciProdottiPage.Product> createProductTable(GestisciProdottiPage page) {
         TableView<GestisciProdottiPage.Product> table = new TableView<>();
 
         table.getColumns().addAll(
@@ -42,7 +42,7 @@ public class ProductTable {
         return table;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, ImageView> createImageColumn() {
+    private TableColumn<GestisciProdottiPage.Product, ImageView> createImageColumn() {
         TableColumn<GestisciProdottiPage.Product, ImageView> column = new TableColumn<>("Immagine");
         column.setCellValueFactory(cellData -> {
             GestisciProdottiPage.Product product = cellData.getValue();
@@ -58,49 +58,49 @@ public class ProductTable {
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, String> createNameColumn() {
+    private TableColumn<GestisciProdottiPage.Product, String> createNameColumn() {
         TableColumn<GestisciProdottiPage.Product, String> column = new TableColumn<>("Nome");
         column.setCellValueFactory(new PropertyValueFactory<>("nome"));
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, Integer> createQuantityColumn() {
+    private TableColumn<GestisciProdottiPage.Product, Integer> createQuantityColumn() {
         TableColumn<GestisciProdottiPage.Product, Integer> column = new TableColumn<>("Quantità");
         column.setCellValueFactory(new PropertyValueFactory<>("quantita"));
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, String> createShelfColumn() {
+    private TableColumn<GestisciProdottiPage.Product, String> createShelfColumn() {
         TableColumn<GestisciProdottiPage.Product, String> column = new TableColumn<>("Scaffale");
         column.setCellValueFactory(new PropertyValueFactory<>("scaffale"));
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, String> createBarcodeColumn() {
+    private TableColumn<GestisciProdottiPage.Product, String> createBarcodeColumn() {
         TableColumn<GestisciProdottiPage.Product, String> column = new TableColumn<>("Codice a Barre");
         column.setCellValueFactory(new PropertyValueFactory<>("codice_a_barre"));
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, Integer> createThresholdColumn() {
+    private TableColumn<GestisciProdottiPage.Product, Integer> createThresholdColumn() {
         TableColumn<GestisciProdottiPage.Product, Integer> column = new TableColumn<>("Soglia");
         column.setCellValueFactory(new PropertyValueFactory<>("soglia"));
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, Double> createPurchasePriceColumn() {
+    private TableColumn<GestisciProdottiPage.Product, Double> createPurchasePriceColumn() {
         TableColumn<GestisciProdottiPage.Product, Double> column = new TableColumn<>("Prezzo Acquisto");
         column.setCellValueFactory(new PropertyValueFactory<>("prezzo_acquisto"));
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, Double> createSalePriceColumn() {
+    private TableColumn<GestisciProdottiPage.Product, Double> createSalePriceColumn() {
         TableColumn<GestisciProdottiPage.Product, Double> column = new TableColumn<>("Prezzo Vendita");
         column.setCellValueFactory(new PropertyValueFactory<>("prezzo_vendita"));
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, Void> createDeleteColumn(GestisciProdottiPage page) {
+    private TableColumn<GestisciProdottiPage.Product, Void> createDeleteColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Azioni");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
             private final ImageView trashIcon = new ImageView(loadImage("/icons/trash-icon.png"));
@@ -125,7 +125,7 @@ public class ProductTable {
         return column;
     }
 
-    private static TableColumn<GestisciProdottiPage.Product, Void> createEditColumn(GestisciProdottiPage page) {
+    private TableColumn<GestisciProdottiPage.Product, Void> createEditColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Modifica");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
             private final ImageView penIcon = new ImageView(loadImage("/icons/pen-icon.png"));
@@ -150,7 +150,7 @@ public class ProductTable {
         return column;
     }
 
-    private static void handleRowClick(javafx.event.Event event, TableRow<GestisciProdottiPage.Product> row) {
+    private void handleRowClick(javafx.event.Event event, TableRow<GestisciProdottiPage.Product> row) {
         if (!row.isEmpty()) {
             if (event.getTarget() instanceof TableCell) {
                 TableCell<GestisciProdottiPage.Product, ?> cell = (TableCell<GestisciProdottiPage.Product, ?>) event.getTarget();
@@ -162,7 +162,7 @@ public class ProductTable {
         }
     }
 
-    private static void handleDeleteClick(javafx.event.Event event, GestisciProdottiPage page) {
+    private void handleDeleteClick(javafx.event.Event event, GestisciProdottiPage page) {
         TableCell<GestisciProdottiPage.Product, Void> cell = (TableCell<GestisciProdottiPage.Product, Void>) event.getSource();
         GestisciProdottiPage.Product product = cell.getTableRow().getItem(); // Otteniamo il prodotto dalla riga
         // Finestra di conferma per la cancellazione
@@ -178,7 +178,7 @@ public class ProductTable {
         });
     }
 
-    private static void handleEditClick(javafx.event.Event event, GestisciProdottiPage page) {
+    private void handleEditClick(javafx.event.Event event, GestisciProdottiPage page) {
         TableCell<GestisciProdottiPage.Product, Void> cell = (TableCell<GestisciProdottiPage.Product, Void>) event.getSource();
         GestisciProdottiPage.Product product = cell.getTableRow().getItem(); // Otteniamo il prodotto dalla riga
         page.openEditProductDialog(product); // Apriamo il dialogo di modifica
@@ -196,4 +196,3 @@ public class ProductTable {
         }
     }
 }
-
