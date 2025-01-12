@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage {
+public class GestisciProdottiPage implements ProductActionDelegate {
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -40,25 +40,25 @@ public class GestisciProdottiPage {
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
 
-        ProductTable productTable = new ProductTable(this);  // Passa 'this' come parametro al costruttore di ProductTable
+        ProductTable productTable = new ProductTable(this);  // Passa 'this' come delegato
 
-        magazzinoTable = productTable.createProductTable(this);  // Usa l'istanza passata di GestisciProdottiPage
-        negozioTable = productTable.createProductTable(this);  // Usa l'istanza passata di GestisciProdottiPage
+        magazzinoTable = productTable.createProductTable();
+        negozioTable = productTable.createProductTable();
 
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
 
-        loadProducts(magazzinoTable, MAGAZZINO);
-        loadProducts(negozioTable, NEGOZIO);
+        loadProducts(magazzinoTable, "Magazzino");
+        loadProducts(negozioTable, "Negozio");
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchProducts(newValue, magazzinoTable, MAGAZZINO);
-            searchProducts(newValue, negozioTable, NEGOZIO);
+            searchProducts(newValue, magazzinoTable, "Magazzino");
+            searchProducts(newValue, negozioTable, "Negozio");
         });
 
         VBox vbox = new VBox(15, backButton, gestioneButton, searchField,
-                new Label(MAGAZZINO), magazzinoTable,
-                new Label(NEGOZIO), negozioTable);
+                new Label("Magazzino"), magazzinoTable,
+                new Label("Negozio"), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
 
         Scene scene = new Scene(vbox, 1000, 600);
@@ -145,6 +145,18 @@ public class GestisciProdottiPage {
     private void showGestionePage(Stage primaryStage) {
         GestionePage gestionePage = new GestionePage(navigator);  // Passa il Navigator
         gestionePage.start(primaryStage);
+    }
+
+    @Override
+    public void onDeleteProduct(Product product) {
+        deleteProductFromDatabase(product);
+        refreshTable();
+    }
+
+    @Override
+    public void onEditProduct(Product product) {
+        openEditProductDialog(product);
+        refreshTable();
     }
 
     public void deleteProductFromDatabase(Product product) {
