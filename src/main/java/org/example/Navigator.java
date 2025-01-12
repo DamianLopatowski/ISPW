@@ -10,20 +10,19 @@ public class Navigator {
         this.primaryStage = primaryStage;
     }
 
-    // Metodo per navigare alla pagina Gestione
     public void showGestionePage() {
-        GestionePage gestionePage = new GestionePage(this);  // Passa il Navigator
+        GestionePage gestionePage = new GestionePage(this); // Passa Navigator a GestionePage
         gestionePage.start(primaryStage);
     }
 
-    // Metodo per navigare alla pagina Gestisci Prodotti
     public void showGestisciProdottiPage() {
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(this);  // Passa il Navigator
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(this); // Passa Navigator
         gestisciProdottiPage.start(primaryStage);
     }
 
     public void showMainPage() {
         LoginPage loginPage = new LoginPage();
-        loginPage.showMainPage(primaryStage);  // Passa lo Stage per visualizzare la pagina principale
+        loginPage.showMainPage(primaryStage);  // Chiamata al metodo in LoginPage
     }
 }
+

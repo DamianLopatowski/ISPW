@@ -9,20 +9,16 @@ import javafx.stage.Stage;
 
 public class LoginPage extends Application {
 
-    private static boolean isOffline = false; // Flag per determinare se la modalità è offline
-    private Navigator navigator;  // Aggiungi la variabile Navigator
+    private static boolean isOffline = false;
+    private Navigator navigator;
 
     public static void main(String[] args) {
-        // Avvia l'applicazione JavaFX
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        // Crea il Navigator e passalo a tutte le pagine
-        navigator = new Navigator(primaryStage);
-
-        // Crea la scena di login
+        navigator = new Navigator(primaryStage);  // Inizializzazione del Navigator
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
