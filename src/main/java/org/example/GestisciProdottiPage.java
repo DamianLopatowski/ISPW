@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.stage.Stage;
 
 import java.sql.*;
 
@@ -27,12 +28,15 @@ public class GestisciProdottiPage {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
+    private Navigator navigator;
+
+    public GestisciProdottiPage(Navigator navigator) {
+        this.navigator = navigator;
+    }
+
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
-        backButton.setOnAction(e -> {
-            LoginPage loginPage = new LoginPage();
-            loginPage.showMainPage(primaryStage);
-        });
+        backButton.setOnAction(e -> navigator.showMainPage());
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
@@ -57,7 +61,6 @@ public class GestisciProdottiPage {
                 new Label(MAGAZZINO), magazzinoTable,
                 new Label(NEGOZIO), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
-        vbox.setStyle("-fx-padding: 20;");
 
         Scene scene = new Scene(vbox, 1000, 600);
         primaryStage.setScene(scene);
@@ -141,7 +144,7 @@ public class GestisciProdottiPage {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage();
+        GestionePage gestionePage = new GestionePage(navigator);  // Passa il Navigator
         gestionePage.start(primaryStage);
     }
 
