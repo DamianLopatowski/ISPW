@@ -80,7 +80,7 @@ public class LoginPage extends Application {
 
         if (DatabaseUtils.verifyCredentials(username, password)) {
             setOffline(false);  // Modalità online
-            showMainPage(primaryStage);
+            navigator.showMainPage();  // Passa al MainPage tramite Navigator
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
@@ -89,7 +89,7 @@ public class LoginPage extends Application {
     private void handleOfflineLogin(String username, String password, Stage primaryStage) {
         setOffline(true);  // Modalità offline
         if ("admin".equals(username) && "password123".equals(password)) {
-            showMainPage(primaryStage);
+            navigator.showMainPage();  // Passa al MainPage tramite Navigator
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
