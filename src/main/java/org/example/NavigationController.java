@@ -21,4 +21,10 @@ public class NavigationController {
         GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
         gestisciProdottiPage.start(primaryStage);
     }
+
+    // Metodo per navigare alla LoginPage
+    public void showLoginPage() {
+        LoginPage loginPage = new LoginPage();
+        loginPage.start(primaryStage);
+    }
 }
