@@ -22,8 +22,7 @@ public class GestionePage {
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
-            GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-            gestisciProdottiPage.start(finalPrimaryStage);
+            PageNavigator.navigateToGestisciProdottiPage(finalPrimaryStage);
         });
 
         TextField nomeField = new TextField();

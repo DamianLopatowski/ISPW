@@ -141,9 +141,9 @@ public class GestisciProdottiPage {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage();
-        gestionePage.start(primaryStage);
+        PageNavigator.navigateToGestionePage(primaryStage);
     }
+
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
