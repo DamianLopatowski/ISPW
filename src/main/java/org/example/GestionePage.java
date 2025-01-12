@@ -22,8 +22,7 @@ public class GestionePage {
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
-            NavigationController navigationController = new NavigationController(finalPrimaryStage);
-            navigationController.showGestisciProdottiPage();
+            NavigationManager.getNavigationService().navigateToGestisciProdottiPage();
         });
 
 
