@@ -43,10 +43,7 @@ public class GestisciProdottiPage {
         negozioTable = productTable.createProductTable(this);
 
         Button gestioneButton = new Button("Gestione");
-        gestioneButton.setOnAction(e -> {
-            NavigationManager.getNavigationService().navigateToGestionePage();
-        });
-
+        gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
 
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
@@ -144,10 +141,9 @@ public class GestisciProdottiPage {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        NavigationManager.getNavigationService().navigateToGestionePage();
+        GestionePage gestionePage = new GestionePage();
+        gestionePage.start(primaryStage);
     }
-
-
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
