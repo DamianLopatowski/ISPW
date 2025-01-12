@@ -9,16 +9,16 @@ import javafx.stage.Stage;
 
 public class LoginPage extends Application {
 
-    private static boolean isOffline = false;
-    private Navigator navigator;
+    private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
     public static void main(String[] args) {
+        // Avvia l'applicazione JavaFX
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        navigator = new Navigator(primaryStage);  // Inizializzazione del Navigator
+        // Crea la scena di login
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
@@ -80,7 +80,7 @@ public class LoginPage extends Application {
 
         if (DatabaseUtils.verifyCredentials(username, password)) {
             setOffline(false);  // Modalità online
-            navigator.showMainPage();  // Passa al MainPage tramite Navigator
+            showMainPage(primaryStage);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
@@ -89,7 +89,7 @@ public class LoginPage extends Application {
     private void handleOfflineLogin(String username, String password, Stage primaryStage) {
         setOffline(true);  // Modalità offline
         if ("admin".equals(username) && "password123".equals(password)) {
-            navigator.showMainPage();  // Passa al MainPage tramite Navigator
+            showMainPage(primaryStage);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
@@ -129,11 +129,10 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Crea un'istanza di GestisciProdottiPage passando il Navigator
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(navigator);  // Passa il Navigator
+        // Instantiate GestisciProdottiPage without passing DatabaseConnection
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
         gestisciProdottiPage.start(primaryStage);
     }
-
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

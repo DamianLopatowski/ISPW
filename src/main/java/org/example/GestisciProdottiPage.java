@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage implements ProductActionDelegate {
+public class GestisciProdottiPage {
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -27,39 +27,37 @@ public class GestisciProdottiPage implements ProductActionDelegate {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
-    private Navigator navigator;
-
-    public GestisciProdottiPage(Navigator navigator) {
-        this.navigator = navigator;
-    }
-
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
-        backButton.setOnAction(e -> navigator.showMainPage());
+        backButton.setOnAction(e -> {
+            LoginPage loginPage = new LoginPage();
+            loginPage.showMainPage(primaryStage);
+        });
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
 
-        ProductTable productTable = new ProductTable(this);  // Passa 'this' come delegato
+        ProductTable productTable = new ProductTable();
 
-        magazzinoTable = productTable.createProductTable();
-        negozioTable = productTable.createProductTable();
+        magazzinoTable = productTable.createProductTable(this);
+        negozioTable = productTable.createProductTable(this);
 
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
 
-        loadProducts(magazzinoTable, "Magazzino");
-        loadProducts(negozioTable, "Negozio");
+        loadProducts(magazzinoTable, MAGAZZINO);
+        loadProducts(negozioTable, NEGOZIO);
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchProducts(newValue, magazzinoTable, "Magazzino");
-            searchProducts(newValue, negozioTable, "Negozio");
+            searchProducts(newValue, magazzinoTable, MAGAZZINO);
+            searchProducts(newValue, negozioTable, NEGOZIO);
         });
 
         VBox vbox = new VBox(15, backButton, gestioneButton, searchField,
-                new Label("Magazzino"), magazzinoTable,
-                new Label("Negozio"), negozioTable);
+                new Label(MAGAZZINO), magazzinoTable,
+                new Label(NEGOZIO), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
+        vbox.setStyle("-fx-padding: 20;");
 
         Scene scene = new Scene(vbox, 1000, 600);
         primaryStage.setScene(scene);
@@ -143,20 +141,8 @@ public class GestisciProdottiPage implements ProductActionDelegate {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage(navigator);  // Passa il Navigator
+        GestionePage gestionePage = new GestionePage();
         gestionePage.start(primaryStage);
-    }
-
-    @Override
-    public void onDeleteProduct(Product product) {
-        deleteProductFromDatabase(product);
-        refreshTable();
-    }
-
-    @Override
-    public void onEditProduct(Product product) {
-        openEditProductDialog(product);
-        refreshTable();
     }
 
     public void deleteProductFromDatabase(Product product) {

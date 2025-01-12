@@ -13,16 +13,14 @@ public class ProductTable {
 
     private final Image trashIconImage;
     private final Image penIconImage;
-    private static final Logger logger = Logger.getLogger(ProductTable.class.getName());
-    private final ProductActionDelegate actionDelegate;  // Delegato per le azioni
+    private static final Logger logger = Logger.getLogger(ProductTable.class.getName()); // Aggiunto il logger
 
-    public ProductTable(ProductActionDelegate actionDelegate) {  // Costruttore che riceve il delegato
-        this.actionDelegate = actionDelegate;
+    public ProductTable() {
         this.trashIconImage = loadImage("src/main/java/org/example/immagini/trash-icon.jpg");
         this.penIconImage = loadImage("src/main/java/org/example/immagini/pen-icon.jpg");
     }
 
-    public TableView<GestisciProdottiPage.Product> createProductTable() {
+    public TableView<GestisciProdottiPage.Product> createProductTable(GestisciProdottiPage page) {
         TableView<GestisciProdottiPage.Product> table = new TableView<>();
 
         table.getColumns().addAll(
@@ -34,8 +32,8 @@ public class ProductTable {
                 createThresholdColumn(),
                 createPurchasePriceColumn(),
                 createSalePriceColumn(),
-                createDeleteColumn(),
-                createEditColumn()
+                createDeleteColumn(page),
+                createEditColumn(page)
         );
 
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -108,7 +106,7 @@ public class ProductTable {
         return column;
     }
 
-    private TableColumn<GestisciProdottiPage.Product, Void> createDeleteColumn() {
+    private TableColumn<GestisciProdottiPage.Product, Void> createDeleteColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Azioni");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
             @Override
@@ -120,7 +118,7 @@ public class ProductTable {
                     trashIcon.setFitHeight(50);
                     trashIcon.setPreserveRatio(true);
                     setGraphic(trashIcon);
-                    setOnMouseClicked(event -> handleDeleteClick(event));
+                    setOnMouseClicked(event -> handleDeleteClick(event, page));
                 } else {
                     setGraphic(null);
                 }
@@ -129,7 +127,7 @@ public class ProductTable {
         return column;
     }
 
-    private TableColumn<GestisciProdottiPage.Product, Void> createEditColumn() {
+    private TableColumn<GestisciProdottiPage.Product, Void> createEditColumn(GestisciProdottiPage page) {
         TableColumn<GestisciProdottiPage.Product, Void> column = new TableColumn<>("Modifica");
         column.setCellFactory(param -> new TableCell<GestisciProdottiPage.Product, Void>() {
             @Override
@@ -141,7 +139,7 @@ public class ProductTable {
                     penIcon.setFitHeight(50);
                     penIcon.setPreserveRatio(true);
                     setGraphic(penIcon);
-                    setOnMouseClicked(event -> handleEditClick(event));
+                    setOnMouseClicked(event -> handleEditClick(event, page));
                 } else {
                     setGraphic(null);
                 }
@@ -160,16 +158,26 @@ public class ProductTable {
         }
     }
 
-    private void handleDeleteClick(javafx.event.Event event) {
+    private void handleDeleteClick(javafx.event.Event event, GestisciProdottiPage page) {
         TableCell<GestisciProdottiPage.Product, Void> cell = (TableCell<GestisciProdottiPage.Product, Void>) event.getSource();
         GestisciProdottiPage.Product product = cell.getTableRow().getItem();
-        actionDelegate.onDeleteProduct(product);  // Chiamata al delegato per gestire l'eliminazione
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Conferma Eliminazione");
+        alert.setHeaderText("Sei sicuro di voler eliminare questo prodotto?");
+        alert.setContentText(product.getNome());
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                page.deleteProductFromDatabase(product);
+                page.refreshTable();
+            }
+        });
     }
 
-    private void handleEditClick(javafx.event.Event event) {
+    private void handleEditClick(javafx.event.Event event, GestisciProdottiPage page) {
         TableCell<GestisciProdottiPage.Product, Void> cell = (TableCell<GestisciProdottiPage.Product, Void>) event.getSource();
         GestisciProdottiPage.Product product = cell.getTableRow().getItem();
-        actionDelegate.onEditProduct(product);  // Chiamata al delegato per gestire la modifica
+        page.openEditProductDialog(product);
+        page.refreshTable();
     }
 
     public static Image loadImage(String path) {
@@ -177,7 +185,7 @@ public class ProductTable {
         if (file.exists()) {
             return new Image(file.toURI().toString());
         } else {
-            logger.warning(() -> String.format("Immagine non trovata: %s", path));
+            logger.warning(() -> String.format("Immagine non trovata: %s", path)); // Usato il logger con la formattazione
             return null;
         }
     }

@@ -17,17 +17,14 @@ import javafx.stage.FileChooser;
 
 public class GestionePage {
 
-    private Navigator navigator;
-
-    public GestionePage(Navigator navigator) {
-        this.navigator = navigator;  // Ricevi il Navigator
-    }
-
     public void start(Stage primaryStage) {
         final Stage finalPrimaryStage = primaryStage;
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
-        backButton.setOnAction(e -> navigator.showGestisciProdottiPage());
+        backButton.setOnAction(e -> {
+            GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
+            gestisciProdottiPage.start(finalPrimaryStage);
+        });
 
         TextField nomeField = new TextField();
         nomeField.setPromptText("Nome prodotto");
@@ -89,6 +86,7 @@ public class GestionePage {
 
         VBox vbox = new VBox(15, backButton, nomeField, scaffaleField, codiceBarreField, quantitaField, sogliaField, prezzoAcquistoField, prezzoVenditaField, uploadButton, fileLabel, aggiungiButton);
         vbox.setAlignment(Pos.TOP_CENTER);
+        vbox.setStyle("-fx-padding: 20;");
 
         Scene scene = new Scene(vbox, 500, 400);
         finalPrimaryStage.setScene(scene);
