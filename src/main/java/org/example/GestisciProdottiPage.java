@@ -141,7 +141,8 @@ public class GestisciProdottiPage {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        PageNavigator.navigateToGestionePage(primaryStage);
+        NavigationController navigationController = new NavigationController(primaryStage);
+        navigationController.showGestionePage();
     }
 
 
