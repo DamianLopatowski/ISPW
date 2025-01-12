@@ -12,8 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage implements CycleInterface {
-
+public class GestisciProdottiPage {
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -141,13 +140,10 @@ public class GestisciProdottiPage implements CycleInterface {
         }
     }
 
-    @Override
-    public void showGestionePage(Stage primaryStage) {
-        // Logica per mostrare la pagina GestioneProdottiPage
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-        gestisciProdottiPage.start(primaryStage);
+    private void showGestionePage(Stage primaryStage) {
+        GestionePage gestionePage = new GestionePage();
+        gestionePage.start(primaryStage);
     }
-
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
