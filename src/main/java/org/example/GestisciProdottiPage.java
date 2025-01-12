@@ -40,10 +40,10 @@ public class GestisciProdottiPage {
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
 
-        ProductTable productTable = new ProductTable();
+        ProductTable productTable = new ProductTable(this);  // Passa 'this' come parametro al costruttore di ProductTable
 
-        magazzinoTable = productTable.createProductTable(this);
-        negozioTable = productTable.createProductTable(this);
+        magazzinoTable = productTable.createProductTable(this);  // Usa l'istanza passata di GestisciProdottiPage
+        negozioTable = productTable.createProductTable(this);  // Usa l'istanza passata di GestisciProdottiPage
 
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> showGestionePage(primaryStage));

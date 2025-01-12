@@ -14,8 +14,10 @@ public class ProductTable {
     private final Image trashIconImage;
     private final Image penIconImage;
     private static final Logger logger = Logger.getLogger(ProductTable.class.getName()); // Aggiunto il logger
+    private final GestisciProdottiPage gestisciProdottiPage;  // Modifica: Aggiunto campo per GestisciProdottiPage
 
-    public ProductTable() {
+    public ProductTable(GestisciProdottiPage gestisciProdottiPage) {  // Modifica: Costruttore che riceve GestisciProdottiPage
+        this.gestisciProdottiPage = gestisciProdottiPage;  // Modifica: Inizializza il campo con l'oggetto passato
         this.trashIconImage = loadImage("src/main/java/org/example/immagini/trash-icon.jpg");
         this.penIconImage = loadImage("src/main/java/org/example/immagini/pen-icon.jpg");
     }
