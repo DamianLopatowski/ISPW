@@ -28,44 +28,51 @@ public class GestisciProdottiPage implements NavigablePage  {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
+    private final PageNavigator navigator;
+
+    public GestisciProdottiPage(PageNavigator navigator) {
+        this.navigator = navigator;
+    }
+
     @Override
     public void start(Stage primaryStage) {
-        Button backButton = new Button("Torna alla Gestione Prodotti");
-        backButton.setOnAction(e -> {
-            // Usa PageNavigator per tornare alla pagina Gestione
-            GestionePage gestionePage = new GestionePage();
-            gestionePage.start(primaryStage);  // Passa primaryStage correttamente
-        });
+        // Pulsante per tornare alla pagina principale
+        Button gestioneButton = new Button("Torna alla Pagina Principale");
+        gestioneButton.setOnAction(e -> navigator.navigateToPage("Gestione"));
 
+        // Campo di ricerca
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
 
+        // Creazione delle tabelle per magazzino e negozio
         ProductTable productTable = new ProductTable();
-
         magazzinoTable = productTable.createProductTable(this);
         negozioTable = productTable.createProductTable(this);
 
-        Button gestioneButton = new Button("Gestione");
-        gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
-
+        // Caricamento dei prodotti iniziali
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
 
+        // Listener per la ricerca
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchProducts(newValue, magazzinoTable, MAGAZZINO);
             searchProducts(newValue, negozioTable, NEGOZIO);
         });
 
-        VBox vbox = new VBox(15, backButton, gestioneButton, searchField,
+        // Layout principale
+        VBox vbox = new VBox(15, gestioneButton, searchField,
                 new Label(MAGAZZINO), magazzinoTable,
                 new Label(NEGOZIO), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setStyle("-fx-padding: 20;");
 
+        // Creazione della scena
         Scene scene = new Scene(vbox, 1000, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+
 
     private void loadProducts(TableView<Product> table, String categoria) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
@@ -143,10 +150,6 @@ public class GestisciProdottiPage implements NavigablePage  {
         }
     }
 
-    private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage();
-        gestionePage.start(primaryStage);
-    }
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {

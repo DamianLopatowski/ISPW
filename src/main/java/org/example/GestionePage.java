@@ -17,54 +17,43 @@ import javafx.stage.FileChooser;
 
 public class GestionePage implements NavigablePage {
 
+    private final PageNavigator navigator;
+
+    public GestionePage(PageNavigator navigator) {
+        this.navigator = navigator;
+    }
 
     @Override
     public void start(Stage primaryStage) {
-        // Crea un'istanza di PageNavigator passando primaryStage come parametro
-        PageNavigator pageNavigator = new PageNavigator(primaryStage);
-
+        // Pulsante per tornare a "Gestisci Prodotti"
         Button backButton = new Button("Torna alla Gestione Prodotti");
-        backButton.setOnAction(e -> {
-            // Usa PageNavigator per navigare alla pagina GestisciProdotti
-            pageNavigator.navigateToPage("GestisciProdotti", primaryStage);  // Passa primaryStage qui
-        });
+        backButton.setOnAction(e -> navigator.navigateToPage("GestisciProdotti"));
 
-        TextField nomeField = new TextField();
-        nomeField.setPromptText("Nome prodotto");
+        // Campi di input per le informazioni del prodotto
+        TextField nomeField = createTextField("Nome prodotto");
+        TextField scaffaleField = createTextField("Scaffale");
+        TextField codiceBarreField = createTextField("Codice a Barre");
+        TextField quantitaField = createTextField("Quantità");
+        TextField sogliaField = createTextField("Soglia");
+        TextField prezzoAcquistoField = createTextField("Prezzo Acquisto");
+        TextField prezzoVenditaField = createTextField("Prezzo Vendita");
 
-        TextField scaffaleField = new TextField();
-        scaffaleField.setPromptText("Scaffale");
-
-        TextField codiceBarreField = new TextField();
-        codiceBarreField.setPromptText("Codice a Barre");
-
-        TextField quantitaField = new TextField();
-        quantitaField.setPromptText("Quantità");
-
-        TextField sogliaField = new TextField();
-        sogliaField.setPromptText("Soglia");
-
-        TextField prezzoAcquistoField = new TextField();
-        prezzoAcquistoField.setPromptText("Prezzo Acquisto");
-
-        TextField prezzoVenditaField = new TextField();
-        prezzoVenditaField.setPromptText("Prezzo Vendita");
-
+        // Configurazione del caricamento immagine
         final List<File>[] imageFiles = new List[1];
-
         Button uploadButton = new Button("Carica Immagine");
-        Label fileLabel = new Label();
+        Label fileLabel = new Label("Nessuna immagine selezionata");
 
         uploadButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
-            imageFiles[0] = fileChooser.showOpenMultipleDialog(primaryStage);  // Usa direttamente primaryStage
+            imageFiles[0] = fileChooser.showOpenMultipleDialog(primaryStage);
 
             if (imageFiles[0] != null && !imageFiles[0].isEmpty()) {
                 fileLabel.setText("File aggiunto: " + imageFiles[0].get(0).getName());
             }
         });
 
+        // Pulsante per aggiungere un prodotto
         Button aggiungiButton = new Button("Aggiungi Prodotto");
         aggiungiButton.setOnAction(e -> {
             if (inputValido(nomeField, codiceBarreField, scaffaleField, quantitaField, prezzoAcquistoField, prezzoVenditaField)) {
@@ -87,14 +76,30 @@ public class GestionePage implements NavigablePage {
             }
         });
 
-        VBox vbox = new VBox(15, backButton, nomeField, scaffaleField, codiceBarreField, quantitaField, sogliaField, prezzoAcquistoField, prezzoVenditaField, uploadButton, fileLabel, aggiungiButton);
+        // Layout principale
+        VBox vbox = new VBox(15,
+                backButton,
+                nomeField, scaffaleField, codiceBarreField,
+                quantitaField, sogliaField,
+                prezzoAcquistoField, prezzoVenditaField,
+                uploadButton, fileLabel, aggiungiButton
+        );
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setStyle("-fx-padding: 20;");
 
+        // Creazione della scena
         Scene scene = new Scene(vbox, 500, 400);
-        primaryStage.setScene(scene);  // Usa direttamente primaryStage
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+    // Metodo per creare un TextField con prompt
+    private TextField createTextField(String promptText) {
+        TextField textField = new TextField();
+        textField.setPromptText(promptText);
+        return textField;
+    }
+
 
 
     private void showAlert(String title, String message) {

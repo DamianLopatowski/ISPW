@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 public class LoginPage extends Application {
 
+
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
     public static void main(String[] args) {
@@ -18,12 +19,20 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Crea la scena di login
+        PageNavigator navigator = new PageNavigator(primaryStage);
+
+        // Registra tutte le pagine
+        navigator.registerPage("Gestione", () -> new GestionePage(navigator));
+        navigator.registerPage("GestisciProdotti", () -> new GestisciProdottiPage(navigator));
+
+        // Mostra la scena di login
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
+
+
 
     public Scene createLoginScene(Stage primaryStage) {
         // Crea i componenti dell'interfaccia di login come variabili locali
@@ -129,10 +138,14 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Instantiate GestisciProdottiPage without passing DatabaseConnection
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
+        // Usa il PageNavigator esistente
+        PageNavigator navigator = new PageNavigator(primaryStage);
+
+        // Passa il PageNavigator al costruttore di GestisciProdottiPage
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(navigator);
         gestisciProdottiPage.start(primaryStage);
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
