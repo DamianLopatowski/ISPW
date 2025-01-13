@@ -129,10 +129,11 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Instantiate GestisciProdottiPage without passing DatabaseConnection
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
+        // Pass primaryStage to the constructor of GestisciProdottiPage
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(primaryStage);
         gestisciProdottiPage.start(primaryStage);
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

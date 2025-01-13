@@ -12,7 +12,13 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage {
+public class GestisciProdottiPage implements Page {
+
+    private Stage stage;
+
+    public GestisciProdottiPage(Stage stage) {
+        this.stage = stage;
+    }
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -27,12 +33,10 @@ public class GestisciProdottiPage {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
+    @Override
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
-        backButton.setOnAction(e -> {
-            LoginPage loginPage = new LoginPage();
-            loginPage.showMainPage(primaryStage);
-        });
+        backButton.setOnAction(e -> new LoginPage().showMainPage(stage));
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
@@ -141,7 +145,7 @@ public class GestisciProdottiPage {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage();
+        GestionePage gestionePage = new GestionePage(primaryStage);  // Pass primaryStage here
         gestionePage.start(primaryStage);
     }
 
