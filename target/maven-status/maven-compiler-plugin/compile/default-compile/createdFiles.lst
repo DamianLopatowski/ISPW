@@ -6,6 +6,7 @@ org\example\DettagliProdotto.class
 org\example\ProductTable$2.class
 org\example\DatabaseConnection.class
 org\example\Prodotto.class
+org\example\ButtonNavigationHandler.class
 org\example\GestisciProdottiPage.class
 org\example\ImageViewWindow.class
 org\example\InternetCheck.class
@@ -16,4 +17,5 @@ org\example\DatabaseUtils.class
 org\example\ProductTable.class
 org\example\PageNavigator.class
 org\example\Page.class
+org\example\NavigationHandler.class
 org\example\GestisciProdottiPage$Product.class

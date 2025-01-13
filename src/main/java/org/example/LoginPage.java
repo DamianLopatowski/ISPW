@@ -7,7 +7,23 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class LoginPage extends Application {
+public class LoginPage extends Application implements Page{
+
+    public LoginPage() {
+        // Costruttore senza parametri per JavaFX
+        this.stage = null;
+        this.navigationHandler = null;
+    }
+
+
+    private Stage stage;
+    private ButtonNavigationHandler navigationHandler;
+
+    public LoginPage(Stage stage) {
+        this.stage = stage;
+        this.navigationHandler = new ButtonNavigationHandler(stage);
+    }
+
 
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
@@ -18,13 +34,12 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Crea la scena di login
+        this.stage = primaryStage;  // Assegna primaryStage se non è stato ancora assegnato
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
-
     public Scene createLoginScene(Stage primaryStage) {
         // Crea i componenti dell'interfaccia di login come variabili locali
         TextField usernameField = new TextField();
@@ -129,9 +144,14 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        Window window = new StageWindow(primaryStage);  // Instantiate a StageWindow with the primaryStage
-        window.showPage(new GestisciProdottiPage(primaryStage));  // Navigate to GestisciProdottiPage
+        // Crea un'istanza di ButtonNavigationHandler con lo Stage
+        ButtonNavigationHandler navigationHandler = new ButtonNavigationHandler(primaryStage);
+
+        // Passa sia lo Stage che il navigationHandler al costruttore di GestisciProdottiPage
+        Window window = new StageWindow(primaryStage);  // Instanzia StageWindow con lo Stage
+        window.showPage(new GestisciProdottiPage(primaryStage, navigationHandler));  // Naviga verso GestisciProdottiPage
     }
+
 
 
 

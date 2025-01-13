@@ -18,16 +18,22 @@ import javafx.stage.FileChooser;
 public class GestionePage implements Page {
 
     private Stage stage;
+    private ButtonNavigationHandler navigationHandler;
 
-    public GestionePage(Stage stage) {
+    public GestionePage(Stage stage, ButtonNavigationHandler navigationHandler) {
         this.stage = stage;
+        this.navigationHandler = navigationHandler;
     }
+
     @Override
     public void start(Stage primaryStage) {
         final Stage finalPrimaryStage = primaryStage;
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
-        backButton.setOnAction(e -> navigateTo(new GestisciProdottiPage(stage)));
+        ButtonNavigationHandler navigationHandler = new ButtonNavigationHandler(stage);
+
+        // Modifica qui per passare anche il navigationHandler
+        backButton.setOnAction(e -> navigateTo(new GestisciProdottiPage(stage, navigationHandler)));
 
         TextField nomeField = new TextField();
         nomeField.setPromptText("Nome prodotto");
