@@ -9,6 +9,7 @@ org\example\GestisciProdottiPage.class
 org\example\ImageViewWindow.class
 org\example\InternetCheck.class
 org\example\GestisciProdottiPage$Product$Builder.class
+org\example\NavigationManager.class
 org\example\LoginPage.class
 org\example\DatabaseUtils.class
 org\example\ProductTable.class
