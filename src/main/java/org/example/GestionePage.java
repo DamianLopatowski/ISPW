@@ -26,7 +26,7 @@ public class GestionePage implements NavigablePage {
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
             // Usa PageNavigator per navigare alla pagina GestisciProdotti
-            pageNavigator.navigateToPage("GestisciProdotti", primaryStage);  // Usa direttamente primaryStage
+            pageNavigator.navigateToPage("GestisciProdotti", primaryStage);  // Passa primaryStage qui
         });
 
         TextField nomeField = new TextField();

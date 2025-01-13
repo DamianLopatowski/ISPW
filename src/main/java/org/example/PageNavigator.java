@@ -13,7 +13,7 @@ public class PageNavigator {
         switch (pageName) {
             case "GestisciProdotti":
                 GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-                gestisciProdottiPage.start(primaryStage);  // Assicurati che primaryStage venga passato correttamente
+                gestisciProdottiPage.start(primaryStage);  // Passa primaryStage correttamente
                 break;
             // Aggiungi altre pagine se necessario
         }
