@@ -11,6 +11,7 @@ public class LoginPage extends Application {
 
 
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
+    private PageNavigator navigator; // Campo membro per il PageNavigator
 
     public static void main(String[] args) {
         // Avvia l'applicazione JavaFX
@@ -19,7 +20,8 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        PageNavigator navigator = new PageNavigator(primaryStage);
+        // Inizializza il PageNavigator come campo membro
+        navigator = new PageNavigator(primaryStage);
 
         // Registra tutte le pagine
         navigator.registerPage("Gestione", () -> new GestionePage(navigator));
@@ -31,8 +33,6 @@ public class LoginPage extends Application {
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
-
-
 
     public Scene createLoginScene(Stage primaryStage) {
         // Crea i componenti dell'interfaccia di login come variabili locali
@@ -108,6 +108,7 @@ public class LoginPage extends Application {
         // Creazione dei pulsanti per la pagina principale
         Button gestisciProdottiButton = new Button("Gestisci Prodotti");
         gestisciProdottiButton.setOnAction(e -> openGestisciProdottiPage(primaryStage));
+
         Button soglieAvvisiButton = new Button("Soglie Avvisi");
         Button gestioneSchedeButton = new Button("Gestione Schede");
         Button gestisciOrdiniButton = new Button("Gestisci Ordini");
@@ -138,13 +139,10 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Usa il PageNavigator esistente
-        PageNavigator navigator = new PageNavigator(primaryStage);
-
-        // Passa il PageNavigator al costruttore di GestisciProdottiPage
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(navigator);
-        gestisciProdottiPage.start(primaryStage);
+        // Usa la pagina registrata per navigare
+        navigator.navigateToPage("GestisciProdotti");
     }
+
 
 
     private void showAlert(String title, String message) {

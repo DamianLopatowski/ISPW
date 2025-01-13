@@ -36,9 +36,12 @@ public class GestisciProdottiPage implements NavigablePage  {
 
     @Override
     public void start(Stage primaryStage) {
-        // Pulsante per tornare alla pagina principale
         Button gestioneButton = new Button("Torna alla Pagina Principale");
         gestioneButton.setOnAction(e -> navigator.navigateToPage("Gestione"));
+
+        // Pulsante "Gestione"
+        Button gestioneProdottiButton = new Button("Gestione Prodotti");
+        gestioneProdottiButton.setOnAction(e -> navigator.navigateToPage("Gestione"));
 
         // Campo di ricerca
         TextField searchField = new TextField();
