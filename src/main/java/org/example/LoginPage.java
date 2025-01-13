@@ -129,10 +129,11 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Pass primaryStage to the constructor of GestisciProdottiPage
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(primaryStage);
-        gestisciProdottiPage.start(primaryStage);
+        Window window = new StageWindow(primaryStage);  // Instantiate a StageWindow with the primaryStage
+        window.showPage(new GestisciProdottiPage(primaryStage));  // Navigate to GestisciProdottiPage
     }
+
+
 
 
     private void showAlert(String title, String message) {

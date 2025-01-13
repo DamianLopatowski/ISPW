@@ -145,9 +145,10 @@ public class GestisciProdottiPage implements Page {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage(primaryStage);  // Pass primaryStage here
-        gestionePage.start(primaryStage);
+        Window window = new StageWindow(primaryStage);  // Instantiate StageWindow
+        window.showPage(new GestionePage(primaryStage));  // Navigate to GestionePage
     }
+
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {

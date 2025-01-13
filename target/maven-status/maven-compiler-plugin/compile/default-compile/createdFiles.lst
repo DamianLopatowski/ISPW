@@ -1,4 +1,5 @@
 org\example\ProductTable$1.class
+org\example\StageWindow.class
 org\example\GestionePage.class
 org\example\QuantitaProdotto.class
 org\example\DettagliProdotto.class
@@ -9,8 +10,10 @@ org\example\GestisciProdottiPage.class
 org\example\ImageViewWindow.class
 org\example\InternetCheck.class
 org\example\GestisciProdottiPage$Product$Builder.class
+org\example\Window.class
 org\example\LoginPage.class
 org\example\DatabaseUtils.class
 org\example\ProductTable.class
+org\example\PageNavigator.class
 org\example\Page.class
 org\example\GestisciProdottiPage$Product.class
