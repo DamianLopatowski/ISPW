@@ -7,11 +7,20 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PageNavigator {
+    private static PageNavigator instance; // Istanza singleton
     private final Stage primaryStage;
     private final Map<String, Supplier<NavigablePage>> pageRegistry = new HashMap<>();
 
-    public PageNavigator(Stage primaryStage) {
+    private PageNavigator(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    // Metodo per ottenere l'istanza singleton
+    public static PageNavigator getInstance(Stage primaryStage) {
+        if (instance == null) {
+            instance = new PageNavigator(primaryStage);
+        }
+        return instance;
     }
 
     public void registerPage(String pageName, Supplier<NavigablePage> pageSupplier) {

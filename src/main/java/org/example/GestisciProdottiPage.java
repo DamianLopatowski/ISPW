@@ -36,12 +36,18 @@ public class GestisciProdottiPage implements NavigablePage  {
 
     @Override
     public void start(Stage primaryStage) {
-        Button gestioneButton = new Button("Torna alla Pagina Principale");
+        // Pulsante per tornare a "Gestione"
+        Button gestioneButton = new Button("Torna alla Gestione");
         gestioneButton.setOnAction(e -> navigator.navigateToPage("Gestione"));
 
-        // Pulsante "Gestione"
-        Button gestioneProdottiButton = new Button("Gestione Prodotti");
-        gestioneProdottiButton.setOnAction(e -> navigator.navigateToPage("Gestione"));
+        // Pulsante per tornare alla pagina principale
+        Button mainPageButton = new Button("Torna alla Pagina Principale");
+        mainPageButton.setOnAction(e -> {
+            System.out.println("Navigazione a showMainPage");
+            LoginPage loginPage = new LoginPage(navigator); // Usa il costruttore con navigator
+            loginPage.showMainPage(primaryStage);
+        });
+
 
         // Campo di ricerca
         TextField searchField = new TextField();
@@ -63,7 +69,7 @@ public class GestisciProdottiPage implements NavigablePage  {
         });
 
         // Layout principale
-        VBox vbox = new VBox(15, gestioneButton, searchField,
+        VBox vbox = new VBox(15, gestioneButton, mainPageButton, searchField,
                 new Label(MAGAZZINO), magazzinoTable,
                 new Label(NEGOZIO), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
@@ -74,6 +80,7 @@ public class GestisciProdottiPage implements NavigablePage  {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
 
 
 

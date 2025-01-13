@@ -7,11 +7,31 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class LoginPage extends Application {
-
+public class LoginPage extends Application implements NavigablePage {
 
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
+    private static PageNavigator staticNavigator; // Campo statico per il PageNavigator
+
+    public static void setNavigator(PageNavigator navigator) {
+        staticNavigator = navigator;
+    }
+
+    public static void showMainPageStatic(Stage primaryStage) {
+        if (staticNavigator == null) {
+            throw new IllegalStateException("Navigator non inizializzato!");
+        }
+        new LoginPage(staticNavigator).showMainPage(primaryStage);
+    }
+
     private PageNavigator navigator; // Campo membro per il PageNavigator
+
+    public LoginPage(PageNavigator navigator) {
+        this.navigator = navigator;
+    }
+
+    public LoginPage() {
+        // Costruttore vuoto per JavaFX
+    }
 
     public static void main(String[] args) {
         // Avvia l'applicazione JavaFX
@@ -20,12 +40,14 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Inizializza il PageNavigator come campo membro
-        navigator = new PageNavigator(primaryStage);
+        // Recupera o inizializza l'istanza di PageNavigator
+        navigator = PageNavigator.getInstance(primaryStage);
+        setNavigator(navigator); // Inizializza il campo statico per il navigator
 
         // Registra tutte le pagine
         navigator.registerPage("Gestione", () -> new GestionePage(navigator));
         navigator.registerPage("GestisciProdotti", () -> new GestisciProdottiPage(navigator));
+        navigator.registerPage("MainPage", () -> new LoginPage(navigator));
 
         // Mostra la scena di login
         Scene loginScene = createLoginScene(primaryStage);
@@ -33,6 +55,8 @@ public class LoginPage extends Application {
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
+
+
 
     public Scene createLoginScene(Stage primaryStage) {
         // Crea i componenti dell'interfaccia di login come variabili locali
@@ -107,7 +131,7 @@ public class LoginPage extends Application {
     public void showMainPage(Stage primaryStage) {
         // Creazione dei pulsanti per la pagina principale
         Button gestisciProdottiButton = new Button("Gestisci Prodotti");
-        gestisciProdottiButton.setOnAction(e -> openGestisciProdottiPage(primaryStage));
+        gestisciProdottiButton.setOnAction(e -> staticNavigator.navigateToPage("GestisciProdotti"));
 
         Button soglieAvvisiButton = new Button("Soglie Avvisi");
         Button gestioneSchedeButton = new Button("Gestione Schede");
@@ -139,7 +163,6 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Usa la pagina registrata per navigare
         navigator.navigateToPage("GestisciProdotti");
     }
 
