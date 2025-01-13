@@ -15,25 +15,16 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import javafx.stage.FileChooser;
 
-public class GestionePage implements Page {
+public class GestionePage {
 
-    private Stage stage;
-    private ButtonNavigationHandler navigationHandler;
-
-    public GestionePage(Stage stage, ButtonNavigationHandler navigationHandler) {
-        this.stage = stage;
-        this.navigationHandler = navigationHandler;
-    }
-
-    @Override
     public void start(Stage primaryStage) {
         final Stage finalPrimaryStage = primaryStage;
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
-        ButtonNavigationHandler navigationHandler = new ButtonNavigationHandler(stage);
-
-        // Modifica qui per passare anche il navigationHandler
-        backButton.setOnAction(e -> navigateTo(new GestisciProdottiPage(stage, navigationHandler)));
+        backButton.setOnAction(e -> {
+            GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
+            gestisciProdottiPage.start(finalPrimaryStage);
+        });
 
         TextField nomeField = new TextField();
         nomeField.setPromptText("Nome prodotto");
@@ -186,9 +177,5 @@ public class GestionePage implements Page {
             insertStmt.setBytes(8, prodotto.getImmagine());
             insertStmt.executeUpdate();
         }
-    }
-
-    public void navigateTo(Page page) {
-        page.start(stage);
     }
 }

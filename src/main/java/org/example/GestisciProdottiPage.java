@@ -12,15 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage implements Page {
-
-    private Stage stage;
-    private ButtonNavigationHandler navigationHandler;
-
-    public GestisciProdottiPage(Stage stage, ButtonNavigationHandler navigationHandler) {
-        this.stage = stage;
-        this.navigationHandler = navigationHandler;
-    }
+public class GestisciProdottiPage {
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -35,15 +27,12 @@ public class GestisciProdottiPage implements Page {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
-    @Override
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
-        Button gestioneButton = new Button("Gestione");
-
-        // Usa il navigationHandler per collegare i bottoni
-        navigationHandler.handleButtonAction(backButton, new LoginPage(stage));
-        navigationHandler.handleButtonAction(gestioneButton, new GestionePage(stage, navigationHandler));
-
+        backButton.setOnAction(e -> {
+            LoginPage loginPage = new LoginPage();
+            loginPage.showMainPage(primaryStage);
+        });
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
@@ -53,6 +42,8 @@ public class GestisciProdottiPage implements Page {
         magazzinoTable = productTable.createProductTable(this);
         negozioTable = productTable.createProductTable(this);
 
+        Button gestioneButton = new Button("Gestione");
+        gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
 
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
@@ -150,15 +141,9 @@ public class GestisciProdottiPage implements Page {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        // Crea un'istanza di ButtonNavigationHandler con lo Stage
-        ButtonNavigationHandler navigationHandler = new ButtonNavigationHandler(primaryStage);
-
-        // Passa sia lo Stage che il navigationHandler al costruttore di GestionePage
-        Window window = new StageWindow(primaryStage);  // Instanzia StageWindow con lo Stage
-        window.showPage(new GestionePage(primaryStage, navigationHandler));  // Naviga verso GestionePage
+        GestionePage gestionePage = new GestionePage();
+        gestionePage.start(primaryStage);
     }
-
-
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {

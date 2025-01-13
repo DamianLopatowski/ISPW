@@ -7,23 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class LoginPage extends Application implements Page{
-
-    public LoginPage() {
-        // Costruttore senza parametri per JavaFX
-        this.stage = null;
-        this.navigationHandler = null;
-    }
-
-
-    private Stage stage;
-    private ButtonNavigationHandler navigationHandler;
-
-    public LoginPage(Stage stage) {
-        this.stage = stage;
-        this.navigationHandler = new ButtonNavigationHandler(stage);
-    }
-
+public class LoginPage extends Application {
 
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
@@ -34,12 +18,13 @@ public class LoginPage extends Application implements Page{
 
     @Override
     public void start(Stage primaryStage) {
-        this.stage = primaryStage;  // Assegna primaryStage se non è stato ancora assegnato
+        // Crea la scena di login
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
+
     public Scene createLoginScene(Stage primaryStage) {
         // Crea i componenti dell'interfaccia di login come variabili locali
         TextField usernameField = new TextField();
@@ -144,17 +129,10 @@ public class LoginPage extends Application implements Page{
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Crea un'istanza di ButtonNavigationHandler con lo Stage
-        ButtonNavigationHandler navigationHandler = new ButtonNavigationHandler(primaryStage);
-
-        // Passa sia lo Stage che il navigationHandler al costruttore di GestisciProdottiPage
-        Window window = new StageWindow(primaryStage);  // Instanzia StageWindow con lo Stage
-        window.showPage(new GestisciProdottiPage(primaryStage, navigationHandler));  // Naviga verso GestisciProdottiPage
+        // Instantiate GestisciProdottiPage without passing DatabaseConnection
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
+        gestisciProdottiPage.start(primaryStage);
     }
-
-
-
-
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
