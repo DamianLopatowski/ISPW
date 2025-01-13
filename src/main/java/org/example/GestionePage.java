@@ -15,15 +15,18 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import javafx.stage.FileChooser;
 
-public class GestionePage {
+public class GestionePage implements NavigablePage {
 
+
+    @Override
     public void start(Stage primaryStage) {
-        final Stage finalPrimaryStage = primaryStage;
+        // Crea un'istanza di PageNavigator passando primaryStage come parametro
+        PageNavigator pageNavigator = new PageNavigator(primaryStage);
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
-            GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-            gestisciProdottiPage.start(finalPrimaryStage);
+            // Usa PageNavigator per navigare alla pagina GestisciProdotti
+            pageNavigator.navigateToPage("GestisciProdotti", primaryStage);  // Usa direttamente primaryStage
         });
 
         TextField nomeField = new TextField();
@@ -55,7 +58,7 @@ public class GestionePage {
         uploadButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
-            imageFiles[0] = fileChooser.showOpenMultipleDialog(finalPrimaryStage);
+            imageFiles[0] = fileChooser.showOpenMultipleDialog(primaryStage);  // Usa direttamente primaryStage
 
             if (imageFiles[0] != null && !imageFiles[0].isEmpty()) {
                 fileLabel.setText("File aggiunto: " + imageFiles[0].get(0).getName());
@@ -89,9 +92,10 @@ public class GestionePage {
         vbox.setStyle("-fx-padding: 20;");
 
         Scene scene = new Scene(vbox, 500, 400);
-        finalPrimaryStage.setScene(scene);
-        finalPrimaryStage.show();
+        primaryStage.setScene(scene);  // Usa direttamente primaryStage
+        primaryStage.show();
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
