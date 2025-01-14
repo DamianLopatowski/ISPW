@@ -5,6 +5,7 @@ org\example\QuantitaProdotto.class
 org\example\DettagliProdotto.class
 org\example\ProductTable$2.class
 org\example\DatabaseConnection.class
+org\example\Navigator.class
 org\example\Prodotto.class
 org\example\GestisciProdottiPage.class
 org\example\ImageViewWindow.class

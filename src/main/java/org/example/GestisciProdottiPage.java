@@ -12,7 +12,9 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage {
+public class GestisciProdottiPage implements MainPageNavigator {
+
+    private Navigator navigator;
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -27,12 +29,11 @@ public class GestisciProdottiPage {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
+
     public void start(Stage primaryStage, MainPageNavigator mainPageNavigator) {
-        Button backButton = new Button("Torna alla Pagina Prima");
-        backButton.setOnAction(e -> {
-            NavigationManager navigationManager = new NavigationManager(primaryStage, mainPageNavigator);
-            navigationManager.navigateToMainPage(); // Naviga indietro senza parametri
-        });
+        navigator = new NavigationManager(primaryStage, this);
+        Button backButton = new Button("Torna alla Pagina Principale");
+        backButton.setOnAction(e -> mainPageNavigator.showMainPage());
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
@@ -43,7 +44,7 @@ public class GestisciProdottiPage {
         negozioTable = productTable.createProductTable(this);
 
         Button gestioneButton = new Button("Gestione");
-        gestioneButton.setOnAction(e -> showGestionePage(primaryStage, mainPageNavigator)); // Passa entrambi i parametri
+        gestioneButton.setOnAction(e -> navigator.navigateToGestionePage());
 
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
@@ -62,6 +63,11 @@ public class GestisciProdottiPage {
         Scene scene = new Scene(vbox, 1000, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    @Override
+    public void showMainPage() {
+        System.out.println("Navigazione alla pagina principale da GestisciProdottiPage.");
+        // Implementa qui la logica per tornare alla pagina principale
     }
 
     private void loadProducts(TableView<Product> table, String categoria) {
@@ -138,11 +144,6 @@ public class GestisciProdottiPage {
                     .immagine(null)
                     .build());
         }
-    }
-
-    private void showGestionePage(Stage primaryStage, MainPageNavigator mainPageNavigator) {
-        GestionePage gestionePage = new GestionePage();
-        gestionePage.start(primaryStage, mainPageNavigator); // Passa entrambi i parametri
     }
 
     public void deleteProductFromDatabase(Product product) {

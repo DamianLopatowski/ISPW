@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 import java.util.logging.Logger;
 
-public class NavigationManager implements NavigationService {
+public class NavigationManager implements Navigator {
 
     private final MainPageNavigator mainPageNavigator;
     private final Stage stage;
@@ -17,25 +17,26 @@ public class NavigationManager implements NavigationService {
         this.mainPageNavigator = mainPageNavigator;
     }
 
+    @Override
     public void navigateToMainPage() {
         if (mainPageNavigator != null) {
             mainPageNavigator.showMainPage();
         } else {
-            logger.warning("MainPageNavigator non è inizializzato. Impossibile navigare alla pagina principale.");
+            logger.warning("MainPageNavigator non è inizializzato.");
         }
     }
 
-    // Restituisce lo stage principale
-    public Stage getStage() {
-        return stage;
+    @Override
+    public void navigateToGestisciProdotti() {
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
+        gestisciProdottiPage.start(stage, mainPageNavigator);
     }
 
     @Override
-    public void navigateToGestisciProdotti(Stage stage) {
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-        gestisciProdottiPage.start(stage, mainPageNavigator); // Passa entrambi i parametri richiesti
+    public void navigateToGestionePage() {
+        GestionePage gestionePage = new GestionePage();
+        gestionePage.start(stage, (Navigator) mainPageNavigator);
     }
-
 
     @Override
     public void display(VBox root, String title, Stage stage) {
@@ -47,5 +48,9 @@ public class NavigationManager implements NavigationService {
         } catch (Exception e) {
             logger.warning("Errore durante il caricamento della vista: " + e.getMessage());
         }
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
