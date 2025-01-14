@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.example.database.DatabaseConnection;
 import org.example.database.InternetCheck;
+import org.example.table.GestionePage;
 import org.example.table.ProductTable;
 
 import java.sql.*;

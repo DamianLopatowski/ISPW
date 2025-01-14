@@ -1,4 +1,4 @@
-package org.example.ui;
+package org.example.table;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +18,7 @@ import org.example.database.DatabaseConnection;
 import org.example.model.DettagliProdotto;
 import org.example.model.Prodotto;
 import org.example.model.QuantitaProdotto;
+import org.example.ui.GestisciProdottiPage;
 
 public class GestionePage {
 
