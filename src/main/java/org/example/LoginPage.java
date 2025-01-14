@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 
 public class LoginPage extends Application {
 
+    private NavigationManager navigationManager;
+
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
     public static void main(String[] args) {
@@ -18,7 +20,7 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Crea la scena di login
+        navigationManager = new NavigationManager(primaryStage); // Passa il primaryStage
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
@@ -129,9 +131,7 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        // Instantiate GestisciProdottiPage without passing DatabaseConnection
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
-        gestisciProdottiPage.start(primaryStage);
+        navigationManager.navigateToGestisciProdotti(primaryStage);
     }
 
     private void showAlert(String title, String message) {

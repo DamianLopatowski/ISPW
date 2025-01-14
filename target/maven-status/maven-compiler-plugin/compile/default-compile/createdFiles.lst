@@ -8,11 +8,10 @@ org\example\Prodotto.class
 org\example\GestisciProdottiPage.class
 org\example\ImageViewWindow.class
 org\example\InternetCheck.class
-org\example\PageController.class
 org\example\GestisciProdottiPage$Product$Builder.class
+org\example\NavigationManager.class
+org\example\NavigationService.class
 org\example\LoginPage.class
 org\example\DatabaseUtils.class
 org\example\ProductTable.class
-org\example\NavigablePage.class
-org\example\NavigationHandler.class
 org\example\GestisciProdottiPage$Product.class
