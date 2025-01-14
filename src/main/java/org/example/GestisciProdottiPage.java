@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.sql.*;
 
 public class GestisciProdottiPage {
-
     private final PageController pageController;
 
     public GestisciProdottiPage(PageController pageController) {
@@ -35,10 +34,7 @@ public class GestisciProdottiPage {
 
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
-        backButton.setOnAction(e -> {
-            LoginPage loginPage = new LoginPage();
-            loginPage.showMainPage(primaryStage);
-        });
+        backButton.setOnAction(e -> pageController.showMainPage());
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
@@ -48,7 +44,7 @@ public class GestisciProdottiPage {
         magazzinoTable = productTable.createProductTable(this);
         negozioTable = productTable.createProductTable(this);
 
-        Button gestioneButton = new Button("Gestione");
+        Button gestioneButton = new Button("Vai alla Gestione");
         gestioneButton.setOnAction(e -> pageController.showGestionePage());
 
 

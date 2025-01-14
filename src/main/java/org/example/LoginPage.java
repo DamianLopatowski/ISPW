@@ -18,96 +18,102 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Crea la scena di login
-        Scene loginScene = createLoginScene(primaryStage);
+        PageController pageController = new PageController(primaryStage);
+
+        // Configura le pagine
+        GestionePage gestionePage = new GestionePage(pageController);
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(pageController);
+        pageController.setPages(gestionePage, gestisciProdottiPage);
+
+        // Mostra la scena principale
+        Scene loginScene = createLoginScene(primaryStage, pageController);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
 
-    public Scene createLoginScene(Stage primaryStage) {
-        // Crea i componenti dell'interfaccia di login come variabili locali
+
+    public Scene createLoginScene(Stage primaryStage, PageController pageController) {
         TextField usernameField = new TextField();
         PasswordField passwordField = new PasswordField();
         Button loginButton = new Button("Login");
 
-        // Crea i RadioButton per scegliere il tipo di login
         ToggleGroup loginTypeGroup = new ToggleGroup();
         RadioButton onlineLogin = new RadioButton("Login con Database");
         onlineLogin.setToggleGroup(loginTypeGroup);
-        onlineLogin.setSelected(true); // Imposta il login con il database come predefinito
+        onlineLogin.setSelected(true);
         RadioButton offlineLogin = new RadioButton("Login Offline");
         offlineLogin.setToggleGroup(loginTypeGroup);
 
-        // Verifica la connessione e disabilita l'opzione "Login con Database" se offline
         if (!InternetCheck.isConnected()) {
-            onlineLogin.setDisable(true); // Disabilita l'opzione se non c'è connessione
-            offlineLogin.setSelected(true); // Imposta automaticamente la modalità offline
+            onlineLogin.setDisable(true);
+            offlineLogin.setSelected(true);
         }
 
-        // Imposta l'azione di login
-        loginButton.setOnAction(e -> handleLogin(usernameField.getText(), passwordField.getText(), onlineLogin.isSelected(), primaryStage));
+        loginButton.setOnAction(e -> {
+            boolean isOnlineLogin = onlineLogin.isSelected();
+            handleLogin(usernameField.getText(), passwordField.getText(), isOnlineLogin, primaryStage, pageController);
+        });
 
-        // Layout migliorato
-        VBox layout = new VBox(15,
-                new Label("Username:"),
-                usernameField,
-                new Label("Password:"),
-                passwordField,
-                onlineLogin,
-                offlineLogin,
-                loginButton
-        );
+        VBox layout = new VBox(15, new Label("Username:"), usernameField, new Label("Password:"), passwordField, onlineLogin, offlineLogin, loginButton);
         layout.setAlignment(Pos.CENTER);
-        layout.setStyle("-fx-background-color: #f2f2f2; -fx-padding: 20;");
+        layout.setStyle("-fx-padding: 20;");
 
         return new Scene(layout, 400, 300);
     }
 
-    private void handleLogin(String username, String password, boolean isOnlineLogin, Stage primaryStage) {
+
+    private void handleLogin(String username, String password, boolean isOnlineLogin, Stage primaryStage, PageController pageController) {
         if (isOnlineLogin) {
-            handleOnlineLogin(username, password, primaryStage);
+            handleOnlineLogin(username, password, primaryStage, pageController);
         } else {
-            handleOfflineLogin(username, password, primaryStage);
+            handleOfflineLogin(username, password, primaryStage, pageController);
         }
     }
 
-    private void handleOnlineLogin(String username, String password, Stage primaryStage) {
+
+    private void handleOnlineLogin(String username, String password, Stage primaryStage, PageController pageController) {
         if (!InternetCheck.isConnected()) {
             showAlert("Connessione non disponibile", "Internet non disponibile per il login con il database.");
             return;
         }
 
         if (DatabaseUtils.verifyCredentials(username, password)) {
-            setOffline(false);  // Modalità online
-            showMainPage(primaryStage);
+            setOffline(false); // Modalità online
+            showMainPage(primaryStage, pageController);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
     }
 
-    private void handleOfflineLogin(String username, String password, Stage primaryStage) {
-        setOffline(true);  // Modalità offline
+
+    private void handleOfflineLogin(String username, String password, Stage primaryStage, PageController pageController) {
+        setOffline(true); // Modalità offline
         if ("admin".equals(username) && "password123".equals(password)) {
-            showMainPage(primaryStage);
+            showMainPage(primaryStage, pageController);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
     }
 
-    public void showMainPage(Stage primaryStage) {
-        // Creazione dei pulsanti per la pagina principale
-        PageController pageController = new PageController(primaryStage);
 
+    public void showMainPage(Stage primaryStage, PageController pageController) {
         Button gestisciProdottiButton = new Button("Gestisci Prodotti");
-        gestisciProdottiButton.setOnAction(e -> pageController.showGestisciProdottiPage());
+        gestisciProdottiButton.setOnAction(e -> {
+            System.out.println("Tentativo di navigare verso GestisciProdottiPage...");
+            pageController.showGestisciProdottiPage();
+        });
         Button soglieAvvisiButton = new Button("Soglie Avvisi");
         Button gestioneSchedeButton = new Button("Gestione Schede");
         Button gestisciOrdiniButton = new Button("Gestisci Ordini");
         Button logoutButton = new Button("Logout");
 
         // Impostazione dell'azione per il logout
-        logoutButton.setOnAction(e -> primaryStage.setScene(createLoginScene(primaryStage)));
+        logoutButton.setOnAction(e -> {
+            // Passa il PageController configurato alla scena di login
+            Scene loginScene = createLoginScene(primaryStage, pageController);
+            primaryStage.setScene(loginScene);
+        });
 
         // Layout per i pulsanti centrali
         VBox centerLayout = new VBox(15, gestisciProdottiButton, soglieAvvisiButton, gestioneSchedeButton, gestisciOrdiniButton);

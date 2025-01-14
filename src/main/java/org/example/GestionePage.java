@@ -16,7 +16,6 @@ import java.util.List;
 import javafx.stage.FileChooser;
 
 public class GestionePage {
-
     private final PageController pageController;
 
     public GestionePage(PageController pageController) {
