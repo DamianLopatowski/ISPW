@@ -15,21 +15,16 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import javafx.stage.FileChooser;
 
-public class GestionePage implements NavigablePage{
-    private final PageController pageController;
-
-    public GestionePage(PageController pageController) {
-        this.pageController = pageController;
-    }
+public class GestionePage {
 
     public void start(Stage primaryStage) {
         final Stage finalPrimaryStage = primaryStage;
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
-            NavigationHandler.getInstance().navigateTo("GestisciProdottiPage", primaryStage);
+            GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
+            gestisciProdottiPage.start(finalPrimaryStage);
         });
-
 
         TextField nomeField = new TextField();
         nomeField.setPromptText("Nome prodotto");

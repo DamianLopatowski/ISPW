@@ -12,12 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage implements NavigablePage {
-    private final PageController pageController;
-
-    public GestisciProdottiPage(PageController pageController) {
-        this.pageController = pageController;
-    }
+public class GestisciProdottiPage {
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -34,7 +29,10 @@ public class GestisciProdottiPage implements NavigablePage {
 
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
-        backButton.setOnAction(e -> pageController.showMainPage());
+        backButton.setOnAction(e -> {
+            LoginPage loginPage = new LoginPage();
+            loginPage.showMainPage(primaryStage);
+        });
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
@@ -44,9 +42,8 @@ public class GestisciProdottiPage implements NavigablePage {
         magazzinoTable = productTable.createProductTable(this);
         negozioTable = productTable.createProductTable(this);
 
-        Button gestioneButton = new Button("Vai alla Gestione");
-        gestioneButton.setOnAction(e -> pageController.showGestionePage());
-
+        Button gestioneButton = new Button("Gestione");
+        gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
 
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
@@ -141,6 +138,11 @@ public class GestisciProdottiPage implements NavigablePage {
                     .immagine(null)
                     .build());
         }
+    }
+
+    private void showGestionePage(Stage primaryStage) {
+        GestionePage gestionePage = new GestionePage();
+        gestionePage.start(primaryStage);
     }
 
     public void deleteProductFromDatabase(Product product) {
