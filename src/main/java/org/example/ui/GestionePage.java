@@ -1,4 +1,4 @@
-package org.example;
+package org.example.ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +14,10 @@ import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import javafx.stage.FileChooser;
+import org.example.database.DatabaseConnection;
+import org.example.model.DettagliProdotto;
+import org.example.model.Prodotto;
+import org.example.model.QuantitaProdotto;
 
 public class GestionePage {
 

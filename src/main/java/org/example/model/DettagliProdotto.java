@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 public class DettagliProdotto {
     private double prezzoAcquisto;

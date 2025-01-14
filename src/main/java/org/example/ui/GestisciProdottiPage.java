@@ -1,4 +1,4 @@
-package org.example;
+package org.example.ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,6 +9,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.example.database.DatabaseConnection;
+import org.example.database.InternetCheck;
+import org.example.table.ProductTable;
 
 import java.sql.*;
 

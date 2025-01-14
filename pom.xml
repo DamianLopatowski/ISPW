@@ -74,7 +74,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>org.example.LoginPage</mainClass> <!-- Cambia con il nome della tua classe principale -->
+                    <mainClass>org.example.ui.LoginPage</mainClass> <!-- Cambia con il nome della tua classe principale -->
                 </configuration>
             </plugin>
 

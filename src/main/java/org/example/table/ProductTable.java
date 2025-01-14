@@ -1,10 +1,13 @@
-package org.example;
+package org.example.table;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.example.immagini.ImageViewWindow;
+import org.example.ui.GestisciProdottiPage;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.logging.Logger;

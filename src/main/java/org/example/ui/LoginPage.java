@@ -1,4 +1,4 @@
-package org.example;
+package org.example.ui;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.example.database.DatabaseUtils;
+import org.example.database.InternetCheck;
 
 public class LoginPage extends Application {
 
