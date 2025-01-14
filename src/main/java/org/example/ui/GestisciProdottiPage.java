@@ -9,11 +9,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.example.controller.LoginPageController;
 import org.example.database.DatabaseConnection;
 import org.example.database.InternetCheck;
 import org.example.database.LoginPage;
 import org.example.table.GestionePage;
 import org.example.table.ProductTable;
+import org.example.view.LoginPageView;
 
 import java.sql.*;
 
@@ -35,9 +37,13 @@ public class GestisciProdottiPage {
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
         backButton.setOnAction(e -> {
-            LoginPage loginPage = new LoginPage();
-            loginPage.showMainPage(primaryStage);
+            // Recupera l'istanza corretta del controller e chiama showMainPage
+            LoginPageView view = new LoginPageView(); // Puoi anche mantenere un riferimento globale a questa istanza se necessario
+            LoginPageController loginController = new LoginPageController(view);
+            loginController.showMainPage(primaryStage); // Torna alla pagina principale
         });
+
+
 
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
