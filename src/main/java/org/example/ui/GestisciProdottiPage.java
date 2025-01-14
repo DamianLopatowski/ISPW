@@ -9,12 +9,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.example.controller.GestionePageController;
 import org.example.controller.LoginPageController;
 import org.example.database.DatabaseConnection;
 import org.example.database.InternetCheck;
 import org.example.database.LoginPage;
-import org.example.table.GestionePage;
 import org.example.table.ProductTable;
+import org.example.view.GestionePageView;
 import org.example.view.LoginPageView;
 
 import java.sql.*;
@@ -152,9 +153,11 @@ public class GestisciProdottiPage {
     }
 
     private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage();
-        gestionePage.start(primaryStage);
+        GestionePageView gestionePageView = new GestionePageView(primaryStage);
+        new GestionePageController(gestionePageView, primaryStage);
+        gestionePageView.setupLayout();
     }
+
 
     public void deleteProductFromDatabase(Product product) {
         if (!LoginPage.isOffline() && InternetCheck.isConnected()) {

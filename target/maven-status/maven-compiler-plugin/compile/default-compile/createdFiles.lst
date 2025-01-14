@@ -4,13 +4,14 @@ org\example\ui\GestisciProdottiPage$Product$Builder.class
 org\example\ui\GestisciProdottiPage$Product.class
 org\example\controller\LoginPageController.class
 org\example\database\LoginPage.class
+org\example\view\GestionePageView.class
 org\example\database\DatabaseUtils.class
 org\example\model\DettagliProdotto.class
 org\example\database\InternetCheck.class
 org\example\table\ProductTable$2.class
 org\example\immagini\ImageViewWindow.class
-org\example\table\GestionePage.class
 org\example\model\QuantitaProdotto.class
+org\example\controller\GestionePageController.class
 org\example\ui\GestisciProdottiPage.class
 org\example\database\DatabaseConnection.class
 org\example\table\ProductTable$1.class

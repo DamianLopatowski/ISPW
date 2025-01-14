@@ -5,8 +5,9 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\database\DatabaseUti
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\QuantitaProdotto.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\database\InternetCheck.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\database\LoginPage.java
-C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\table\GestionePage.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\GestionePageView.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controller\LoginPageController.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controller\GestionePageController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\DettagliProdotto.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Prodotto.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\ui\GestisciProdottiPage.java
