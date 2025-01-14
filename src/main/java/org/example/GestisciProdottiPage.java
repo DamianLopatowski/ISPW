@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage {
+public class GestisciProdottiPage implements NavigablePage {
     private final PageController pageController;
 
     public GestisciProdottiPage(PageController pageController) {

@@ -18,19 +18,29 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Crea e configura il NavigationHandler
+        NavigationHandler navigationHandler = NavigationHandler.getInstance();
+
+        // Crea il PageController
         PageController pageController = new PageController(primaryStage);
 
-        // Configura le pagine
+        // Crea e registra le pagine
         GestionePage gestionePage = new GestionePage(pageController);
         GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(pageController);
+
+        navigationHandler.registerPage("GestionePage", gestionePage);
+        navigationHandler.registerPage("GestisciProdottiPage", gestisciProdottiPage);
+
+        // Configura le pagine nel PageController
         pageController.setPages(gestionePage, gestisciProdottiPage);
 
-        // Mostra la scena principale
+        // Mostra la pagina principale
         Scene loginScene = createLoginScene(primaryStage, pageController);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
+
 
 
     public Scene createLoginScene(Stage primaryStage, PageController pageController) {

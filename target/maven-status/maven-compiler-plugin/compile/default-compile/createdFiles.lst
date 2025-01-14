@@ -14,4 +14,5 @@ org\example\LoginPage.class
 org\example\DatabaseUtils.class
 org\example\ProductTable.class
 org\example\NavigablePage.class
+org\example\NavigationHandler.class
 org\example\GestisciProdottiPage$Product.class
