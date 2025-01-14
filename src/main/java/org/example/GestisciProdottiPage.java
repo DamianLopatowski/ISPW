@@ -27,11 +27,11 @@ public class GestisciProdottiPage {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage, MainPageNavigator mainPageNavigator) {
         Button backButton = new Button("Torna alla Pagina Prima");
         backButton.setOnAction(e -> {
-            NavigationManager navigationManager = new NavigationManager(primaryStage);
-            navigationManager.navigateToMainPage(primaryStage); // Un metodo dedicato per navigare indietro
+            NavigationManager navigationManager = new NavigationManager(primaryStage, mainPageNavigator);
+            navigationManager.navigateToMainPage(); // Naviga indietro senza parametri
         });
 
         TextField searchField = new TextField();
@@ -43,7 +43,7 @@ public class GestisciProdottiPage {
         negozioTable = productTable.createProductTable(this);
 
         Button gestioneButton = new Button("Gestione");
-        gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
+        gestioneButton.setOnAction(e -> showGestionePage(primaryStage, mainPageNavigator)); // Passa entrambi i parametri
 
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
@@ -140,9 +140,9 @@ public class GestisciProdottiPage {
         }
     }
 
-    private void showGestionePage(Stage primaryStage) {
+    private void showGestionePage(Stage primaryStage, MainPageNavigator mainPageNavigator) {
         GestionePage gestionePage = new GestionePage();
-        gestionePage.start(primaryStage);
+        gestionePage.start(primaryStage, mainPageNavigator); // Passa entrambi i parametri
     }
 
     public void deleteProductFromDatabase(Product product) {

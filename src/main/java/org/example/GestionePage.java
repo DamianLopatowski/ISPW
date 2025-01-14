@@ -17,13 +17,13 @@ import javafx.stage.FileChooser;
 
 public class GestionePage {
 
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage, MainPageNavigator mainPageNavigator) {
         final Stage finalPrimaryStage = primaryStage;
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
-            NavigationManager navigationManager = new NavigationManager(finalPrimaryStage); // Passa lo stage
-            navigationManager.navigateToGestisciProdotti(finalPrimaryStage);
+            NavigationManager navigationManager = new NavigationManager(finalPrimaryStage, mainPageNavigator); // Passa lo stage e il MainPageNavigator
+            navigationManager.navigateToGestisciProdotti(finalPrimaryStage); // Naviga indietro
         });
 
         TextField nomeField = new TextField();

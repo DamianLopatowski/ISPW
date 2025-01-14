@@ -1,5 +1,6 @@
 org\example\ProductTable$1.class
 org\example\GestionePage.class
+org\example\MainPageNavigator.class
 org\example\QuantitaProdotto.class
 org\example\DettagliProdotto.class
 org\example\ProductTable$2.class

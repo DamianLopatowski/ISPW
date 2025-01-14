@@ -7,22 +7,33 @@ import javafx.stage.Stage;
 import java.util.logging.Logger;
 
 public class NavigationManager implements NavigationService {
+
+    private final MainPageNavigator mainPageNavigator;
     private final Stage stage;
     private final Logger logger = Logger.getLogger(NavigationManager.class.getName());
 
-    public NavigationManager(Stage stage) {
+    public NavigationManager(Stage stage, MainPageNavigator mainPageNavigator) {
         this.stage = stage;
+        this.mainPageNavigator = mainPageNavigator;
+    }
+
+    public void navigateToMainPage() {
+        if (mainPageNavigator != null) {
+            mainPageNavigator.showMainPage();
+        } else {
+            logger.warning("MainPageNavigator non è inizializzato. Impossibile navigare alla pagina principale.");
+        }
+    }
+
+    // Restituisce lo stage principale
+    public Stage getStage() {
+        return stage;
     }
 
     @Override
     public void navigateToGestisciProdotti(Stage stage) {
         GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
-        gestisciProdottiPage.start(stage);
-    }
-
-    public void navigateToMainPage(Stage stage) {
-        LoginPage loginPage = new LoginPage();
-        loginPage.showMainPage(stage);
+        gestisciProdottiPage.start(stage, mainPageNavigator); // Passa entrambi i parametri richiesti
     }
 
 
