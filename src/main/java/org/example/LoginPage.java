@@ -49,6 +49,7 @@ public class LoginPage extends Application implements NavigablePage {
         navigator.registerPage("GestisciProdotti", () -> new GestisciProdottiPage(navigator));
         navigator.registerPage("MainPage", () -> new LoginPage(navigator));
 
+
         // Mostra la scena di login
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
@@ -112,7 +113,7 @@ public class LoginPage extends Application implements NavigablePage {
         }
 
         if (DatabaseUtils.verifyCredentials(username, password)) {
-            setOffline(false);  // Modalità online
+            SessionContext.setOffline(false);  // Set to online mode
             showMainPage(primaryStage);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
@@ -120,13 +121,14 @@ public class LoginPage extends Application implements NavigablePage {
     }
 
     private void handleOfflineLogin(String username, String password, Stage primaryStage) {
-        setOffline(true);  // Modalità offline
+        SessionContext.setOffline(true);  // Set to offline mode
         if ("admin".equals(username) && "password123".equals(password)) {
             showMainPage(primaryStage);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
     }
+
 
     public void showMainPage(Stage primaryStage) {
         // Creazione dei pulsanti per la pagina principale
@@ -175,13 +177,4 @@ public class LoginPage extends Application implements NavigablePage {
         alert.showAndWait();
     }
 
-    // Getter per isOffline
-    public static boolean isOffline() {
-        return isOffline;
-    }
-
-    // Setter per isOffline
-    private static void setOffline(boolean offline) {
-        isOffline = offline;
-    }
 }

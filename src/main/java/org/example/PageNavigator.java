@@ -36,4 +36,13 @@ public class PageNavigator {
         NavigablePage page = pageSupplier.get();
         page.start(primaryStage);
     }
+    public void navigateToMainPage(Stage primaryStage) {
+        NavigablePage mainPage = pageRegistry.get("MainPage").get();
+        if (mainPage instanceof LoginPage) {
+            ((LoginPage) mainPage).showMainPage(primaryStage);
+        } else {
+            throw new IllegalArgumentException("MainPage is not configured to be a LoginPage!");
+        }
+    }
+
 }

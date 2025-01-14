@@ -44,9 +44,9 @@ public class GestisciProdottiPage implements NavigablePage  {
         Button mainPageButton = new Button("Torna alla Pagina Principale");
         mainPageButton.setOnAction(e -> {
             System.out.println("Navigazione a showMainPage");
-            LoginPage loginPage = new LoginPage(navigator); // Usa il costruttore con navigator
-            loginPage.showMainPage(primaryStage);
+            navigator.navigateToMainPage(primaryStage);
         });
+
 
 
         // Campo di ricerca
@@ -85,7 +85,7 @@ public class GestisciProdottiPage implements NavigablePage  {
 
 
     private void loadProducts(TableView<Product> table, String categoria) {
-        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
+        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "SELECT nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine FROM prodotti WHERE categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -122,7 +122,7 @@ public class GestisciProdottiPage implements NavigablePage  {
 
     private void searchProducts(String searchTerm, TableView<Product> table, String categoria) {
         table.getItems().clear();
-        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
+        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "SELECT nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codiceAbarre LIKE ?) AND categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -162,7 +162,7 @@ public class GestisciProdottiPage implements NavigablePage  {
 
 
     public void deleteProductFromDatabase(Product product) {
-        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
+        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "DELETE FROM prodotti WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -229,7 +229,7 @@ public class GestisciProdottiPage implements NavigablePage  {
     }
 
     private void saveProductToDatabase(Product product) {
-        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
+        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "UPDATE prodotti SET nome = ?, quantita = ?, scaffale = ?, codiceAbarre = ?, soglia = ?, prezzoAcquisto = ?, prezzoVendita = ? WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
