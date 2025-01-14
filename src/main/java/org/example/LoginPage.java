@@ -7,66 +7,55 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class LoginPage extends Application implements MainPageNavigator {
+public class LoginPage extends Application {
 
-    private Navigator navigator;
-    private static boolean isOffline = false;
+    private static boolean isOffline = false; // Flag per determinare se la modalità è offline
 
     public static void main(String[] args) {
+        // Avvia l'applicazione JavaFX
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        navigator = new NavigationManager(primaryStage, this);
-        Scene loginScene = createLoginScene(primaryStage); // Passa il parametro richiesto
+        // Crea la scena di login
+        Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
 
-
     public Scene createLoginScene(Stage primaryStage) {
-        // Creazione dei campi di input
+        // Crea i componenti dell'interfaccia di login come variabili locali
         TextField usernameField = new TextField();
-        usernameField.setPromptText("Inserisci il tuo username");
-
         PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Inserisci la tua password");
-
-        // Pulsante di login
         Button loginButton = new Button("Login");
 
-        // Gruppo di selezione per il tipo di login
+        // Crea i RadioButton per scegliere il tipo di login
         ToggleGroup loginTypeGroup = new ToggleGroup();
         RadioButton onlineLogin = new RadioButton("Login con Database");
         onlineLogin.setToggleGroup(loginTypeGroup);
-        onlineLogin.setSelected(true);
-
+        onlineLogin.setSelected(true); // Imposta il login con il database come predefinito
         RadioButton offlineLogin = new RadioButton("Login Offline");
         offlineLogin.setToggleGroup(loginTypeGroup);
 
-        // Disabilita l'opzione online se non c'è connessione
+        // Verifica la connessione e disabilita l'opzione "Login con Database" se offline
         if (!InternetCheck.isConnected()) {
-            onlineLogin.setDisable(true);
-            offlineLogin.setSelected(true);
+            onlineLogin.setDisable(true); // Disabilita l'opzione se non c'è connessione
+            offlineLogin.setSelected(true); // Imposta automaticamente la modalità offline
         }
 
-        // Azione del pulsante di login
-        loginButton.setOnAction(e -> {
-            if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-                showAlert("Errore di validazione", "Username e password sono obbligatori.");
-                return;
-            }
-            boolean isOnlineLogin = onlineLogin.isSelected();
-            handleLogin(usernameField.getText(), passwordField.getText(), isOnlineLogin, primaryStage);
-        });
+        // Imposta l'azione di login
+        loginButton.setOnAction(e -> handleLogin(usernameField.getText(), passwordField.getText(), onlineLogin.isSelected(), primaryStage));
 
-        // Layout principale
+        // Layout migliorato
         VBox layout = new VBox(15,
-                new Label("Username:"), usernameField,
-                new Label("Password:"), passwordField,
-                onlineLogin, offlineLogin,
+                new Label("Username:"),
+                usernameField,
+                new Label("Password:"),
+                passwordField,
+                onlineLogin,
+                offlineLogin,
                 loginButton
         );
         layout.setAlignment(Pos.CENTER);
@@ -90,39 +79,60 @@ public class LoginPage extends Application implements MainPageNavigator {
         }
 
         if (DatabaseUtils.verifyCredentials(username, password)) {
-            setOffline(false);
-            showMainPage();
+            setOffline(false);  // Modalità online
+            showMainPage(primaryStage);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
     }
 
     private void handleOfflineLogin(String username, String password, Stage primaryStage) {
-        setOffline(true);
+        setOffline(true);  // Modalità offline
         if ("admin".equals(username) && "password123".equals(password)) {
-            showMainPage();
+            showMainPage(primaryStage);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
         }
     }
 
-    @Override
-    public void showMainPage() {
+    public void showMainPage(Stage primaryStage) {
+        // Creazione dei pulsanti per la pagina principale
         Button gestisciProdottiButton = new Button("Gestisci Prodotti");
-        gestisciProdottiButton.setOnAction(e -> navigator.navigateToGestisciProdotti());
-
+        gestisciProdottiButton.setOnAction(e -> openGestisciProdottiPage(primaryStage));
+        Button soglieAvvisiButton = new Button("Soglie Avvisi");
+        Button gestioneSchedeButton = new Button("Gestione Schede");
+        Button gestisciOrdiniButton = new Button("Gestisci Ordini");
         Button logoutButton = new Button("Logout");
-        logoutButton.setOnAction(e -> navigator.navigateToMainPage());
 
-        VBox centerLayout = new VBox(15, gestisciProdottiButton, logoutButton);
+        // Impostazione dell'azione per il logout
+        logoutButton.setOnAction(e -> primaryStage.setScene(createLoginScene(primaryStage)));
+
+        // Layout per i pulsanti centrali
+        VBox centerLayout = new VBox(15, gestisciProdottiButton, soglieAvvisiButton, gestioneSchedeButton, gestisciOrdiniButton);
         centerLayout.setAlignment(Pos.CENTER);
         centerLayout.setStyle("-fx-background-color: #f2f2f2; -fx-padding: 20;");
 
-        Scene scene = new Scene(centerLayout, 800, 600);
-        ((NavigationManager) navigator).getStage().setScene(scene);
-        ((NavigationManager) navigator).getStage().show();
+        // Layout per il pulsante di logout in alto a destra
+        HBox topLayout = new HBox(logoutButton);
+        topLayout.setAlignment(Pos.TOP_RIGHT);
+        topLayout.setStyle("-fx-padding: 10;");
+
+        // Layout principale che combina il tutto
+        BorderPane layout = new BorderPane();
+        layout.setTop(topLayout);
+        layout.setCenter(centerLayout);
+
+        // Crea la scena
+        Scene scene = new Scene(layout, 800, 600);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
+    private void openGestisciProdottiPage(Stage primaryStage) {
+        // Instantiate GestisciProdottiPage without passing DatabaseConnection
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
+        gestisciProdottiPage.start(primaryStage);
+    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -131,10 +141,12 @@ public class LoginPage extends Application implements MainPageNavigator {
         alert.showAndWait();
     }
 
+    // Getter per isOffline
     public static boolean isOffline() {
         return isOffline;
     }
 
+    // Setter per isOffline
     private static void setOffline(boolean offline) {
         isOffline = offline;
     }

@@ -6,23 +6,24 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.io.ByteArrayOutputStream;
+import java.sql.*;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
-import java.sql.*;
-import java.util.List;
 import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import java.util.List;
 import javafx.stage.FileChooser;
 
 public class GestionePage {
 
-    public void start(Stage primaryStage, Navigator navigator) {
+    public void start(Stage primaryStage) {
         final Stage finalPrimaryStage = primaryStage;
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
-            navigator.navigateToGestisciProdotti(); // Usa il metodo senza parametro
+            GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
+            gestisciProdottiPage.start(finalPrimaryStage);
         });
 
         TextField nomeField = new TextField();
@@ -99,6 +100,7 @@ public class GestionePage {
         alert.showAndWait();
     }
 
+    // Metodo per verificare la validità dell'input
     private boolean inputValido(TextField nomeField, TextField codiceBarreField, TextField scaffaleField, TextField quantitaField, TextField prezzoAcquistoField, TextField prezzoVenditaField) {
         if (nomeField.getText().isEmpty() && codiceBarreField.getText().isEmpty()) {
             showAlert("Errore", "Devi inserire nome o codice a barre!");
@@ -112,6 +114,7 @@ public class GestionePage {
         return true;
     }
 
+    // Metodo per caricare l'immagine
     private byte[] caricaImmagine(List<File> imageFiles) {
         byte[] imageBytes = null;
         if (imageFiles != null && !imageFiles.isEmpty()) {
@@ -128,6 +131,7 @@ public class GestionePage {
         return imageBytes;
     }
 
+    // Metodo per eseguire l'operazione di database (aggiornamento o inserimento)
     private void eseguiOperazioneDatabase(Prodotto prodotto) {
         try (Connection conn = DatabaseConnection.connectToDatabase()) {
             String query = "SELECT nome, codiceAbarre FROM prodotti WHERE nome = ? OR codiceAbarre = ?";
@@ -147,6 +151,7 @@ public class GestionePage {
         }
     }
 
+    // Metodo per aggiornare il prodotto nel database
     private void aggiornaProdotto(Connection conn, Prodotto prodotto) throws SQLException {
         String updateQuery = "UPDATE prodotti SET quantita = quantita + ?, immagine = ? WHERE nome = ? OR codiceAbarref = ?";
         try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
@@ -158,6 +163,7 @@ public class GestionePage {
         }
     }
 
+    // Metodo per inserire un nuovo prodotto nel database
     private void inserisciProdotto(Connection conn, Prodotto prodotto) throws SQLException {
         String insertQuery = "INSERT INTO prodotti (nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
