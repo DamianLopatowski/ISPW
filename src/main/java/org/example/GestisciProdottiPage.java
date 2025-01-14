@@ -43,7 +43,11 @@ public class GestisciProdottiPage {
         negozioTable = productTable.createProductTable(this);
 
         Button gestioneButton = new Button("Gestione");
-        gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
+        gestioneButton.setOnAction(e -> {
+            PageController controller = new PageController(primaryStage);
+            controller.showGestionePage();
+        });
+
 
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
