@@ -7,31 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class LoginPage extends Application implements NavigablePage {
+public class LoginPage extends Application {
 
     private static boolean isOffline = false; // Flag per determinare se la modalità è offline
-    private static PageNavigator staticNavigator; // Campo statico per il PageNavigator
-
-    public static void setNavigator(PageNavigator navigator) {
-        staticNavigator = navigator;
-    }
-
-    public static void showMainPageStatic(Stage primaryStage) {
-        if (staticNavigator == null) {
-            throw new IllegalStateException("Navigator non inizializzato!");
-        }
-        new LoginPage(staticNavigator).showMainPage(primaryStage);
-    }
-
-    private PageNavigator navigator; // Campo membro per il PageNavigator
-
-    public LoginPage(PageNavigator navigator) {
-        this.navigator = navigator;
-    }
-
-    public LoginPage() {
-        // Costruttore vuoto per JavaFX
-    }
 
     public static void main(String[] args) {
         // Avvia l'applicazione JavaFX
@@ -40,24 +18,12 @@ public class LoginPage extends Application implements NavigablePage {
 
     @Override
     public void start(Stage primaryStage) {
-        // Recupera o inizializza l'istanza di PageNavigator
-        navigator = PageNavigator.getInstance(primaryStage);
-        setNavigator(navigator); // Inizializza il campo statico per il navigator
-
-        // Registra tutte le pagine
-        navigator.registerPage("Gestione", () -> new GestionePage(navigator));
-        navigator.registerPage("GestisciProdotti", () -> new GestisciProdottiPage(navigator));
-        navigator.registerPage("MainPage", () -> new LoginPage(navigator));
-
-
-        // Mostra la scena di login
+        // Crea la scena di login
         Scene loginScene = createLoginScene(primaryStage);
         primaryStage.setTitle("Login");
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
-
-
 
     public Scene createLoginScene(Stage primaryStage) {
         // Crea i componenti dell'interfaccia di login come variabili locali
@@ -113,7 +79,7 @@ public class LoginPage extends Application implements NavigablePage {
         }
 
         if (DatabaseUtils.verifyCredentials(username, password)) {
-            SessionContext.setOffline(false);  // Set to online mode
+            setOffline(false);  // Modalità online
             showMainPage(primaryStage);
         } else {
             showAlert("Login fallito", "Credenziali non corrette.");
@@ -121,7 +87,7 @@ public class LoginPage extends Application implements NavigablePage {
     }
 
     private void handleOfflineLogin(String username, String password, Stage primaryStage) {
-        SessionContext.setOffline(true);  // Set to offline mode
+        setOffline(true);  // Modalità offline
         if ("admin".equals(username) && "password123".equals(password)) {
             showMainPage(primaryStage);
         } else {
@@ -129,12 +95,10 @@ public class LoginPage extends Application implements NavigablePage {
         }
     }
 
-
     public void showMainPage(Stage primaryStage) {
         // Creazione dei pulsanti per la pagina principale
         Button gestisciProdottiButton = new Button("Gestisci Prodotti");
-        gestisciProdottiButton.setOnAction(e -> staticNavigator.navigateToPage("GestisciProdotti"));
-
+        gestisciProdottiButton.setOnAction(e -> openGestisciProdottiPage(primaryStage));
         Button soglieAvvisiButton = new Button("Soglie Avvisi");
         Button gestioneSchedeButton = new Button("Gestione Schede");
         Button gestisciOrdiniButton = new Button("Gestisci Ordini");
@@ -165,10 +129,10 @@ public class LoginPage extends Application implements NavigablePage {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
-        navigator.navigateToPage("GestisciProdotti");
+        // Instantiate GestisciProdottiPage without passing DatabaseConnection
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
+        gestisciProdottiPage.start(primaryStage);
     }
-
-
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -177,4 +141,13 @@ public class LoginPage extends Application implements NavigablePage {
         alert.showAndWait();
     }
 
+    // Getter per isOffline
+    public static boolean isOffline() {
+        return isOffline;
+    }
+
+    // Setter per isOffline
+    private static void setOffline(boolean offline) {
+        isOffline = offline;
+    }
 }

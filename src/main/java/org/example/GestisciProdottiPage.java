@@ -12,8 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.sql.*;
 
-public class GestisciProdottiPage implements NavigablePage  {
-
+public class GestisciProdottiPage {
 
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
@@ -28,64 +27,45 @@ public class GestisciProdottiPage implements NavigablePage  {
     private static final String PREZZO_ACQUISTO = "prezzoAcquisto";
     private static final String PREZZO_VENDITA = "prezzoVendita";
 
-    private final PageNavigator navigator;
-
-    public GestisciProdottiPage(PageNavigator navigator) {
-        this.navigator = navigator;
-    }
-
-    @Override
     public void start(Stage primaryStage) {
-        // Pulsante per tornare a "Gestione"
-        Button gestioneButton = new Button("Torna alla Gestione");
-        gestioneButton.setOnAction(e -> navigator.navigateToPage("Gestione"));
-
-        // Pulsante per tornare alla pagina principale
-        Button mainPageButton = new Button("Torna alla Pagina Principale");
-        mainPageButton.setOnAction(e -> {
-            System.out.println("Navigazione a showMainPage");
-            navigator.navigateToMainPage(primaryStage);
+        Button backButton = new Button("Torna alla Pagina Prima");
+        backButton.setOnAction(e -> {
+            LoginPage loginPage = new LoginPage();
+            loginPage.showMainPage(primaryStage);
         });
 
-
-
-        // Campo di ricerca
         TextField searchField = new TextField();
         searchField.setPromptText("Cerca un prodotto...");
 
-        // Creazione delle tabelle per magazzino e negozio
         ProductTable productTable = new ProductTable();
+
         magazzinoTable = productTable.createProductTable(this);
         negozioTable = productTable.createProductTable(this);
 
-        // Caricamento dei prodotti iniziali
+        Button gestioneButton = new Button("Gestione");
+        gestioneButton.setOnAction(e -> showGestionePage(primaryStage));
+
         loadProducts(magazzinoTable, MAGAZZINO);
         loadProducts(negozioTable, NEGOZIO);
 
-        // Listener per la ricerca
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchProducts(newValue, magazzinoTable, MAGAZZINO);
             searchProducts(newValue, negozioTable, NEGOZIO);
         });
 
-        // Layout principale
-        VBox vbox = new VBox(15, gestioneButton, mainPageButton, searchField,
+        VBox vbox = new VBox(15, backButton, gestioneButton, searchField,
                 new Label(MAGAZZINO), magazzinoTable,
                 new Label(NEGOZIO), negozioTable);
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setStyle("-fx-padding: 20;");
 
-        // Creazione della scena
         Scene scene = new Scene(vbox, 1000, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-
-
-
     private void loadProducts(TableView<Product> table, String categoria) {
-        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "SELECT nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine FROM prodotti WHERE categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -122,7 +102,7 @@ public class GestisciProdottiPage implements NavigablePage  {
 
     private void searchProducts(String searchTerm, TableView<Product> table, String categoria) {
         table.getItems().clear();
-        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "SELECT nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, immagine FROM prodotti WHERE (nome LIKE ? OR scaffale LIKE ? OR codiceAbarre LIKE ?) AND categoria = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -160,9 +140,13 @@ public class GestisciProdottiPage implements NavigablePage  {
         }
     }
 
+    private void showGestionePage(Stage primaryStage) {
+        GestionePage gestionePage = new GestionePage();
+        gestionePage.start(primaryStage);
+    }
 
     public void deleteProductFromDatabase(Product product) {
-        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "DELETE FROM prodotti WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -229,7 +213,7 @@ public class GestisciProdottiPage implements NavigablePage  {
     }
 
     private void saveProductToDatabase(Product product) {
-        if (!SessionContext.isOffline() && InternetCheck.isConnected()) {
+        if (!LoginPage.isOffline() && InternetCheck.isConnected()) {
             try (Connection conn = DatabaseConnection.connectToDatabase()) {  // Using the static method directly
                 String query = "UPDATE prodotti SET nome = ?, quantita = ?, scaffale = ?, codiceAbarre = ?, soglia = ?, prezzoAcquisto = ?, prezzoVendita = ? WHERE codiceAbarre = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
