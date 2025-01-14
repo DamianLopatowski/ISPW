@@ -131,6 +131,9 @@ public class LoginPage extends Application {
     }
 
     private void openGestisciProdottiPage(Stage primaryStage) {
+        if (navigationManager == null) {
+            navigationManager = new NavigationManager(primaryStage); // Inizializzazione se necessario
+        }
         navigationManager.navigateToGestisciProdotti(primaryStage);
     }
 

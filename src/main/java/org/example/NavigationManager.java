@@ -20,6 +20,12 @@ public class NavigationManager implements NavigationService {
         gestisciProdottiPage.start(stage);
     }
 
+    public void navigateToMainPage(Stage stage) {
+        LoginPage loginPage = new LoginPage();
+        loginPage.showMainPage(stage);
+    }
+
+
     @Override
     public void display(VBox root, String title, Stage stage) {
         try {

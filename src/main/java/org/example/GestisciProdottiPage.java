@@ -30,8 +30,8 @@ public class GestisciProdottiPage {
     public void start(Stage primaryStage) {
         Button backButton = new Button("Torna alla Pagina Prima");
         backButton.setOnAction(e -> {
-            LoginPage loginPage = new LoginPage();
-            loginPage.showMainPage(primaryStage);
+            NavigationManager navigationManager = new NavigationManager(primaryStage);
+            navigationManager.navigateToMainPage(primaryStage); // Un metodo dedicato per navigare indietro
         });
 
         TextField searchField = new TextField();
