@@ -14,6 +14,12 @@ import java.sql.*;
 
 public class GestisciProdottiPage {
 
+    private final PageController pageController;
+
+    public GestisciProdottiPage(PageController pageController) {
+        this.pageController = pageController;
+    }
+
     // Dichiarazione di magazzinoTable e negozioTable come variabili di classe
     private TableView<Product> magazzinoTable;
     private TableView<Product> negozioTable;
@@ -43,10 +49,7 @@ public class GestisciProdottiPage {
         negozioTable = productTable.createProductTable(this);
 
         Button gestioneButton = new Button("Gestione");
-        gestioneButton.setOnAction(e -> {
-            GestionePage gestionePage = new GestionePage(this); // Pass 'this' as a reference
-            gestionePage.start(primaryStage);
-        });
+        gestioneButton.setOnAction(e -> pageController.showGestionePage());
 
 
         loadProducts(magazzinoTable, MAGAZZINO);

@@ -97,8 +97,10 @@ public class LoginPage extends Application {
 
     public void showMainPage(Stage primaryStage) {
         // Creazione dei pulsanti per la pagina principale
+        PageController pageController = new PageController(primaryStage);
+
         Button gestisciProdottiButton = new Button("Gestisci Prodotti");
-        gestisciProdottiButton.setOnAction(e -> openGestisciProdottiPage(primaryStage));
+        gestisciProdottiButton.setOnAction(e -> pageController.showGestisciProdottiPage());
         Button soglieAvvisiButton = new Button("Soglie Avvisi");
         Button gestioneSchedeButton = new Button("Gestione Schede");
         Button gestisciOrdiniButton = new Button("Gestisci Ordini");
@@ -128,11 +130,6 @@ public class LoginPage extends Application {
         primaryStage.show();
     }
 
-    private void openGestisciProdottiPage(Stage primaryStage) {
-        // Instantiate GestisciProdottiPage without passing DatabaseConnection
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();  // No need to pass DatabaseConnection anymore
-        gestisciProdottiPage.start(primaryStage);
-    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

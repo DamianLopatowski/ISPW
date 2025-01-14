@@ -3,20 +3,19 @@ package org.example;
 import javafx.stage.Stage;
 
 public class PageController {
-    private Stage primaryStage;
+    private final Stage primaryStage;
 
     public PageController(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    private void showGestionePage(Stage primaryStage, GestisciProdottiPage gestisciProdottiPage) {
-        GestionePage gestionePage = new GestionePage(gestisciProdottiPage);
+    public void showGestionePage() {
+        GestionePage gestionePage = new GestionePage(this);
         gestionePage.start(primaryStage);
     }
 
-
     public void showGestisciProdottiPage() {
-        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
+        GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage(this);
         gestisciProdottiPage.start(primaryStage);
     }
 }
