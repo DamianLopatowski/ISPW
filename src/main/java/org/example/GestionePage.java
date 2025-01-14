@@ -17,13 +17,19 @@ import javafx.stage.FileChooser;
 
 public class GestionePage {
 
+    private GestisciProdottiPage gestisciProdottiPage;
+
+    // Constructor accepting GestisciProdottiPage as a parameter
+    public GestionePage(GestisciProdottiPage gestisciProdottiPage) {
+        this.gestisciProdottiPage = gestisciProdottiPage;
+    }
+
     public void start(Stage primaryStage) {
         final Stage finalPrimaryStage = primaryStage;
 
         Button backButton = new Button("Torna alla Gestione Prodotti");
         backButton.setOnAction(e -> {
-            PageController controller = new PageController(finalPrimaryStage);
-            controller.showGestisciProdottiPage();
+            gestisciProdottiPage.start(finalPrimaryStage); // Use the injected instance to navigate
         });
 
 

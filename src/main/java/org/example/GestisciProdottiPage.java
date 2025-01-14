@@ -44,8 +44,8 @@ public class GestisciProdottiPage {
 
         Button gestioneButton = new Button("Gestione");
         gestioneButton.setOnAction(e -> {
-            PageController controller = new PageController(primaryStage);
-            controller.showGestionePage();
+            GestionePage gestionePage = new GestionePage(this); // Pass 'this' as a reference
+            gestionePage.start(primaryStage);
         });
 
 
@@ -142,11 +142,6 @@ public class GestisciProdottiPage {
                     .immagine(null)
                     .build());
         }
-    }
-
-    private void showGestionePage(Stage primaryStage) {
-        GestionePage gestionePage = new GestionePage();
-        gestionePage.start(primaryStage);
     }
 
     public void deleteProductFromDatabase(Product product) {

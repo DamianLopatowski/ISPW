@@ -9,10 +9,11 @@ public class PageController {
         this.primaryStage = primaryStage;
     }
 
-    public void showGestionePage() {
-        GestionePage gestionePage = new GestionePage();
+    private void showGestionePage(Stage primaryStage, GestisciProdottiPage gestisciProdottiPage) {
+        GestionePage gestionePage = new GestionePage(gestisciProdottiPage);
         gestionePage.start(primaryStage);
     }
+
 
     public void showGestisciProdottiPage() {
         GestisciProdottiPage gestisciProdottiPage = new GestisciProdottiPage();
