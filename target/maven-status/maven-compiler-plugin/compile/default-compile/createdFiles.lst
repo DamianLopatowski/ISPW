@@ -1,5 +1,7 @@
-org\example\controller\LoginPersonalController.class
 org\example\view\View.class
+org\example\view\GestioneView.class
 org\example\view\LoginPersonalView.class
 org\example\controller\MainController.class
 org\example\MainApp.class
+org\example\controller\LoginPersonalController.class
+org\example\controller\GestioneController.class

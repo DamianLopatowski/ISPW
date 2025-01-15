@@ -1,7 +1,10 @@
 package org.example.controller;
 
 import javafx.application.Platform;
+import javafx.stage.Stage;
+import org.example.view.GestioneView;
 import org.example.view.LoginPersonalView;
+import org.example.view.View;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -64,8 +67,11 @@ public class LoginPersonalController {
     private void handleOfflineLogin(String username, String password) {
         if (username.equals(OFFLINE_USERNAME) && password.equals(OFFLINE_PASSWORD)) {
             view.getStatusLabel().setText("Accesso offline riuscito!");
+            LOGGER.info("Accesso offline eseguito con successo.");
+            openGestioneView();
         } else {
             view.getStatusLabel().setText("Credenziali offline errate.");
+            LOGGER.warning("Credenziali offline non valide.");
         }
     }
 
@@ -79,14 +85,27 @@ public class LoginPersonalController {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    Platform.runLater(() -> view.getStatusLabel().setText("Accesso online riuscito!"));
+                    Platform.runLater(() -> {
+                        view.getStatusLabel().setText("Accesso online riuscito!");
+                        LOGGER.info("Accesso online eseguito con successo.");
+                        openGestioneView();
+                    });
                 } else {
                     Platform.runLater(() -> view.getStatusLabel().setText("Credenziali online errate."));
+                    LOGGER.warning("Credenziali online non valide.");
                 }
             }
         } catch (Exception e) {
             LOGGER.severe("Errore durante la connessione al database: " + e.getMessage());
             Platform.runLater(() -> view.getStatusLabel().setText("Errore di connessione al database."));
         }
+    }
+
+    private void openGestioneView() {
+        LOGGER.info("Navigazione verso la pagina di gestione.");
+        Stage stage = (Stage) view.getRoot().getScene().getWindow();
+        View mainView = new View();
+        GestioneController gestioneController = new GestioneController(stage, mainView);
+        stage.getScene().setRoot(gestioneController.getGestioneView().getRoot());
     }
 }

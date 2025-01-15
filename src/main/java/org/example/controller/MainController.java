@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import javafx.stage.Stage;
 import org.example.view.LoginPersonalView;
 import org.example.view.View;
 
@@ -25,9 +26,11 @@ public class MainController {
                 LOGGER.warning("Seleziona una modalità prima di procedere.");
                 return;
             }
-            // Passa alla schermata di Login Personale
-            loginPersonalView.setOfflineMode(isOfflineMode);
-            mainView.getRoot().getChildren().setAll(loginPersonalView.getRoot());
+            LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
+
+            Stage stage = (Stage) mainView.getRoot().getScene().getWindow();
+            LoginPersonalController loginPersonalController = new LoginPersonalController(loginPersonalView, isOfflineMode);
+            stage.getScene().setRoot(loginPersonalView.getRoot());
         });
     }
 }
