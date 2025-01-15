@@ -1,11 +1,13 @@
 package org.example.controller;
 
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.view.GestioneView;
 import org.example.view.View;
 
+import java.util.logging.Logger;
+
 public class GestioneController {
+    private static final Logger LOGGER = Logger.getLogger(GestioneController.class.getName());
     private final GestioneView gestioneView;
     private final Stage stage;
     private final View mainView;
@@ -18,24 +20,21 @@ public class GestioneController {
     }
 
     private void setupHandlers() {
-        gestioneView.getGestioneProdottiButton().setOnAction(event -> {
-            System.out.println("Apertura gestione prodotti...");
-            // Logica per gestione prodotti
-        });
+        gestioneView.getGestioneProdottiButton().setOnAction(event ->
+                LOGGER.info("Apertura gestione prodotti...")
+        );
 
-        gestioneView.getGestioneSogliaButton().setOnAction(event -> {
-            System.out.println("Apertura gestione soglia...");
-            // Logica per gestione soglia
-        });
+        gestioneView.getGestioneSogliaButton().setOnAction(event ->
+                LOGGER.info("Apertura gestione soglia...")
+        );
 
-        gestioneView.getGestioneSpedizioniButton().setOnAction(event -> {
-            System.out.println("Apertura gestione spedizioni...");
-            // Logica per gestione spedizioni
-        });
+        gestioneView.getGestioneSpedizioniButton().setOnAction(event ->
+                LOGGER.info("Apertura gestione spedizioni...")
+        );
 
-        gestioneView.getLogoutButton().setOnAction(event -> {
-            stage.getScene().setRoot(mainView.getRoot());
-        });
+        gestioneView.getLogoutButton().setOnAction(event ->
+                stage.getScene().setRoot(mainView.getRoot())
+        );
     }
 
     public GestioneView getGestioneView() {
