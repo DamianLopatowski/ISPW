@@ -29,8 +29,8 @@ public class MainController {
             LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
 
             Stage stage = (Stage) mainView.getRoot().getScene().getWindow();
-            LoginPersonalController loginPersonalController = new LoginPersonalController(loginPersonalView, isOfflineMode);
             stage.getScene().setRoot(loginPersonalView.getRoot());
+            new LoginPersonalController(loginPersonalView, isOfflineMode);
         });
     }
 }

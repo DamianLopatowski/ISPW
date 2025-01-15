@@ -2,7 +2,6 @@ package org.example.controller;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import org.example.view.GestioneView;
 import org.example.view.LoginPersonalView;
 import org.example.view.View;
 
