@@ -10,8 +10,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class LoginPersonalController {
+
+    private static final Logger LOGGER = Logger.getLogger(LoginPersonalController.class.getName());
 
     private final LoginPersonalView view;
     private final boolean isOfflineMode;
@@ -40,7 +43,7 @@ public class LoginPersonalController {
             dbUsername = properties.getProperty("db.username");
             dbPassword = properties.getProperty("db.password");
         } catch (IOException e) {
-            System.err.println("Errore nel caricamento del file config.properties: " + e.getMessage());
+            LOGGER.severe("Errore nel caricamento del file config.properties: " + e.getMessage());
             Platform.runLater(() -> view.getStatusLabel().setText("Errore di configurazione."));
         }
     }
@@ -67,22 +70,23 @@ public class LoginPersonalController {
     }
 
     private void handleOnlineLogin(String username, String password) {
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT username, password FROM users WHERE username = ? AND password = ?";
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
             statement.setString(1, username);
             statement.setString(2, password);
 
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Platform.runLater(() -> view.getStatusLabel().setText("Accesso online riuscito!"));
-            } else {
-                Platform.runLater(() -> view.getStatusLabel().setText("Credenziali online errate."));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    Platform.runLater(() -> view.getStatusLabel().setText("Accesso online riuscito!"));
+                } else {
+                    Platform.runLater(() -> view.getStatusLabel().setText("Credenziali online errate."));
+                }
             }
-
         } catch (Exception e) {
+            LOGGER.severe("Errore durante la connessione al database: " + e.getMessage());
             Platform.runLater(() -> view.getStatusLabel().setText("Errore di connessione al database."));
-            e.printStackTrace();
         }
     }
 }
