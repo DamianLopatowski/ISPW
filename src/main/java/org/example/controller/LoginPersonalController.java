@@ -1,0 +1,88 @@
+package org.example.controller;
+
+import javafx.application.Platform;
+import org.example.view.LoginPersonalView;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Properties;
+
+public class LoginPersonalController {
+
+    private final LoginPersonalView view;
+    private final boolean isOfflineMode;
+
+    // Credenziali hardcoded per offline
+    private static final String OFFLINE_USERNAME = "admin";
+    private static final String OFFLINE_PASSWORD = "password";
+
+    private String dbUrl;
+    private String dbUsername;
+    private String dbPassword;
+
+    public LoginPersonalController(LoginPersonalView view, boolean isOfflineMode) {
+        this.view = view;
+        this.isOfflineMode = isOfflineMode;
+
+        loadDatabaseConfig();
+        setupHandlers();
+    }
+
+    private void loadDatabaseConfig() {
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream("config.properties")) {
+            properties.load(fis);
+            dbUrl = properties.getProperty("db.url");
+            dbUsername = properties.getProperty("db.username");
+            dbPassword = properties.getProperty("db.password");
+        } catch (IOException e) {
+            System.err.println("Errore nel caricamento del file config.properties: " + e.getMessage());
+            Platform.runLater(() -> view.getStatusLabel().setText("Errore di configurazione."));
+        }
+    }
+
+    private void setupHandlers() {
+        view.getLoginButton().setOnAction(event -> {
+            String username = view.getUsernameField().getText();
+            String password = view.getPasswordField().getText();
+
+            if (isOfflineMode) {
+                handleOfflineLogin(username, password);
+            } else {
+                handleOnlineLogin(username, password);
+            }
+        });
+    }
+
+    private void handleOfflineLogin(String username, String password) {
+        if (username.equals(OFFLINE_USERNAME) && password.equals(OFFLINE_PASSWORD)) {
+            view.getStatusLabel().setText("Accesso offline riuscito!");
+        } else {
+            view.getStatusLabel().setText("Credenziali offline errate.");
+        }
+    }
+
+    private void handleOnlineLogin(String username, String password) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
+            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Platform.runLater(() -> view.getStatusLabel().setText("Accesso online riuscito!"));
+            } else {
+                Platform.runLater(() -> view.getStatusLabel().setText("Credenziali online errate."));
+            }
+
+        } catch (Exception e) {
+            Platform.runLater(() -> view.getStatusLabel().setText("Errore di connessione al database."));
+            e.printStackTrace();
+        }
+    }
+}
