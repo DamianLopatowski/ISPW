@@ -32,9 +32,17 @@ public class GestioneController {
                 LOGGER.info("Apertura gestione spedizioni...")
         );
 
-        gestioneView.getLogoutButton().setOnAction(event ->
-                stage.getScene().setRoot(mainView.getRoot())
-        );
+        gestioneView.getLogoutButton().setOnAction(event -> {
+            // Reimposta lo stato della schermata principale
+            mainView.getOfflineOption().setSelected(false);
+            mainView.getOnlineOption().setSelected(false);
+            LOGGER.info("Logout effettuato. Ritorno alla schermata principale.");
+
+            // Reinizializza il MainController per reimpostare gli handler
+            new MainController(mainView);
+
+            stage.getScene().setRoot(mainView.getRoot());
+        });
     }
 
     public GestioneView getGestioneView() {

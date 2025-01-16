@@ -10,11 +10,9 @@ public class MainController {
     private static final Logger LOGGER = Logger.getLogger(MainController.class.getName());
 
     private final View mainView;
-    private final LoginPersonalView loginPersonalView;
 
     public MainController(View mainView) {
         this.mainView = mainView;
-        this.loginPersonalView = new LoginPersonalView();
 
         configureMainView();
     }
@@ -29,8 +27,12 @@ public class MainController {
             LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
 
             Stage stage = (Stage) mainView.getRoot().getScene().getWindow();
-            stage.getScene().setRoot(loginPersonalView.getRoot());
-            new LoginPersonalController(loginPersonalView, isOfflineMode);
+
+            // Crea una nuova istanza della vista e del controller del login
+            LoginPersonalView newLoginView = new LoginPersonalView();
+            LoginPersonalController loginController = new LoginPersonalController(newLoginView, isOfflineMode);
+
+            stage.getScene().setRoot(newLoginView.getRoot());
         });
     }
 }

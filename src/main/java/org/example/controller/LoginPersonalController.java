@@ -22,8 +22,8 @@ public class LoginPersonalController {
     private final boolean isOfflineMode;
 
     // Credenziali hardcoded per offline
-    private static final String OFFLINE_USERNAME = "admin";
-    private static final String OFFLINE_PASSWORD = "password";
+    private String offlineUsername;
+    private String offlinePassword;
 
     private String dbUrl;
     private String dbUsername;
@@ -34,8 +34,10 @@ public class LoginPersonalController {
         this.isOfflineMode = isOfflineMode;
 
         loadDatabaseConfig();
+        loadOfflineCredentials(); // Aggiungi questa linea
         setupHandlers();
     }
+
 
     private void loadDatabaseConfig() {
         Properties properties = new Properties();
@@ -63,8 +65,21 @@ public class LoginPersonalController {
         });
     }
 
+    private void loadOfflineCredentials() {
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream("config.properties")) {
+            properties.load(fis);
+            offlineUsername = properties.getProperty("username");
+            offlinePassword = properties.getProperty("password");
+        } catch (IOException e) {
+            LOGGER.severe("Errore nel caricamento delle credenziali offline: " + e.getMessage());
+            offlineUsername = "default_user";
+            offlinePassword = "default_pass"; // valori di fallback
+        }
+    }
+
     private void handleOfflineLogin(String username, String password) {
-        if (username.equals(OFFLINE_USERNAME) && password.equals(OFFLINE_PASSWORD)) {
+        if (username.equals(offlineUsername) && password.equals(offlinePassword)) {
             view.getStatusLabel().setText("Accesso offline riuscito!");
             LOGGER.info("Accesso offline eseguito con successo.");
             openGestioneView();
@@ -73,6 +88,7 @@ public class LoginPersonalController {
             LOGGER.warning("Credenziali offline non valide.");
         }
     }
+
 
     private void handleOnlineLogin(String username, String password) {
         String query = "SELECT username, password FROM users WHERE username = ? AND password = ?";
