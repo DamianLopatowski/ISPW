@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.view.LoginPersonalView;
-import org.example.view.View;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +20,7 @@ public class LoginPersonalController {
 
     private final LoginPersonalView view;
     private final boolean isOfflineMode;
+    private final ApplicationContext context;
 
     // Credenziali hardcoded per offline
     private String offlineUsername;
@@ -30,12 +30,13 @@ public class LoginPersonalController {
     private String dbUsername;
     private String dbPassword;
 
-    public LoginPersonalController(LoginPersonalView view, boolean isOfflineMode) {
+    public LoginPersonalController(LoginPersonalView view, boolean isOfflineMode, ApplicationContext context) {
         this.view = view;
         this.isOfflineMode = isOfflineMode;
+        this.context = context;
 
         loadDatabaseConfig();
-        loadOfflineCredentials(); // Aggiungi questa linea
+        loadOfflineCredentials();
         setupHandlers();
     }
 
@@ -119,9 +120,8 @@ public class LoginPersonalController {
 
     private void openGestioneView() {
         LOGGER.info("Navigazione verso la pagina di gestione.");
-        ApplicationContext context = ApplicationContext.getInstance();
         Stage stage = context.getStage();
-        GestioneController gestioneController = new GestioneController(stage, context.getMainView());
+        GestioneController gestioneController = new GestioneController(stage, context);
         stage.getScene().setRoot(gestioneController.getGestioneView().getRoot());
     }
 }

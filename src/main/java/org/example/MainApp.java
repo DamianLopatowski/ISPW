@@ -10,18 +10,17 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         View view = new View();
-        ApplicationContext.getInstance().setStage(primaryStage);
-        ApplicationContext.getInstance().setMainView(view);
+        ApplicationContext context = new ApplicationContext(primaryStage, view);
 
-        // Controlla la connessione Internet
         boolean isInternetAvailable = NetworkUtils.isInternetAvailable();
         view.setOnlineOptionEnabled(isInternetAvailable);
 
-        new MainController(view);
+        new MainController(view, context); // Passa il contesto
         primaryStage.setScene(new javafx.scene.Scene(view.getRoot(), 400, 300));
         primaryStage.setTitle("Applicazione");
         primaryStage.show();
     }
+
 
     public static void main(String[] args) {
         launch(args);

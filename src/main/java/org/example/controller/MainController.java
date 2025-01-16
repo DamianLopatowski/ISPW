@@ -12,9 +12,11 @@ public class MainController {
     private static final Logger LOGGER = Logger.getLogger(MainController.class.getName());
 
     private final View mainView;
+    private final ApplicationContext context;
 
-    public MainController(View mainView) {
+    public MainController(View mainView, ApplicationContext context) {
         this.mainView = mainView;
+        this.context = context;
 
         configureMainView();
     }
@@ -36,9 +38,9 @@ public class MainController {
 
             LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
 
-            Stage stage = ApplicationContext.getInstance().getStage();
+            Stage stage = context.getStage();
             LoginPersonalView newLoginView = new LoginPersonalView();
-            LoginPersonalController loginController = new LoginPersonalController(newLoginView, isOfflineMode);
+            LoginPersonalController loginController = new LoginPersonalController(newLoginView, isOfflineMode, context);
             stage.getScene().setRoot(newLoginView.getRoot());
         });
     }

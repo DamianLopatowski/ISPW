@@ -4,34 +4,19 @@ import javafx.stage.Stage;
 import org.example.view.View;
 
 public class ApplicationContext {
-    private static ApplicationContext instance;
+    private final Stage stage;
+    private final View mainView;
 
-    private Stage stage;
-    private View mainView;
-
-    private ApplicationContext() {
-    }
-
-    public static ApplicationContext getInstance() {
-        if (instance == null) {
-            instance = new ApplicationContext();
-        }
-        return instance;
+    public ApplicationContext(Stage stage, View mainView) {
+        this.stage = stage;
+        this.mainView = mainView;
     }
 
     public Stage getStage() {
         return stage;
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     public View getMainView() {
         return mainView;
-    }
-
-    public void setMainView(View mainView) {
-        this.mainView = mainView;
     }
 }

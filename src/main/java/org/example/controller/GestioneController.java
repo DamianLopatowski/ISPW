@@ -3,7 +3,6 @@ package org.example.controller;
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.view.GestioneView;
-import org.example.view.View;
 
 import java.util.logging.Logger;
 
@@ -11,11 +10,11 @@ public class GestioneController {
     private static final Logger LOGGER = Logger.getLogger(GestioneController.class.getName());
     private final GestioneView gestioneView;
     private final Stage stage;
-    private final View mainView;
+    private final ApplicationContext context;
 
-    public GestioneController(Stage stage, View mainView) {
+    public GestioneController(Stage stage, ApplicationContext context) {
         this.stage = stage;
-        this.mainView = mainView;
+        this.context = context;
         this.gestioneView = new GestioneView();
         setupHandlers();
     }
@@ -34,10 +33,8 @@ public class GestioneController {
         );
 
         gestioneView.getLogoutButton().setOnAction(event -> {
-            ApplicationContext context = ApplicationContext.getInstance();
-            View mainView = context.getMainView();
             LOGGER.info("Logout effettuato. Ritorno alla schermata principale.");
-            context.getStage().getScene().setRoot(mainView.getRoot());
+            stage.getScene().setRoot(context.getMainView().getRoot());
         });
     }
 
