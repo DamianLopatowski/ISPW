@@ -2,6 +2,7 @@ package org.example.controller;
 
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
+import org.example.NetworkUtils;
 import org.example.view.LoginPersonalView;
 import org.example.view.View;
 
@@ -21,17 +22,24 @@ public class MainController {
     private void configureMainView() {
         mainView.getLoginPersonaleButton().setOnAction(event -> {
             boolean isOfflineMode = mainView.getOfflineOption().isSelected();
-            if (!isOfflineMode && !mainView.getOnlineOption().isSelected()) {
+            boolean isOnlineMode = mainView.getOnlineOption().isSelected();
+
+            if (!isOfflineMode && !isOnlineMode) {
                 LOGGER.warning("Seleziona una modalità prima di procedere.");
                 return;
             }
+
+            if (isOnlineMode && !NetworkUtils.isInternetAvailable()) {
+                LOGGER.warning("Connessione Internet assente. Non è possibile entrare online.");
+                return;
+            }
+
             LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
 
             Stage stage = ApplicationContext.getInstance().getStage();
             LoginPersonalView newLoginView = new LoginPersonalView();
             LoginPersonalController loginController = new LoginPersonalController(newLoginView, isOfflineMode);
             stage.getScene().setRoot(newLoginView.getRoot());
-
         });
     }
 }

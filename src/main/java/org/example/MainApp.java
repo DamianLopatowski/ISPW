@@ -13,11 +13,16 @@ public class MainApp extends Application {
         ApplicationContext.getInstance().setStage(primaryStage);
         ApplicationContext.getInstance().setMainView(view);
 
+        // Controlla la connessione Internet
+        boolean isInternetAvailable = NetworkUtils.isInternetAvailable();
+        view.setOnlineOptionEnabled(isInternetAvailable);
+
         new MainController(view);
         primaryStage.setScene(new javafx.scene.Scene(view.getRoot(), 400, 300));
         primaryStage.setTitle("Applicazione");
         primaryStage.show();
     }
+
 
     public static void main(String[] args) {
         launch(args);

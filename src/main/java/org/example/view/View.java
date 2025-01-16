@@ -32,6 +32,14 @@ public class View {
         root.setAlignment(Pos.CENTER);
     }
 
+    public void setOnlineOptionEnabled(boolean enabled) {
+        onlineOption.setDisable(!enabled);
+        if (!enabled) {
+            onlineOption.setSelected(false);
+        }
+    }
+
+
     public VBox getRoot() {
         return root;
     }

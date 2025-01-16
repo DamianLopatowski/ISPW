@@ -5,4 +5,5 @@ org\example\view\LoginPersonalView.class
 org\example\controller\MainController.class
 org\example\MainApp.class
 org\example\controller\LoginPersonalController.class
+org\example\NetworkUtils.class
 org\example\controller\GestioneController.class
