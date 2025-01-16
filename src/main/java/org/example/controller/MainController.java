@@ -40,7 +40,7 @@ public class MainController {
 
             Stage stage = context.getStage();
             LoginPersonalView newLoginView = new LoginPersonalView();
-            LoginPersonalController loginController = new LoginPersonalController(newLoginView, isOfflineMode, context);
+            new LoginPersonalController(newLoginView, isOfflineMode, context); // Eliminata la variabile
             stage.getScene().setRoot(newLoginView.getRoot());
         });
     }
