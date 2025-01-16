@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import javafx.stage.Stage;
+import org.example.ApplicationContext;
 import org.example.view.LoginPersonalView;
 import org.example.view.View;
 
@@ -26,13 +27,11 @@ public class MainController {
             }
             LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
 
-            Stage stage = (Stage) mainView.getRoot().getScene().getWindow();
-
-            // Crea una nuova istanza della vista e del controller del login
+            Stage stage = ApplicationContext.getInstance().getStage();
             LoginPersonalView newLoginView = new LoginPersonalView();
             LoginPersonalController loginController = new LoginPersonalController(newLoginView, isOfflineMode);
-
             stage.getScene().setRoot(newLoginView.getRoot());
+
         });
     }
 }

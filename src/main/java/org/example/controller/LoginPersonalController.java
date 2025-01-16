@@ -2,6 +2,7 @@ package org.example.controller;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import org.example.ApplicationContext;
 import org.example.view.LoginPersonalView;
 import org.example.view.View;
 
@@ -118,9 +119,9 @@ public class LoginPersonalController {
 
     private void openGestioneView() {
         LOGGER.info("Navigazione verso la pagina di gestione.");
-        Stage stage = (Stage) view.getRoot().getScene().getWindow();
-        View mainView = new View();
-        GestioneController gestioneController = new GestioneController(stage, mainView);
+        ApplicationContext context = ApplicationContext.getInstance();
+        Stage stage = context.getStage();
+        GestioneController gestioneController = new GestioneController(stage, context.getMainView());
         stage.getScene().setRoot(gestioneController.getGestioneView().getRoot());
     }
 }

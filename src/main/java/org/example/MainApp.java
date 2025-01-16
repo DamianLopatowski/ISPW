@@ -10,6 +10,9 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         View view = new View();
+        ApplicationContext.getInstance().setStage(primaryStage);
+        ApplicationContext.getInstance().setMainView(view);
+
         new MainController(view);
         primaryStage.setScene(new javafx.scene.Scene(view.getRoot(), 400, 300));
         primaryStage.setTitle("Applicazione");

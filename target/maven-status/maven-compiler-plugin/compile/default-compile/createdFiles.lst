@@ -1,3 +1,4 @@
+org\example\ApplicationContext.class
 org\example\view\View.class
 org\example\view\GestioneView.class
 org\example\view\LoginPersonalView.class

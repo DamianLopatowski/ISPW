@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import javafx.stage.Stage;
+import org.example.ApplicationContext;
 import org.example.view.GestioneView;
 import org.example.view.View;
 
@@ -33,15 +34,10 @@ public class GestioneController {
         );
 
         gestioneView.getLogoutButton().setOnAction(event -> {
-            // Reimposta lo stato della schermata principale
-            mainView.getOfflineOption().setSelected(false);
-            mainView.getOnlineOption().setSelected(false);
+            ApplicationContext context = ApplicationContext.getInstance();
+            View mainView = context.getMainView();
             LOGGER.info("Logout effettuato. Ritorno alla schermata principale.");
-
-            // Reinizializza il MainController per reimpostare gli handler
-            new MainController(mainView);
-
-            stage.getScene().setRoot(mainView.getRoot());
+            context.getStage().getScene().setRoot(mainView.getRoot());
         });
     }
 
