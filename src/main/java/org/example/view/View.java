@@ -39,7 +39,6 @@ public class View {
         }
     }
 
-
     public VBox getRoot() {
         return root;
     }
