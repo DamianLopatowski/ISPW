@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 public class LoginPersonalController {
     private static final Logger LOGGER = Logger.getLogger(LoginPersonalController.class.getName());
 
+    private static final String ERROR_CREDENTIALS = "Credenziali errate."; // Definizione della costante
+
     private final Stage stage;
     private final boolean isOfflineMode;
     private final AuthController authController;
@@ -62,11 +64,11 @@ public class LoginPersonalController {
             LOGGER.info("Accesso riuscito!");
             navigationService.navigateToGestioneView();
         } else {
-            LOGGER.warning("Credenziali errate.");
+            LOGGER.warning(ERROR_CREDENTIALS);
             if (isOfflineMode) {
-                offlineView.getStatusLabel().setText("Credenziali errate.");
+                offlineView.getStatusLabel().setText(ERROR_CREDENTIALS);
             } else {
-                onlineView.getStatusLabel().setText("Credenziali errate.");
+                onlineView.getStatusLabel().setText(ERROR_CREDENTIALS);
             }
         }
     }
