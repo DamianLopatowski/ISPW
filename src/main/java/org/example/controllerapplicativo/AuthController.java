@@ -9,12 +9,13 @@ public class AuthController {
     private static final Logger LOGGER = Logger.getLogger(AuthController.class.getName());
     private final GestoreDAOImpl gestoreDAO;
 
-    public AuthController() {
-        this.gestoreDAO = GestoreDAOImpl.getInstance(); // Nessuna eccezione da gestire
+    // Dependency Injection - Si passa un'istanza di GestoreDAOImpl
+    public AuthController(GestoreDAOImpl gestoreDAO) {
+        this.gestoreDAO = gestoreDAO;
     }
 
     public void logout() {
-        gestoreDAO.resetToOfflineGestore(); // Nessuna eccezione da gestire
+        gestoreDAO.resetToOfflineGestore();
         LOGGER.info("Logout effettuato, credenziali offline ripristinate.");
     }
 

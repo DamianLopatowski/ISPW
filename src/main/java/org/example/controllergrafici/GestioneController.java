@@ -2,6 +2,7 @@ package org.example.controllergrafici;
 
 import javafx.stage.Stage;
 import org.example.controllerapplicativo.AuthController;
+import org.example.dao.GestoreDAOImpl;
 import org.example.view.GestioneOnlineView;
 import org.example.view.GestioneOfflineView;
 import org.example.service.NavigationService;
@@ -14,11 +15,14 @@ public class GestioneController {
     private final GestioneOnlineView onlineView;
     private final GestioneOfflineView offlineView;
     private static final Logger LOGGER = Logger.getLogger(GestioneController.class.getName());
+    private final AuthController authController; // 🔹 Dipendenza iniettata
 
-    public GestioneController(Stage stage, boolean isOfflineMode, NavigationService navigationService) {
+    // 🔹 Modifica: Ora riceve un'istanza di AuthController
+    public GestioneController(Stage stage, boolean isOfflineMode, NavigationService navigationService, AuthController authController) {
         this.stage = stage;
         this.isOfflineMode = isOfflineMode;
         this.navigationService = navigationService;
+        this.authController = authController; // Salva l'istanza
 
         this.onlineView = isOfflineMode ? null : new GestioneOnlineView();
         this.offlineView = isOfflineMode ? new GestioneOfflineView() : null;
@@ -44,8 +48,7 @@ public class GestioneController {
     }
 
     private void handleLogout() {
-        AuthController authController = new AuthController();
-        authController.logout(); // Ripristina le credenziali offline
+        authController.logout(); // Ora usa l'istanza corretta
         navigationService.navigateToMainView(); // Torna alla pagina principale
     }
 

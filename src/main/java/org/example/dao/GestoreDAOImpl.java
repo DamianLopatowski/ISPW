@@ -17,24 +17,16 @@ public class GestoreDAOImpl implements GestoreDAO {
     private String dbUrl;
     private String dbUsername;
     private String dbPassword;
-    private Gestore gestore; // Unico riferimento al gestore
+    private Gestore gestore;
 
-    private GestoreDAOImpl() {
+    // Costruttore pubblico per Dependency Injection
+    public GestoreDAOImpl() {
         try {
             loadDatabaseConfig();
-            loadOfflineGestore(); // Carica il gestore offline inizialmente
+            loadOfflineGestore();
         } catch (DatabaseConfigurationException e) {
-            throw new GestoreInitializationException("Impossibile inizializzare GestoreDAOImpl", e);
+            throw new GestoreInitializationException("Errore durante l'inizializzazione di GestoreDAOImpl", e);
         }
-    }
-
-    // Implementazione thread-safe con la classe Holder
-    private static class Holder {
-        private static final GestoreDAOImpl instance = new GestoreDAOImpl();
-    }
-
-    public static GestoreDAOImpl getInstance() {
-        return Holder.instance;
     }
 
     private void loadDatabaseConfig() throws DatabaseConfigurationException {
@@ -82,7 +74,7 @@ public class GestoreDAOImpl implements GestoreDAO {
     public boolean authenticateOnline(String username, String password) {
         Gestore dbGestore = findByUsername(username);
         if (dbGestore != null && dbGestore.getPassword().equals(password)) {
-            this.gestore = dbGestore; // Aggiorna il riferimento al gestore con quello online
+            this.gestore = dbGestore;
             LOGGER.log(Level.INFO, "Login online riuscito: {0}", username);
             return true;
         }
@@ -92,7 +84,7 @@ public class GestoreDAOImpl implements GestoreDAO {
 
     public void resetToOfflineGestore() {
         try {
-            loadOfflineGestore(); // Ricarica il gestore offline da config.properties
+            loadOfflineGestore();
             LOGGER.info("Ripristinato il gestore offline dopo il logout.");
         } catch (DatabaseConfigurationException e) {
             LOGGER.severe("Errore nel ripristino delle credenziali offline: " + e.getMessage());

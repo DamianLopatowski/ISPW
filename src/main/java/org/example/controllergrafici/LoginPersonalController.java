@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import org.example.view.LoginOnlineView;
 import org.example.view.LoginOfflineView;
 import org.example.controllerapplicativo.AuthController;
+import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
 import org.example.view.View;
 
@@ -22,11 +23,14 @@ public class LoginPersonalController {
     private LoginOnlineView onlineView;
     private LoginOfflineView offlineView;
 
-    public LoginPersonalController(Stage stage, View mainView, NavigationService navigationService) {
-        this.stage = stage;  // Salva il riferimento allo Stage
+    // 🔹 Modificato il costruttore per accettare un'istanza di GestoreDAOImpl
+    public LoginPersonalController(Stage stage, View mainView, NavigationService navigationService, GestoreDAOImpl gestoreDAO) {
+        this.stage = stage;
         this.mainView = mainView;
-        this.authController = new AuthController();
         this.navigationService = navigationService;
+
+        // 🔹 Passiamo GestoreDAOImpl a AuthController
+        this.authController = new AuthController(gestoreDAO);
 
         updateLoginView();
     }
@@ -37,11 +41,11 @@ public class LoginPersonalController {
         if (isOfflineMode) {
             this.offlineView = new LoginOfflineView();
             this.onlineView = null;
-            stage.getScene().setRoot(offlineView.getRoot()); // Usare stage qui ora funziona
+            stage.getScene().setRoot(offlineView.getRoot());
         } else {
             this.onlineView = new LoginOnlineView();
             this.offlineView = null;
-            stage.getScene().setRoot(onlineView.getRoot()); // Usare stage qui ora funziona
+            stage.getScene().setRoot(onlineView.getRoot());
         }
 
         setupHandlers();
@@ -54,13 +58,13 @@ public class LoginPersonalController {
             onlineView.getLoginButton().setOnAction(event -> handleLogin(
                     onlineView.getUsernameField().getText(),
                     onlineView.getPasswordField().getText(),
-                    false // Modalità online
+                    false
             ));
         } else {
             offlineView.getLoginButton().setOnAction(event -> handleLogin(
                     offlineView.getUsernameField().getText(),
                     offlineView.getPasswordField().getText(),
-                    true // Modalità offline
+                    true
             ));
         }
     }

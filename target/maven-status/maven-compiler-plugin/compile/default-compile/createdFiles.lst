@@ -4,7 +4,6 @@ org\example\view\GestioneOnlineView.class
 org\example\view\LoginOnlineView.class
 org\example\view\View.class
 org\example\controllerapplicativo\NavigationController.class
-org\example\dao\GestoreDAOImpl$Holder.class
 org\example\model\Gestore.class
 org\example\view\LoginOfflineView.class
 org\example\service\NavigationService.class

@@ -4,10 +4,9 @@ import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.view.View;
 import org.example.service.NavigationService;
-
+import org.example.dao.GestoreDAOImpl;
 
 public class MainController {
-
     private final View mainView;
     private final ApplicationContext context;
     private final NavigationService navigationService;
@@ -22,7 +21,12 @@ public class MainController {
     private void configureMainView() {
         mainView.getLoginPersonaleButton().setOnAction(event -> {
             Stage stage = context.getStage(); // Recupera Stage dal contesto dell'applicazione
-            new LoginPersonalController(stage, mainView, navigationService);
+
+            // 🔹 Crea un'istanza di GestoreDAOImpl
+            GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
+
+            // 🔹 Ora passiamo gestoreDAO a LoginPersonalController
+            new LoginPersonalController(stage, mainView, navigationService, gestoreDAO);
         });
     }
 }
