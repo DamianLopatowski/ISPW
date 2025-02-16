@@ -3,11 +3,14 @@ org\example\view\GestioneOnlineView.class
 org\example\view\LoginOnlineView.class
 org\example\view\View.class
 org\example\controllerapplicativo\NavigationController.class
+org\example\model\Gestore.class
 org\example\view\LoginOfflineView.class
 org\example\service\NavigationService.class
+org\example\dao\GestoreDAOImpl.class
 org\example\ApplicationContext.class
 org\example\controllerapplicativo\AuthController.class
 org\example\MainApp.class
+org\example\dao\GestoreDAO.class
 org\example\NetworkUtils.class
 org\example\view\GestioneOfflineView.class
 org\example\controllergrafici\GestioneController.class

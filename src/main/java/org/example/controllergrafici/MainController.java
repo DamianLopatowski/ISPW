@@ -24,19 +24,8 @@ public class MainController {
 
     private void configureMainView() {
         mainView.getLoginPersonaleButton().setOnAction(event -> {
-            boolean isOfflineMode = mainView.getOfflineOption().isSelected();
-
-            if (!isOfflineMode && !NetworkUtils.isInternetAvailable()) {
-                LOGGER.warning("Connessione Internet assente.");
-                return;
-            }
-
-            LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
-
-            Stage stage = context.getStage();
-
-            // Passiamo correttamente la modalità e la navigazione al LoginPersonalController
-            new LoginPersonalController(stage, isOfflineMode, navigationService);
+            Stage stage = context.getStage(); // Recupera Stage dal contesto dell'applicazione
+            new LoginPersonalController(stage, mainView, navigationService);
         });
     }
 }

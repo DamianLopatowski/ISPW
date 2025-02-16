@@ -1,6 +1,7 @@
 package org.example.controllergrafici;
 
 import javafx.stage.Stage;
+import org.example.controllerapplicativo.AuthController;
 import org.example.view.GestioneOnlineView;
 import org.example.view.GestioneOfflineView;
 import org.example.service.NavigationService;
@@ -30,7 +31,7 @@ public class GestioneController {
             onlineView.getGestioneProdottiButton().setOnAction(event -> handleGestione("Prodotti"));
             onlineView.getGestioneSogliaButton().setOnAction(event -> handleGestione("Soglia"));
             onlineView.getGestioneSpedizioniButton().setOnAction(event -> handleGestione("Spedizioni"));
-            onlineView.getLogoutButton().setOnAction(event -> navigationService.navigateToMainView());
+            onlineView.getLogoutButton().setOnAction(event -> handleLogout());
         } else {
             offlineView.getConfermaButton().setOnAction(event -> {
                 String selectedOption = offlineView.getMenuTendina().getValue();
@@ -38,8 +39,14 @@ public class GestioneController {
                     handleGestione(selectedOption);
                 }
             });
-            offlineView.getLogoutButton().setOnAction(event -> navigationService.navigateToMainView());
+            offlineView.getLogoutButton().setOnAction(event -> handleLogout());
         }
+    }
+
+    private void handleLogout() {
+        AuthController authController = new AuthController();
+        authController.logout(); // Ripristina le credenziali offline
+        navigationService.navigateToMainView(); // Torna alla pagina principale
     }
 
     private void handleGestione(String sezione) {

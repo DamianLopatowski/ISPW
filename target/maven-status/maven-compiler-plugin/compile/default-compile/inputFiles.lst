@@ -1,4 +1,6 @@
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\ApplicationContext.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\GestoreDAO.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Gestore.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\NavigationService.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\GestioneOfflineView.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\View.java
@@ -12,3 +14,4 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativ
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\LoginOfflineView.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\MainApp.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativo\AuthController.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\GestoreDAOImpl.java
