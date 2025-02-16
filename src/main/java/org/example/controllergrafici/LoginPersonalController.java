@@ -1,7 +1,5 @@
 package org.example.controllergrafici;
 
-import javafx.application.Platform;
-import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.view.LoginPersonalView;
 import org.example.controllerapplicativo.AuthController;
@@ -21,7 +19,7 @@ public class LoginPersonalController {
     public LoginPersonalController(LoginPersonalView view, boolean isOfflineMode, ApplicationContext context) {
         this.view = view;
         this.isOfflineMode = isOfflineMode;
-        this.authController = new AuthController(context);
+        this.authController = new AuthController(); // Rimosso il parametro context
         this.navigationService = new NavigationController(context.getStage(), context);
         setupHandlers();
     }

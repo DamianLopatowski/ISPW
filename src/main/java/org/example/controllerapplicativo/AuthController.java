@@ -9,20 +9,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.example.ApplicationContext;
-
 public class AuthController {
     private static final Logger LOGGER = Logger.getLogger(AuthController.class.getName());
 
-    private final ApplicationContext context;
     private String offlineUsername;
     private String offlinePassword;
     private String dbUrl;
     private String dbUsername;
     private String dbPassword;
 
-    public AuthController(ApplicationContext context) {
-        this.context = context;
+    public AuthController() {  // Rimosso il parametro context
         loadCredentials();
     }
 
