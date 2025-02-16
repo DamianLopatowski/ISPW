@@ -5,6 +5,7 @@ import org.example.ApplicationContext;
 import org.example.NetworkUtils;
 import org.example.view.LoginPersonalView;
 import org.example.view.View;
+import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
@@ -13,11 +14,12 @@ public class MainController {
 
     private final View mainView;
     private final ApplicationContext context;
+    private final NavigationService navigationService;
 
-    public MainController(View mainView, ApplicationContext context) {
+    public MainController(View mainView, ApplicationContext context, NavigationService navigationService) {
         this.mainView = mainView;
         this.context = context;
-
+        this.navigationService = navigationService;
         configureMainView();
     }
 

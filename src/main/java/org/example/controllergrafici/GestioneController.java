@@ -3,7 +3,7 @@ package org.example.controllergrafici;
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.view.GestioneView;
-import org.example.controllerapplicativo.NavigationController;
+import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
@@ -12,13 +12,13 @@ public class GestioneController {
     private final GestioneView gestioneView;
     private final Stage stage;
     private final ApplicationContext context;
-    private final NavigationController navigationController;
+    private final NavigationService navigationService;
 
-    public GestioneController(Stage stage, ApplicationContext context) {
+    public GestioneController(Stage stage, ApplicationContext context, NavigationService navigationService) {
         this.stage = stage;
         this.context = context;
+        this.navigationService = navigationService;
         this.gestioneView = new GestioneView();
-        this.navigationController = new NavigationController(stage, context);
         setupHandlers();
     }
 
@@ -37,7 +37,7 @@ public class GestioneController {
 
         gestioneView.getLogoutButton().setOnAction(event -> {
             LOGGER.info("Logout effettuato. Ritorno alla schermata principale.");
-            navigationController.navigateToMainView();
+            navigationService.navigateToMainView();
         });
     }
 

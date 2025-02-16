@@ -6,6 +6,7 @@ import org.example.ApplicationContext;
 import org.example.view.LoginPersonalView;
 import org.example.controllerapplicativo.AuthController;
 import org.example.controllerapplicativo.NavigationController;
+import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
@@ -15,14 +16,13 @@ public class LoginPersonalController {
     private final LoginPersonalView view;
     private final boolean isOfflineMode;
     private final AuthController authController;
-    private final NavigationController navigationController;
+    private final NavigationService navigationService;
 
     public LoginPersonalController(LoginPersonalView view, boolean isOfflineMode, ApplicationContext context) {
         this.view = view;
         this.isOfflineMode = isOfflineMode;
         this.authController = new AuthController(context);
-        this.navigationController = new NavigationController(context.getStage(), context);
-
+        this.navigationService = new NavigationController(context.getStage(), context);
         setupHandlers();
     }
 
@@ -38,7 +38,7 @@ public class LoginPersonalController {
             if (loginSuccess) {
                 view.getStatusLabel().setText("Accesso riuscito!");
                 LOGGER.info("Accesso effettuato con successo.");
-                navigationController.navigateToGestioneView();
+                navigationService.navigateToGestioneView();
             } else {
                 view.getStatusLabel().setText("Credenziali errate.");
                 LOGGER.warning("Credenziali non valide.");

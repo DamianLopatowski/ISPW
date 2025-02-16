@@ -9,3 +9,4 @@ org\example\NetworkUtils.class
 org\example\controllerapplicativo\NavigationController.class
 org\example\controllergrafici\GestioneController.class
 org\example\controllergrafici\LoginPersonalController.class
+org\example\service\NavigationService.class
