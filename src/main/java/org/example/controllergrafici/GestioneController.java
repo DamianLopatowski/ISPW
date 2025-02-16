@@ -1,10 +1,10 @@
 package org.example.controllergrafici;
 
 import javafx.stage.Stage;
-import org.example.ApplicationContext;
 import org.example.view.GestioneOnlineView;
 import org.example.view.GestioneOfflineView;
 import org.example.service.NavigationService;
+import java.util.logging.Logger;
 
 public class GestioneController {
     private final Stage stage;
@@ -12,6 +12,7 @@ public class GestioneController {
     private final NavigationService navigationService;
     private final GestioneOnlineView onlineView;
     private final GestioneOfflineView offlineView;
+    private static final Logger LOGGER = Logger.getLogger(GestioneController.class.getName());
 
     public GestioneController(Stage stage, boolean isOfflineMode, NavigationService navigationService) {
         this.stage = stage;
@@ -42,7 +43,7 @@ public class GestioneController {
     }
 
     private void handleGestione(String sezione) {
-        System.out.println("Navigazione a: " + sezione); // Può essere sostituito con un metodo di navigazione
+        LOGGER.info("Navigazione a: " + sezione);
     }
 
     public javafx.scene.Parent getRootView() {

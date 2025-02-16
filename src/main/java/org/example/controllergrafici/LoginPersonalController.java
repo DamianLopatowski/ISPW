@@ -2,7 +2,6 @@ package org.example.controllergrafici;
 
 import javafx.stage.Stage;
 import javafx.scene.Parent;
-import org.example.ApplicationContext;
 import org.example.view.LoginOnlineView;
 import org.example.view.LoginOfflineView;
 import org.example.controllerapplicativo.AuthController;
