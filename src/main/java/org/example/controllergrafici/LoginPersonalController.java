@@ -22,7 +22,7 @@ public class LoginPersonalController {
     private final LoginOnlineView onlineView;
     private final LoginOfflineView offlineView;
 
-    public LoginPersonalController(Stage stage, boolean isOfflineMode, ApplicationContext context, NavigationService navigationService) {
+    public LoginPersonalController(Stage stage, boolean isOfflineMode, NavigationService navigationService) {
         this.stage = stage;
         this.isOfflineMode = isOfflineMode;
         this.authController = new AuthController();

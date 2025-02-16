@@ -36,7 +36,7 @@ public class MainController {
             Stage stage = context.getStage();
 
             // Passiamo correttamente la modalità e la navigazione al LoginPersonalController
-            new LoginPersonalController(stage, isOfflineMode, context, navigationService);
+            new LoginPersonalController(stage, isOfflineMode, navigationService);
         });
     }
 }

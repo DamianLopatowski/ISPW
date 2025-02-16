@@ -1,7 +1,7 @@
 package org.example.view;
 
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 public class GestioneOfflineView {
     private final VBox root;
@@ -15,13 +15,19 @@ public class GestioneOfflineView {
         // Menu a tendina con le opzioni disponibili
         menuTendina = new ComboBox<>();
         menuTendina.getItems().addAll("Gestione Prodotti", "Gestione Soglia", "Gestione Spedizioni");
-        menuTendina.setValue("Gestione Prodotti"); // Imposta un valore di default
 
-        // Bottone di conferma
-        confermaButton = new Button(menuTendina.getValue()); // Imposta il nome in base alla selezione iniziale
+        // Bottone di conferma inizialmente disabilitato finché l'utente non sceglie un'opzione
+        confermaButton = new Button("Seleziona un'opzione");
+        confermaButton.setDisable(true);
 
-        // Cambio dinamico del nome del bottone
-        menuTendina.setOnAction(e -> confermaButton.setText(menuTendina.getValue()));
+        // Attiva il bottone e aggiorna il testo quando viene selezionata un'opzione
+        menuTendina.setOnAction(e -> {
+            String selected = menuTendina.getValue();
+            if (selected != null) {
+                confermaButton.setText(selected);
+                confermaButton.setDisable(false);
+            }
+        });
 
         // Bottone di logout
         logoutButton = new Button("Logout");

@@ -22,7 +22,7 @@ public class NavigationController implements NavigationService {
 
     @Override
     public Parent navigateToGestioneView(boolean isOfflineMode) {
-        GestioneController gestioneController = new GestioneController(stage, isOfflineMode, context, this);
+        GestioneController gestioneController = new GestioneController(stage, isOfflineMode, this);
         return gestioneController.getRootView();
     }
 }
