@@ -12,27 +12,29 @@ import java.util.logging.Logger;
 
 public class GestoreDAOImpl implements GestoreDAO {
     private static final Logger LOGGER = Logger.getLogger(GestoreDAOImpl.class.getName());
-    private static volatile GestoreDAOImpl instance; // Volatile per il double-checked locking
 
     private String dbUrl;
     private String dbUsername;
     private String dbPassword;
     private Gestore gestore; // Unico riferimento al gestore
 
-    private GestoreDAOImpl() throws DatabaseConfigurationException {
-        loadDatabaseConfig();
-        loadOfflineGestore(); // Carica il gestore offline inizialmente
+    private GestoreDAOImpl() {
+        try {
+            loadDatabaseConfig();
+            loadOfflineGestore(); // Carica il gestore offline inizialmente
+        } catch (DatabaseConfigurationException e) {
+            LOGGER.severe("Errore nella configurazione del database: " + e.getMessage());
+            throw new RuntimeException("Impossibile inizializzare GestoreDAOImpl", e);
+        }
     }
 
-    public static GestoreDAOImpl getInstance() throws DatabaseConfigurationException {
-        if (instance == null) {
-            synchronized (GestoreDAOImpl.class) {
-                if (instance == null) {
-                    instance = new GestoreDAOImpl();
-                }
-            }
-        }
-        return instance;
+    // Implementazione thread-safe con la classe Holder
+    private static class Holder {
+        private static final GestoreDAOImpl instance = new GestoreDAOImpl();
+    }
+
+    public static GestoreDAOImpl getInstance() {
+        return Holder.instance;
     }
 
     private void loadDatabaseConfig() throws DatabaseConfigurationException {
@@ -88,9 +90,13 @@ public class GestoreDAOImpl implements GestoreDAO {
         return false;
     }
 
-    public void resetToOfflineGestore() throws DatabaseConfigurationException {
-        loadOfflineGestore(); // Ricarica il gestore offline da config.properties
-        LOGGER.info("Ripristinato il gestore offline dopo il logout.");
+    public void resetToOfflineGestore() {
+        try {
+            loadOfflineGestore(); // Ricarica il gestore offline da config.properties
+            LOGGER.info("Ripristinato il gestore offline dopo il logout.");
+        } catch (DatabaseConfigurationException e) {
+            LOGGER.severe("Errore nel ripristino delle credenziali offline: " + e.getMessage());
+        }
     }
 
     public Gestore getGestore() {
