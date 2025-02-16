@@ -13,6 +13,7 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\GestioneOnlineV
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\DatabaseConfigurationException.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativo\NavigationController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\LoginOfflineView.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\GestoreInitializationException.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\MainApp.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativo\AuthController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\GestoreDAOImpl.java

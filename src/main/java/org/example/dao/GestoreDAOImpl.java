@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import org.example.exception.DatabaseConfigurationException;
+import org.example.exception.GestoreInitializationException;
 import org.example.model.Gestore;
 
 import java.io.FileInputStream;
@@ -23,8 +24,7 @@ public class GestoreDAOImpl implements GestoreDAO {
             loadDatabaseConfig();
             loadOfflineGestore(); // Carica il gestore offline inizialmente
         } catch (DatabaseConfigurationException e) {
-            LOGGER.severe("Errore nella configurazione del database: " + e.getMessage());
-            throw new RuntimeException("Impossibile inizializzare GestoreDAOImpl", e);
+            throw new GestoreInitializationException("Impossibile inizializzare GestoreDAOImpl", e);
         }
     }
 

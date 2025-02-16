@@ -10,6 +10,7 @@ org\example\view\LoginOfflineView.class
 org\example\service\NavigationService.class
 org\example\dao\GestoreDAOImpl.class
 org\example\ApplicationContext.class
+org\example\exception\GestoreInitializationException.class
 org\example\controllerapplicativo\AuthController.class
 org\example\MainApp.class
 org\example\dao\GestoreDAO.class
