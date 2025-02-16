@@ -1,11 +1,11 @@
 package org.example.controllergrafici;
 
 import javafx.stage.Stage;
+import javafx.scene.Parent;
 import org.example.ApplicationContext;
 import org.example.view.LoginOnlineView;
 import org.example.view.LoginOfflineView;
 import org.example.controllerapplicativo.AuthController;
-import org.example.controllerapplicativo.NavigationController;
 import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class LoginPersonalController {
     private static final Logger LOGGER = Logger.getLogger(LoginPersonalController.class.getName());
 
-    private static final String ERROR_CREDENTIALS = "Credenziali errate."; // Definizione della costante
+    private static final String ERROR_CREDENTIALS = "Credenziali errate.";
 
     private final Stage stage;
     private final boolean isOfflineMode;
@@ -22,23 +22,23 @@ public class LoginPersonalController {
     private final LoginOnlineView onlineView;
     private final LoginOfflineView offlineView;
 
-    public LoginPersonalController(Stage stage, boolean isOfflineMode, ApplicationContext context) {
+    public LoginPersonalController(Stage stage, boolean isOfflineMode, ApplicationContext context, NavigationService navigationService) {
         this.stage = stage;
         this.isOfflineMode = isOfflineMode;
         this.authController = new AuthController();
-        this.navigationService = new NavigationController(context.getStage(), context);
+        this.navigationService = navigationService;  // Ora il costruttore accetta NavigationService
 
-        // Selezioniamo la view corretta
         if (isOfflineMode) {
             this.offlineView = new LoginOfflineView();
             this.onlineView = null;
+            stage.getScene().setRoot(offlineView.getRoot());
         } else {
             this.onlineView = new LoginOnlineView();
             this.offlineView = null;
+            stage.getScene().setRoot(onlineView.getRoot());
         }
 
         setupHandlers();
-        showCorrectView();
     }
 
     private void setupHandlers() {
@@ -62,7 +62,11 @@ public class LoginPersonalController {
 
         if (loginSuccess) {
             LOGGER.info("Accesso riuscito!");
-            navigationService.navigateToGestioneView();
+
+            Parent gestioneView = navigationService.navigateToGestioneView(isOfflineMode);
+            if (gestioneView != null) {
+                stage.getScene().setRoot(gestioneView);
+            }
         } else {
             LOGGER.warning(ERROR_CREDENTIALS);
             if (isOfflineMode) {
@@ -70,14 +74,6 @@ public class LoginPersonalController {
             } else {
                 onlineView.getStatusLabel().setText(ERROR_CREDENTIALS);
             }
-        }
-    }
-
-    private void showCorrectView() {
-        if (isOfflineMode) {
-            stage.getScene().setRoot(offlineView.getRoot());
-        } else {
-            stage.getScene().setRoot(onlineView.getRoot());
         }
     }
 }

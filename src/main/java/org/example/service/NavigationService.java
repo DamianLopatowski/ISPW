@@ -1,6 +1,8 @@
 package org.example.service;
 
+import javafx.scene.Parent;
+
 public interface NavigationService {
     void navigateToMainView();
-    void navigateToGestioneView();
+    Parent navigateToGestioneView(boolean isOfflineMode); // Modificato per restituire la vista corretta
 }

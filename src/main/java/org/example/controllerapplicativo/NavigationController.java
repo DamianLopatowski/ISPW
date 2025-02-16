@@ -1,6 +1,7 @@
 package org.example.controllerapplicativo;
 
 import javafx.stage.Stage;
+import javafx.scene.Parent;
 import org.example.ApplicationContext;
 import org.example.controllergrafici.GestioneController;
 import org.example.service.NavigationService;
@@ -20,8 +21,8 @@ public class NavigationController implements NavigationService {
     }
 
     @Override
-    public void navigateToGestioneView() {
-        GestioneController gestioneController = new GestioneController(stage, context, this);
-        stage.getScene().setRoot(gestioneController.getGestioneView().getRoot());
+    public Parent navigateToGestioneView(boolean isOfflineMode) {
+        GestioneController gestioneController = new GestioneController(stage, isOfflineMode, context, this);
+        return gestioneController.getRootView();
     }
 }

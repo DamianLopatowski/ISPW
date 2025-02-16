@@ -1,7 +1,7 @@
 org\example\controllergrafici\MainController.class
+org\example\view\GestioneOnlineView.class
 org\example\view\LoginOnlineView.class
 org\example\view\View.class
-org\example\view\GestioneView.class
 org\example\controllerapplicativo\NavigationController.class
 org\example\view\LoginOfflineView.class
 org\example\service\NavigationService.class
@@ -9,5 +9,6 @@ org\example\ApplicationContext.class
 org\example\controllerapplicativo\AuthController.class
 org\example\MainApp.class
 org\example\NetworkUtils.class
+org\example\view\GestioneOfflineView.class
 org\example\controllergrafici\GestioneController.class
 org\example\controllergrafici\LoginPersonalController.class
