@@ -15,22 +15,30 @@ public class AuthController {
     private static final Logger LOGGER = Logger.getLogger(AuthController.class.getName());
 
     private final ApplicationContext context;
-    private String offlineUsername = "default_user";
-    private String offlinePassword = "default_pass";
+    private String offlineUsername;
+    private String offlinePassword;
+    private String dbUrl;
+    private String dbUsername;
+    private String dbPassword;
 
     public AuthController(ApplicationContext context) {
         this.context = context;
-        loadOfflineCredentials();
+        loadCredentials();
     }
 
-    private void loadOfflineCredentials() {
+    private void loadCredentials() {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             properties.load(fis);
             offlineUsername = properties.getProperty("username");
             offlinePassword = properties.getProperty("password");
+
+            dbUrl = properties.getProperty("db.url");
+            dbUsername = properties.getProperty("db.username");
+            dbPassword = properties.getProperty("db.password");
+
         } catch (IOException e) {
-            LOGGER.severe("Errore nel caricamento delle credenziali offline.");
+            LOGGER.severe("Errore nel caricamento del file config.properties: " + e.getMessage());
         }
     }
 
@@ -39,14 +47,15 @@ public class AuthController {
     }
 
     public boolean handleOnlineLogin(String username, String password) {
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "root", "Kazik+10");
-             PreparedStatement statement = connection.prepareStatement("SELECT username FROM users WHERE username = ? AND password = ?")) {
+        String query = "SELECT username FROM users WHERE username = ? AND password = ?";
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next();
         } catch (Exception e) {
-            LOGGER.severe("Errore nella connessione al database.");
+            LOGGER.severe("Errore nella connessione al database: " + e.getMessage());
             return false;
         }
     }
