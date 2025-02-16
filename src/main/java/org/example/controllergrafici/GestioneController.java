@@ -43,7 +43,7 @@ public class GestioneController {
     }
 
     private void handleGestione(String sezione) {
-        LOGGER.info("Navigazione a: " + sezione);
+        LOGGER.log(java.util.logging.Level.INFO, "Navigazione a: {0}", sezione);
     }
 
     public javafx.scene.Parent getRootView() {
