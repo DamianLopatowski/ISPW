@@ -83,12 +83,4 @@ public class LoginPersonalController {
             }
         }
     }
-
-    private void handleLogout() {
-        authController.logout();  // Ripristina le credenziali offline
-        navigationService.navigateToMainView();  // Torna alla schermata principale
-
-        // Aggiorna la schermata per assicurarsi che la modalità sia corretta
-        updateLoginView();
-    }
 }

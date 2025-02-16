@@ -1,3 +1,4 @@
+org\example\exception\DatabaseConfigurationException.class
 org\example\controllergrafici\MainController.class
 org\example\view\GestioneOnlineView.class
 org\example\view\LoginOnlineView.class

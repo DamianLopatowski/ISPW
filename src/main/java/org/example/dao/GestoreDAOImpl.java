@@ -1,34 +1,41 @@
 package org.example.dao;
 
+import org.example.exception.DatabaseConfigurationException;
 import org.example.model.Gestore;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GestoreDAOImpl implements GestoreDAO {
     private static final Logger LOGGER = Logger.getLogger(GestoreDAOImpl.class.getName());
-    private static GestoreDAOImpl instance;
+    private static volatile GestoreDAOImpl instance; // Volatile per il double-checked locking
 
     private String dbUrl;
     private String dbUsername;
     private String dbPassword;
     private Gestore gestore; // Unico riferimento al gestore
 
-    private GestoreDAOImpl() {
+    private GestoreDAOImpl() throws DatabaseConfigurationException {
         loadDatabaseConfig();
         loadOfflineGestore(); // Carica il gestore offline inizialmente
     }
 
-    public static synchronized GestoreDAOImpl getInstance() {
+    public static GestoreDAOImpl getInstance() throws DatabaseConfigurationException {
         if (instance == null) {
-            instance = new GestoreDAOImpl();
+            synchronized (GestoreDAOImpl.class) {
+                if (instance == null) {
+                    instance = new GestoreDAOImpl();
+                }
+            }
         }
         return instance;
     }
 
-    private void loadDatabaseConfig() {
+    private void loadDatabaseConfig() throws DatabaseConfigurationException {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             properties.load(fis);
@@ -36,11 +43,11 @@ public class GestoreDAOImpl implements GestoreDAO {
             this.dbUsername = properties.getProperty("db.username");
             this.dbPassword = properties.getProperty("db.password");
         } catch (IOException e) {
-            throw new RuntimeException("Errore nel caricamento delle credenziali del database", e);
+            throw new DatabaseConfigurationException("Errore nel caricamento delle credenziali del database", e);
         }
     }
 
-    private void loadOfflineGestore() {
+    private void loadOfflineGestore() throws DatabaseConfigurationException {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             properties.load(fis);
@@ -48,9 +55,9 @@ public class GestoreDAOImpl implements GestoreDAO {
             String offlinePassword = properties.getProperty("password");
 
             this.gestore = new Gestore(offlineUsername, offlinePassword);
-            LOGGER.info("Caricato gestore offline: " + offlineUsername);
+            LOGGER.log(Level.INFO, "Caricato gestore offline: {0}", offlineUsername);
         } catch (IOException e) {
-            throw new RuntimeException("Errore nel caricamento del gestore offline", e);
+            throw new DatabaseConfigurationException("Errore nel caricamento del gestore offline", e);
         }
     }
 
@@ -65,7 +72,7 @@ public class GestoreDAOImpl implements GestoreDAO {
                 return new Gestore(resultSet.getString("username"), resultSet.getString("password"));
             }
         } catch (SQLException e) {
-            LOGGER.severe("Errore nel recupero del gestore dal database: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Errore nel recupero del gestore dal database: {0}", e.getMessage());
         }
         return null;
     }
@@ -74,14 +81,14 @@ public class GestoreDAOImpl implements GestoreDAO {
         Gestore dbGestore = findByUsername(username);
         if (dbGestore != null && dbGestore.getPassword().equals(password)) {
             this.gestore = dbGestore; // Aggiorna il riferimento al gestore con quello online
-            LOGGER.info("Login online riuscito: " + username);
+            LOGGER.log(Level.INFO, "Login online riuscito: {0}", username);
             return true;
         }
         LOGGER.warning("Credenziali errate per login online.");
         return false;
     }
 
-    public void resetToOfflineGestore() {
+    public void resetToOfflineGestore() throws DatabaseConfigurationException {
         loadOfflineGestore(); // Ricarica il gestore offline da config.properties
         LOGGER.info("Ripristinato il gestore offline dopo il logout.");
     }
