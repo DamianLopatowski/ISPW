@@ -2,7 +2,6 @@ package org.example.controllergrafici;
 
 import javafx.stage.Stage;
 import org.example.controllerapplicativo.AuthController;
-import org.example.dao.GestoreDAOImpl;
 import org.example.view.GestioneOnlineView;
 import org.example.view.GestioneOfflineView;
 import org.example.service.NavigationService;
