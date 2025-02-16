@@ -3,19 +3,22 @@ package org.example.view;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-public class LoginPersonalView {
+public class LoginOnlineView {
     private final GridPane root;
     private final TextField usernameField;
     private final PasswordField passwordField;
     private final Button loginButton;
     private final Label statusLabel;
 
-    public LoginPersonalView() {
+    public LoginOnlineView() {
         root = new GridPane();
         usernameField = new TextField();
         passwordField = new PasswordField();
-        loginButton = new Button("Login");
-        statusLabel = new Label();
+        loginButton = new Button("Login Online");
+        statusLabel = new Label("Accesso Online");
+
+        usernameField.setPromptText("Inserisci username...");
+        passwordField.setPromptText("Inserisci password...");
 
         root.add(new Label("Username:"), 0, 0);
         root.add(usernameField, 1, 0);
@@ -43,9 +46,5 @@ public class LoginPersonalView {
 
     public Label getStatusLabel() {
         return statusLabel;
-    }
-
-    public void setOfflineMode(boolean isOfflineMode) {
-        statusLabel.setText(isOfflineMode ? "Modalità Offline" : "Modalità Online");
     }
 }

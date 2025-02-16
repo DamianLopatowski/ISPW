@@ -3,7 +3,6 @@ package org.example.controllergrafici;
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.NetworkUtils;
-import org.example.view.LoginPersonalView;
 import org.example.view.View;
 
 import java.util.logging.Logger;
@@ -32,9 +31,9 @@ public class MainController {
             LOGGER.info("Modalità selezionata: " + (isOfflineMode ? "Offline" : "Online"));
 
             Stage stage = context.getStage();
-            LoginPersonalView newLoginView = new LoginPersonalView();
-            new LoginPersonalController(newLoginView, isOfflineMode, context);
-            stage.getScene().setRoot(newLoginView.getRoot());
+
+            // Passiamo correttamente la modalità al LoginPersonalController
+            new LoginPersonalController(stage, isOfflineMode, context);
         });
     }
 }
