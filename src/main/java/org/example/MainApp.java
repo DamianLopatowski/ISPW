@@ -2,7 +2,7 @@ package org.example;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import org.example.controller.MainController;
+import org.example.controllergrafici.MainController;
 import org.example.view.View;
 
 public class MainApp extends Application {

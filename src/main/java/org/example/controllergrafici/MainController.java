@@ -1,4 +1,4 @@
-package org.example.controller;
+package org.example.controllergrafici;
 
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
@@ -24,15 +24,9 @@ public class MainController {
     private void configureMainView() {
         mainView.getLoginPersonaleButton().setOnAction(event -> {
             boolean isOfflineMode = mainView.getOfflineOption().isSelected();
-            boolean isOnlineMode = mainView.getOnlineOption().isSelected();
 
-            if (!isOfflineMode && !isOnlineMode) {
-                LOGGER.warning("Seleziona una modalità prima di procedere.");
-                return;
-            }
-
-            if (isOnlineMode && !NetworkUtils.isInternetAvailable()) {
-                LOGGER.warning("Connessione Internet assente. Non è possibile entrare online.");
+            if (!isOfflineMode && !NetworkUtils.isInternetAvailable()) {
+                LOGGER.warning("Connessione Internet assente.");
                 return;
             }
 
@@ -40,7 +34,7 @@ public class MainController {
 
             Stage stage = context.getStage();
             LoginPersonalView newLoginView = new LoginPersonalView();
-            new LoginPersonalController(newLoginView, isOfflineMode, context); // Eliminata la variabile
+            new LoginPersonalController(newLoginView, isOfflineMode, context);
             stage.getScene().setRoot(newLoginView.getRoot());
         });
     }
