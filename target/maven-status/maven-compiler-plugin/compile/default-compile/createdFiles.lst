@@ -17,4 +17,3 @@ org\example\dao\GestoreDAO.class
 org\example\view\SessionStartView.class
 org\example\view\GestioneOfflineView.class
 org\example\controllergrafici\GestioneController.class
-org\example\controllergrafici\LoginPersonalController.class
