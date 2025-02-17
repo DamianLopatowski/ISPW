@@ -20,6 +20,7 @@ public class NavigationController implements NavigationService {
     private final Stage stage;
     private final ApplicationContext context;
 
+
     // Costruttore corretto con ApplicationContext
     public NavigationController(Stage stage, ApplicationContext context) {
         this.stage = stage;
@@ -49,15 +50,17 @@ public class NavigationController implements NavigationService {
     public void navigateToMainView() {
         LOGGER.info("🔄 Creazione di una NUOVA istanza di View per il logout...");
 
-        View newMainView = new View();  // Creiamo una NUOVA istanza
-        newMainView.setNavigationService(this); // Passiamo NavigationService alla nuova View
+        View newMainView = new View();
+        newMainView.setNavigationService(this);
 
-        Parent root = newMainView.getRoot();  // Otteniamo la nuova Root
-
+        Parent root = newMainView.getRoot();
         if (root != null) {
             stage.setScene(new Scene(root, 400, 300));
             stage.setTitle("Schermata Principale");
             LOGGER.info("✅ Navigazione alla nuova View completata.");
+
+            // **🔄 Dopo il logout, resettiamo la sessione**
+            new SessionController(stage, false);  // O `true` se online
         } else {
             LOGGER.warning("❌ Errore: View principale è NULL!");
         }

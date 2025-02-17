@@ -50,12 +50,10 @@ public class GestioneController {
     }
 
     private void handleLogout() {
-        authController.logout();
-        navigationService.navigateToMainView(); // Torna alla View
+        LOGGER.info("🔄 Logout in corso...");
+        authController.logout(stage);  // Ora passa il `stage`
+        navigationService.navigateToMainView();
     }
-
-
-
 
     private void handleGestione(String sezione) {
         LOGGER.log(java.util.logging.Level.INFO, "Navigazione a: {0}", sezione);

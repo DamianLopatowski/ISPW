@@ -52,19 +52,20 @@ public class LoginPersonalController {
         return this.onLoginSuccess;
     }
 
-    private void updateLoginView() {
+    public void updateLoginView() {
         if (isOnlineMode) {
             this.onlineView = new LoginOnlineView(isInterfaccia1);
             this.offlineView = null;
-            stage.getScene().setRoot(onlineView.getRoot());
+            LOGGER.info("🔄 Ricreata nuova LoginOnlineView.");
         } else {
             this.offlineView = new LoginOfflineView(isInterfaccia1);
             this.onlineView = null;
-            stage.getScene().setRoot(offlineView.getRoot());
+            LOGGER.info("🔄 Ricreata nuova LoginOfflineView.");
         }
-
-        setupHandlers();
+        stage.getScene().setRoot(getLoginViewRoot());
+        setupHandlers(); // Riassegna il listener del bottone
     }
+
 
     private void setupHandlers() {
         if (isOnlineMode) {

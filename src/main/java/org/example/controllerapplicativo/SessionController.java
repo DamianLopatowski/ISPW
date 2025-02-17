@@ -4,8 +4,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
-
-
 import java.util.logging.Logger;
 import org.example.ApplicationContext;
 import org.example.dao.GestoreDAOImpl;
@@ -13,31 +11,31 @@ import org.example.service.NavigationService;
 import org.example.view.LoginOfflineView;
 import org.example.view.LoginOnlineView;
 import org.example.view.View;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.Scene;
 
-
-
 public class SessionController {
-    private static final Logger LOGGER = Logger.getLogger(SessionController.class.getName()); // Aggiunto LOGGER
+    private static final Logger LOGGER = Logger.getLogger(SessionController.class.getName());
 
     private final Stage stage;
     private final ApplicationContext context;
     private final NavigationService navigationService;
     private boolean isOnlineMode;
     private boolean isInterfaccia1;
+    private Button loginButton;
+    private TextField usernameField;
+    private PasswordField passwordField;
+    private Parent loginRoot;
 
     public SessionController(Stage stage, boolean isOnlineMode) {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
         View mainView = new View();
         this.context = new ApplicationContext(stage, mainView);
-        this.navigationService = new org.example.controllerapplicativo.NavigationController(stage, context);
+        this.navigationService = new NavigationController(stage, context);
         initializeView();
     }
-
 
     private void initializeView() {
         View view = context.getMainView();
@@ -48,13 +46,15 @@ public class SessionController {
             } else if (view.getInterfaccia2Option().isSelected()) {
                 isInterfaccia1 = false;
             } else {
+                LOGGER.warning("❌ Nessuna interfaccia selezionata.");
                 return;
             }
 
+            LOGGER.info("🔄 Avvio login per " + (isOnlineMode ? "modalità ONLINE" : "modalità OFFLINE"));
             startLogin();
         });
 
-        stage.setScene(new javafx.scene.Scene(view.getRoot(), 400, 300));
+        stage.setScene(new Scene(view.getRoot(), 400, 300));
         stage.setTitle("Selezione Interfaccia");
         stage.show();
     }
@@ -66,7 +66,7 @@ public class SessionController {
 
         if (gestioneView != null) {
             LOGGER.info("✅ Cambio scena a GestioneProdotti...");
-            stage.setScene(new javafx.scene.Scene(gestioneView, 600, 400));
+            stage.setScene(new Scene(gestioneView, 600, 400));
             stage.setTitle("Gestione Prodotti - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         } else {
             LOGGER.warning("❌ Errore: gestioneView è NULL!");
@@ -74,13 +74,10 @@ public class SessionController {
     }
 
     private void startLogin() {
-        GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
+        LOGGER.info("🔑 Avvio della schermata di login...");
 
-        // Creiamo la vista direttamente
-        Parent loginRoot;
-        Button loginButton;
-        TextField usernameField;
-        PasswordField passwordField;
+        GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
+        AuthController authController = new AuthController(gestoreDAO);
 
         if (isInterfaccia1) {
             LoginOnlineView loginView = new LoginOnlineView(isInterfaccia1);
@@ -96,25 +93,39 @@ public class SessionController {
             passwordField = loginView.getPasswordField();
         }
 
-        // FORZIAMO IL LOGIN QUI INVECE CHE IN `LoginPersonalController`
-        loginButton.setOnAction(event -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
+        // **🔄 Rimuoviamo e ri-registriamo il listener per evitare problemi**
+        if (loginButton != null) {
+            loginButton.setOnAction(null); // Rimuove eventuali listener precedenti
+            loginButton.setOnAction(event -> {
+                String username = usernameField.getText();
+                String password = passwordField.getText();
 
-            AuthController authController = new AuthController(gestoreDAO);
-            boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
+                LOGGER.info("🔑 Tentativo di login con username: " + username);
+                boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
-            if (loginSuccess) {
-                navigateToGestione();
-            } else {
-                System.out.println("❌ Credenziali errate.");
-            }
-        });
+                if (loginSuccess) {
+                    LOGGER.info("✅ Login riuscito!");
+                    navigateToGestione();
+                } else {
+                    LOGGER.warning("❌ Credenziali errate.");
+                }
+            });
+        } else {
+            LOGGER.warning("⚠️ Bottone di login è NULL! Verifica la creazione della View.");
+        }
 
-        // Cambio scena al login
+        // **🔄 Cambio scena alla schermata di login**
         if (loginRoot != null) {
             stage.setScene(new Scene(new VBox(loginRoot), 400, 300));
             stage.setTitle("Login - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
+            LOGGER.info("✅ Scena aggiornata con la schermata di login.");
+        } else {
+            LOGGER.warning("❌ Errore: loginRoot è NULL!");
         }
+    }
+
+    public void resetSession() {
+        LOGGER.info("🔄 Reset della sessione dopo il logout...");
+        new SessionController(stage, isOnlineMode);
     }
 }
