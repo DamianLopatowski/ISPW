@@ -3,6 +3,7 @@ package org.example.controllerapplicativo;
 import javafx.stage.Stage;
 import org.example.dao.GestoreDAOImpl;
 import org.example.model.Gestore;
+import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
@@ -14,13 +15,14 @@ public class AuthController {
         this.gestoreDAO = gestoreDAO;
     }
 
-    public void logout(Stage stage) {
+    public void logout(NavigationService navigationService) {
         gestoreDAO.resetToOfflineGestore();
         LOGGER.info("Logout effettuato, credenziali offline ripristinate.");
 
-        // **🔄 Creazione di una nuova sessione dopo il logout**
-        new SessionController(stage, true);  // Oppure `false` se offline
+        // **🔄 Naviga alla schermata principale e resetta la sessione**
+        navigationService.navigateToMainView();
     }
+
 
     public boolean handleLogin(String username, String password, boolean isOfflineMode) {
         LOGGER.info("Tentativo di login con username: " + username);
