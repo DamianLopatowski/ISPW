@@ -135,35 +135,73 @@ public class NavigationController implements NavigationService {
 
     @Override
     public void navigateToRegistrazioneCliente(boolean isInterfaccia1) {
-        RegistratiClienteOfflineView offlineView = isInterfaccia1 ? new RegistratiClienteOfflineView(stage) : null;
-        RegistratiClienteOnlineView onlineView = isInterfaccia1 ? null : new RegistratiClienteOnlineView(stage);
+        RegistratiClienteOfflineView offlineView = null;
+        RegistratiClienteOnlineView onlineView = null;
+        Parent registrazioneView = null;
 
-        Parent registrazioneView = isInterfaccia1 ? offlineView.getRoot() : onlineView.getRoot();
+        if (isInterfaccia1) {
+            offlineView = new RegistratiClienteOfflineView(stage);
+            registrazioneView = offlineView.getRoot();
+        } else {
+            onlineView = new RegistratiClienteOnlineView(stage);
+            registrazioneView = onlineView.getRoot();
+        }
 
         if (registrazioneView != null) {
             stage.setScene(new Scene(registrazioneView, 400, 300));
             stage.setTitle("Registrazione Cliente");
             LOGGER.info("🔄 Navigazione alla registrazione cliente " + (isInterfaccia1 ? "Offline" : "Online"));
 
-            // Imposta manualmente il comportamento del bottone
-            Button registratiButton = isInterfaccia1 ? offlineView.getRegistratiButton() : onlineView.getRegistratiButton();
-            TextField usernameField = isInterfaccia1 ? offlineView.getUsernameField() : onlineView.getUsernameField();
-            TextField nomeField = isInterfaccia1 ? offlineView.getNomeField() : onlineView.getNomeField();
-            TextField cognomeField = isInterfaccia1 ? offlineView.getCognomeField() : onlineView.getCognomeField();
-            PasswordField passwordField = isInterfaccia1 ? offlineView.getPasswordField() : onlineView.getPasswordField();
-
-            registratiButton.setOnAction(event -> {
-                LOGGER.info("🔘 Bottone REGISTRATI premuto! Chiamo processaRegistrazione...");
-                processaRegistrazione(usernameField, nomeField, cognomeField, passwordField, isInterfaccia1);
-            });
+            setupRegistrazioneHandler(isInterfaccia1, offlineView, onlineView);
         } else {
             LOGGER.warning("❌ Errore: registrazioneView è NULL!");
         }
     }
 
+    private void setupRegistrazioneHandler(boolean isInterfaccia1,
+                                           RegistratiClienteOfflineView offlineView,
+                                           RegistratiClienteOnlineView onlineView) {
+        Button registratiButton;
+        TextField usernameField;
+        TextField nomeField;
+        TextField cognomeField;
+        PasswordField passwordField;
 
-    public void processaRegistrazione(TextField usernameField, TextField nomeField, TextField cognomeField, PasswordField passwordField, boolean isInterfaccia1) {
-        LOGGER.info("🔥 Entrato in processaRegistrazione!");  // Se non appare, il metodo non viene mai chiamato
+        if (isInterfaccia1) {
+            if (offlineView == null) {
+                LOGGER.warning("❌ Errore: offlineView è NULL!");
+                return;
+            }
+            registratiButton = offlineView.getRegistratiButton();
+            usernameField = offlineView.getUsernameField();
+            nomeField = offlineView.getNomeField();
+            cognomeField = offlineView.getCognomeField();
+            passwordField = offlineView.getPasswordField();
+        } else {
+            if (onlineView == null) {
+                LOGGER.warning("❌ Errore: onlineView è NULL!");
+                return;
+            }
+            registratiButton = onlineView.getRegistratiButton();
+            usernameField = onlineView.getUsernameField();
+            nomeField = onlineView.getNomeField();
+            cognomeField = onlineView.getCognomeField();
+            passwordField = onlineView.getPasswordField();
+        }
+
+        if (registratiButton == null || usernameField == null || nomeField == null || cognomeField == null || passwordField == null) {
+            LOGGER.warning("❌ Errore: uno dei campi di registrazione è NULL! Controlla la UI.");
+            return;
+        }
+
+        registratiButton.setOnAction(event -> {
+            LOGGER.info("🔘 Bottone REGISTRATI premuto! Chiamo processaRegistrazione...");
+            processaRegistrazione(usernameField, nomeField, cognomeField, passwordField, isInterfaccia1);
+        });
+    }
+
+    private void processaRegistrazione(TextField usernameField, TextField nomeField, TextField cognomeField, PasswordField passwordField, boolean isInterfaccia1) {
+        LOGGER.info("🔥 Entrato in processaRegistrazione!");
 
         String username = usernameField.getText().trim();
         String nome = nomeField.getText().trim();
@@ -192,46 +230,6 @@ public class NavigationController implements NavigationService {
         navigateToLogin(isInterfaccia1, true);
     }
 
-
-    private void setupRegistrazioneHandler(boolean isInterfaccia1) {
-        Parent registrazioneRoot = stage.getScene().getRoot();
-
-        if (!(registrazioneRoot instanceof VBox)) {
-            LOGGER.warning("❌ Errore: Registrazione View non è un VBox.");
-            return;
-        }
-
-        VBox vbox = (VBox) registrazioneRoot;
-
-        // Recuperiamo direttamente la View corretta
-        RegistratiClienteOfflineView offlineView = isInterfaccia1 ? new RegistratiClienteOfflineView(stage) : null;
-        RegistratiClienteOnlineView onlineView = isInterfaccia1 ? null : new RegistratiClienteOnlineView(stage);
-
-        TextField usernameField = isInterfaccia1 ? offlineView.getUsernameField() : onlineView.getUsernameField();
-        TextField nomeField = isInterfaccia1 ? offlineView.getNomeField() : onlineView.getNomeField();
-        TextField cognomeField = isInterfaccia1 ? offlineView.getCognomeField() : onlineView.getCognomeField();
-        PasswordField passwordField = isInterfaccia1 ? offlineView.getPasswordField() : onlineView.getPasswordField();
-        Button registratiButton = isInterfaccia1 ? offlineView.getRegistratiButton() : onlineView.getRegistratiButton();
-
-        // ✅ Verifica che i campi non siano NULL
-        if (usernameField == null || nomeField == null || cognomeField == null || passwordField == null || registratiButton == null) {
-            LOGGER.warning("❌ Errore: uno dei campi di registrazione è NULL!");
-            return;
-        }
-
-        LOGGER.info("✅ Campi di registrazione trovati correttamente!");
-
-        // ✅ Forza la rimozione di azioni esistenti sul bottone
-        registratiButton.setOnAction(null);
-
-        // ✅ Imposta l'azione corretta
-        registratiButton.setOnAction(event -> {
-            LOGGER.info("🔘 Bottone REGISTRATI premuto! Chiamo processaRegistrazione...");
-            processaRegistrazione(usernameField, nomeField, cognomeField, passwordField, isInterfaccia1);
-        });
-
-        LOGGER.info("✅ Evento di registrazione associato al pulsante correttamente.");
-    }
 
 
     public void navigateToNegozio() {
