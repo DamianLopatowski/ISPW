@@ -10,13 +10,11 @@ import org.example.view.LoginOnlineView;
 public class MainController {
     private final View mainView;
     private final ApplicationContext context;
-    private final NavigationService navigationService;
     private boolean isOnlineMode; // Online (DB) o Offline (config.properties)
 
-    public MainController(View mainView, ApplicationContext context, NavigationService navigationService, boolean isOnlineMode) {
+    public MainController(View mainView, ApplicationContext context, boolean isOnlineMode) {
         this.mainView = mainView;
         this.context = context;
-        this.navigationService = navigationService;
         this.isOnlineMode = isOnlineMode;
         configureMainView();
     }

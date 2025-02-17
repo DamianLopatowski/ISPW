@@ -14,10 +14,8 @@ import java.util.logging.Logger;
 
 public class LoginPersonalController {
     private static final Logger LOGGER = Logger.getLogger(LoginPersonalController.class.getName());
-    private static final String ERROR_CREDENTIALS = "Credenziali errate.";
 
     private final Stage stage;
-    private final View mainView;
     private final AuthController authController;
     private final NavigationService navigationService;
     private LoginOnlineView onlineView;
@@ -27,9 +25,8 @@ public class LoginPersonalController {
 
     private Runnable onLoginSuccess;
 
-    public LoginPersonalController(Stage stage, View mainView, NavigationService navigationService, GestoreDAOImpl gestoreDAO, boolean isOnlineMode, boolean isInterfaccia1) {
+    public LoginPersonalController(Stage stage, NavigationService navigationService, GestoreDAOImpl gestoreDAO, boolean isOnlineMode, boolean isInterfaccia1) {
         this.stage = stage;
-        this.mainView = mainView;
         this.navigationService = navigationService;
         this.authController = new AuthController(gestoreDAO);
         this.isOnlineMode = isOnlineMode;
@@ -97,7 +94,7 @@ public class LoginPersonalController {
         }
     }
     private void handleLogin(String username, String password) {
-        LOGGER.info("🔑 Tentativo di login con username: " + username);
+        LOGGER.info(String.format("🔑 Tentativo di login con username: %s", username));
 
         boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
@@ -115,22 +112,6 @@ public class LoginPersonalController {
             } else {
                 offlineView.getStatusLabel().setText("❌ Credenziali errate!");
             }
-        }
-    }
-
-
-
-    private void navigateToGestione() {
-        LOGGER.info("🔄 Entrato in navigateToGestione()...");
-
-        Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
-
-        if (gestioneView != null) {
-            LOGGER.info("✅ Cambio scena a GestioneProdotti...");
-            stage.setScene(new javafx.scene.Scene(gestioneView, 600, 400));
-            stage.setTitle("Gestione Prodotti - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
-        } else {
-            LOGGER.warning("❌ Errore: gestioneView è NULL!");
         }
     }
 

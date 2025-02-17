@@ -1,6 +1,5 @@
 package org.example.controllerapplicativo;
 
-import javafx.stage.Stage;
 import org.example.dao.GestoreDAOImpl;
 import org.example.model.Gestore;
 import org.example.service.NavigationService;
@@ -25,7 +24,7 @@ public class AuthController {
 
 
     public boolean handleLogin(String username, String password, boolean isOfflineMode) {
-        LOGGER.info("🔑 Tentativo di login con username: " + username + ", Modalità: " + (isOfflineMode ? "Offline" : "Online"));
+        LOGGER.info(String.format("🔑 Tentativo di login con username: %s, Modalità: %s", username, isOfflineMode ? "Offline" : "Online"));
 
         if (isOfflineMode) {
             Gestore gestore = gestoreDAO.getGestore();

@@ -23,10 +23,6 @@ public class SessionController {
     private final NavigationService navigationService;
     private boolean isOnlineMode;
     private boolean isInterfaccia1;
-    private Button loginButton;
-    private TextField usernameField;
-    private PasswordField passwordField;
-    private Parent loginRoot;
 
     protected static boolean isOnlineModeStatic = true;   // ✅ Salviamo lo stato globale
 
@@ -43,7 +39,7 @@ public class SessionController {
 
     private void initializeView() {
         View view = context.getMainView();
-        LOGGER.info("✅ Modalità al riavvio: " + (isOnlineMode ? "ONLINE" : "OFFLINE"));
+        LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
@@ -82,13 +78,17 @@ public class SessionController {
         GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
         AuthController authController = new AuthController(gestoreDAO);
 
-        // **🔄 Ricarichiamo sempre le credenziali online se siamo online**
         if (!isOnlineMode) {
             LOGGER.info("🟢 Modalità offline, nessuna ricarica credenziali.");
         } else {
             LOGGER.info("🔄 Modalità online, ricarico le credenziali online...");
             gestoreDAO.refreshOnlineCredentials();
         }
+
+        Parent loginRoot;
+        Button loginButton;
+        TextField usernameField;
+        PasswordField passwordField;
 
         if (isInterfaccia1) {
             LoginOnlineView loginView = new LoginOnlineView(isInterfaccia1);
@@ -109,7 +109,7 @@ public class SessionController {
             loginButton.setOnAction(event -> {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
-                LOGGER.info("🔑 Tentativo di login con username: " + username);
+                LOGGER.info(String.format("🔑 Tentativo di login con username: %s", username));
                 boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
                 if (loginSuccess) {

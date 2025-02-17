@@ -26,13 +26,13 @@ public class MainApp extends Application {
         startButton.setDisable(true); // Disabilitato finché l'utente non sceglie
 
         // Abilita il bottone solo quando una modalità viene selezionata
-        toggleGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
-            startButton.setDisable(newVal == null);
-        });
+        toggleGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
+                startButton.setDisable(newVal == null)
+        );
 
         startButton.setOnAction(event -> {
             boolean isOnlineMode = onlineOption.isSelected();
-            NavigationService navigationService = new NavigationController(primaryStage, null);
+            NavigationService navigationService = new NavigationController(primaryStage);
             new SessionController(primaryStage, isOnlineMode, navigationService);
         });
 

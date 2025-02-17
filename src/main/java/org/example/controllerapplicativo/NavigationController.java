@@ -18,14 +18,13 @@ import java.util.logging.Logger;
 public class NavigationController implements NavigationService {
     private static final Logger LOGGER = Logger.getLogger(NavigationController.class.getName());
     private final Stage stage;
-    private final ApplicationContext context;
 
 
     // Costruttore corretto con ApplicationContext
-    public NavigationController(Stage stage, ApplicationContext context) {
+    public NavigationController(Stage stage) {
         this.stage = stage;
-        this.context = context;
     }
+
 
     @Override
     public void navigateToLogin(boolean isInterfaccia1) {
@@ -71,12 +70,15 @@ public class NavigationController implements NavigationService {
 
     @Override
     public Parent navigateToGestioneView(boolean isOfflineMode, boolean isInterfaccia1) {
-        LOGGER.info("🔄 Creazione di GestioneProdottoController per " + (isOfflineMode ? "Offline" : "Online") + ", Interfaccia: " + (isInterfaccia1 ? "1" : "2"));
+        LOGGER.info(String.format("🔄 Creazione di GestioneProdottoController per %s, Interfaccia: %s",
+                isOfflineMode ? "Offline" : "Online",
+                isInterfaccia1 ? "1" : "2"));
 
         GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
         AuthController authController = new AuthController(gestoreDAO);
 
-        GestioneController gestioneController = new GestioneController(stage, isOfflineMode, isInterfaccia1, this, authController);
+        GestioneController gestioneController = new GestioneController(stage, isInterfaccia1, this, authController);
+
 
         Parent rootView = gestioneController.getRootView();
         if (rootView == null) {

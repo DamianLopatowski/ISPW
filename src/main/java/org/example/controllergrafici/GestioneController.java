@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 public class GestioneController {
     private final Stage stage;
-    private final boolean isOfflineMode;
     private final boolean isInterfaccia1;
     private final NavigationService navigationService;
     private final GestioneOnlineView onlineView;
@@ -18,19 +17,18 @@ public class GestioneController {
     private static final Logger LOGGER = Logger.getLogger(GestioneController.class.getName());
     private final AuthController authController;
 
-    public GestioneController(Stage stage, boolean isOfflineMode, boolean isInterfaccia1, NavigationService navigationService, AuthController authController) {
+    public GestioneController(Stage stage, boolean isInterfaccia1, NavigationService navigationService, AuthController authController) {
         this.stage = stage;
-        this.isOfflineMode = isOfflineMode;
         this.isInterfaccia1 = isInterfaccia1;
         this.navigationService = navigationService;
         this.authController = authController;
 
-        // Le interfacce rimangono sempre le stesse
         this.onlineView = new GestioneOnlineView();
         this.offlineView = new GestioneOfflineView();
 
         setupHandlers();
     }
+
 
     private void setupHandlers() {
         if (isInterfaccia1) {
