@@ -25,17 +25,18 @@ public class AuthController {
 
 
     public boolean handleLogin(String username, String password, boolean isOfflineMode) {
-        LOGGER.info("Tentativo di login con username: " + username);
+        LOGGER.info("🔑 Tentativo di login con username: " + username + ", Modalità: " + (isOfflineMode ? "Offline" : "Online"));
 
         if (isOfflineMode) {
             Gestore gestore = gestoreDAO.getGestore();
-            LOGGER.info("Credenziali offline: " + gestore.getUsername());
+            LOGGER.info("🟢 Verifica credenziali offline per: " + gestore.getUsername());
             boolean success = gestore.getUsername().equals(username) && gestore.getPassword().equals(password);
-            LOGGER.info(success ? "Accesso offline riuscito" : "Accesso offline fallito");
+            LOGGER.info(success ? "✅ Accesso offline riuscito" : "❌ Accesso offline fallito");
             return success;
         } else {
+            LOGGER.info("🔄 Verifica credenziali online nel database...");
             boolean success = gestoreDAO.authenticateOnline(username, password);
-            LOGGER.info(success ? "Accesso online riuscito" : "Accesso online fallito");
+            LOGGER.info(success ? "✅ Accesso online riuscito" : "❌ Accesso online fallito");
             return success;
         }
     }

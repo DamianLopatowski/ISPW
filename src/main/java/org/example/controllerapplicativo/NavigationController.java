@@ -59,12 +59,13 @@ public class NavigationController implements NavigationService {
             stage.setTitle("Schermata Principale");
             LOGGER.info("✅ Navigazione alla nuova View completata.");
 
-            // **🔄 Reset della sessione dopo il logout**
-            new SessionController(stage, false, this);  // ✅ Ora passiamo anche `this` come NavigationService
+            // ✅ Usa lo stato salvato per mantenere la modalità online
+            new SessionController(stage, SessionController.getIsOnlineModeStatic(), this);
         } else {
             LOGGER.warning("❌ Errore: View principale è NULL!");
         }
     }
+
 
 
 

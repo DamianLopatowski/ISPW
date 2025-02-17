@@ -28,17 +28,22 @@ public class SessionController {
     private PasswordField passwordField;
     private Parent loginRoot;
 
+    protected static boolean isOnlineModeStatic = true;   // ✅ Salviamo lo stato globale
+
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
         this.navigationService = navigationService;
+        isOnlineModeStatic = isOnlineMode;  // ✅ Salviamo lo stato globale
         View mainView = new View();
         this.context = new ApplicationContext(stage, mainView);
         initializeView();
     }
 
+
     private void initializeView() {
         View view = context.getMainView();
+        LOGGER.info("✅ Modalità al riavvio: " + (isOnlineMode ? "ONLINE" : "OFFLINE"));
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
@@ -73,8 +78,17 @@ public class SessionController {
 
     private void startLogin() {
         LOGGER.info("🔑 Avvio della schermata di login...");
+
         GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
         AuthController authController = new AuthController(gestoreDAO);
+
+        // **🔄 Ricarichiamo sempre le credenziali online se siamo online**
+        if (!isOnlineMode) {
+            LOGGER.info("🟢 Modalità offline, nessuna ricarica credenziali.");
+        } else {
+            LOGGER.info("🔄 Modalità online, ricarico le credenziali online...");
+            gestoreDAO.refreshOnlineCredentials();
+        }
 
         if (isInterfaccia1) {
             LoginOnlineView loginView = new LoginOnlineView(isInterfaccia1);
@@ -90,7 +104,6 @@ public class SessionController {
             passwordField = loginView.getPasswordField();
         }
 
-        // **🔄 Rimuoviamo e ri-registriamo il listener per evitare problemi**
         if (loginButton != null) {
             loginButton.setOnAction(null);
             loginButton.setOnAction(event -> {
@@ -117,6 +130,10 @@ public class SessionController {
         } else {
             LOGGER.warning("❌ Errore: loginRoot è NULL!");
         }
+    }
+
+    public static boolean getIsOnlineModeStatic() {
+        return isOnlineModeStatic;
     }
 
     public void resetSession() {

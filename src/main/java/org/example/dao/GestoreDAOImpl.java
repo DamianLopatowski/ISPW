@@ -72,26 +72,52 @@ public class GestoreDAOImpl implements GestoreDAO {
     }
 
     public boolean authenticateOnline(String username, String password) {
-        LOGGER.info("Verifica credenziali online nel database...");
+        LOGGER.info("🔄 Controllo credenziali nel database per: " + username);
         Gestore dbGestore = findByUsername(username);
 
         if (dbGestore != null) {
-            LOGGER.info("Utente trovato nel database: " + dbGestore.getUsername());
+            LOGGER.info("✅ Utente trovato nel database: " + dbGestore.getUsername());
             boolean success = dbGestore.getPassword().equals(password);
-            LOGGER.info(success ? "Password corretta, login riuscito." : "Password errata.");
+            LOGGER.info(success ? "✅ Accesso online riuscito" : "❌ Password errata.");
             return success;
         } else {
-            LOGGER.warning("Utente non trovato nel database.");
+            LOGGER.warning("❌ Utente non trovato nel database.");
             return false;
         }
     }
 
+    public void refreshOnlineCredentials() {
+        if (dbUrl == null) {
+            LOGGER.info("🔄 Modalità offline, nessuna necessità di ricaricare le credenziali online.");
+            return;
+        }
+
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             PreparedStatement statement = connection.prepareStatement("SELECT username, password FROM users")) {
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                gestore = new Gestore(resultSet.getString("username"), resultSet.getString("password"));
+                LOGGER.info("🔄 Credenziali online ricaricate: " + gestore.getUsername());
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("❌ Errore nel ricaricamento delle credenziali online: " + e.getMessage());
+        }
+    }
+
+
     public void resetToOfflineGestore() {
+        if (dbUrl != null) {  // 🔄 **Se sei online, non resettare nulla**
+            LOGGER.info("🔄 Modalità online attiva, non ripristino credenziali offline.");
+            return;
+        }
+
         try {
             loadOfflineGestore();
-            LOGGER.info("Ripristinato il gestore offline dopo il logout.");
+            LOGGER.info("✅ Ripristinato il gestore offline dopo il logout.");
         } catch (DatabaseConfigurationException e) {
-            LOGGER.severe("Errore nel ripristino delle credenziali offline: " + e.getMessage());
+            LOGGER.severe("❌ Errore nel ripristino delle credenziali offline: " + e.getMessage());
         }
     }
 
