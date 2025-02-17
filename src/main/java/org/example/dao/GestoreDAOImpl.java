@@ -18,6 +18,9 @@ public class GestoreDAOImpl implements GestoreDAO {
     private String dbUsername;
     private String dbPassword;
     private Gestore gestore;
+    private static final String USERNAME_KEY = "username";
+    private static final String PASSWORD_KEY = "password";
+
 
     // Costruttore pubblico per Dependency Injection
     public GestoreDAOImpl() {
@@ -45,8 +48,8 @@ public class GestoreDAOImpl implements GestoreDAO {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             properties.load(fis);
-            String offlineUsername = properties.getProperty("username");
-            String offlinePassword = properties.getProperty("password");
+            String offlineUsername = properties.getProperty(USERNAME_KEY);
+            String offlinePassword = properties.getProperty(PASSWORD_KEY);
 
             this.gestore = new Gestore(offlineUsername, offlinePassword);
             LOGGER.log(Level.INFO, "Caricato gestore offline: {0}", offlineUsername);
@@ -63,7 +66,7 @@ public class GestoreDAOImpl implements GestoreDAO {
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new Gestore(resultSet.getString("username"), resultSet.getString("password"));
+                return new Gestore(resultSet.getString(USERNAME_KEY), resultSet.getString(PASSWORD_KEY));
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Errore nel recupero del gestore dal database: {0}", e.getMessage());
@@ -72,7 +75,9 @@ public class GestoreDAOImpl implements GestoreDAO {
     }
 
     public boolean authenticateOnline(String username, String password) {
-        LOGGER.info("🔄 Controllo credenziali nel database per: " + username);
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format("🔄 Controllo credenziali nel database per: %s", username));
+        }
         Gestore dbGestore = findByUsername(username);
 
         if (dbGestore != null) {
@@ -98,7 +103,7 @@ public class GestoreDAOImpl implements GestoreDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                gestore = new Gestore(resultSet.getString("username"), resultSet.getString("password"));
+                gestore = new Gestore(resultSet.getString(USERNAME_KEY), resultSet.getString(PASSWORD_KEY));
                 LOGGER.info("🔄 Credenziali online ricaricate: " + gestore.getUsername());
             }
         } catch (SQLException e) {

@@ -8,7 +8,6 @@ import org.example.view.LoginOfflineView;
 import org.example.controllerapplicativo.AuthController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
-import org.example.view.View;
 
 import java.util.logging.Logger;
 
@@ -17,7 +16,6 @@ public class LoginPersonalController {
 
     private final Stage stage;
     private final AuthController authController;
-    private final NavigationService navigationService;
     private LoginOnlineView onlineView;
     private LoginOfflineView offlineView;
     private boolean isOnlineMode;
@@ -25,9 +23,8 @@ public class LoginPersonalController {
 
     private Runnable onLoginSuccess;
 
-    public LoginPersonalController(Stage stage, NavigationService navigationService, GestoreDAOImpl gestoreDAO, boolean isOnlineMode, boolean isInterfaccia1) {
+    public LoginPersonalController(Stage stage, GestoreDAOImpl gestoreDAO, boolean isOnlineMode, boolean isInterfaccia1) {
         this.stage = stage;
-        this.navigationService = navigationService;
         this.authController = new AuthController(gestoreDAO);
         this.isOnlineMode = isOnlineMode;
         this.isInterfaccia1 = isInterfaccia1;
@@ -94,8 +91,9 @@ public class LoginPersonalController {
         }
     }
     private void handleLogin(String username, String password) {
-        LOGGER.info(String.format("🔑 Tentativo di login con username: %s", username));
-
+        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+            LOGGER.info(String.format("🔑 Tentativo di login con username: %s", username));
+        }
         boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
         if (loginSuccess) {

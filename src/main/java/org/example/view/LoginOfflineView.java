@@ -34,6 +34,7 @@ public class LoginOfflineView {
         root.getChildren().addAll(statusLabel, usernameField, avantiButton, passwordField, loginButton);
     }
 
+
     private void showPasswordField() {
         if (!usernameField.getText().trim().isEmpty()) {
             statusLabel.setText("Ora inserisci la password:");

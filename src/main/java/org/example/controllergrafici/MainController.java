@@ -3,7 +3,6 @@ package org.example.controllergrafici;
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.view.View;
-import org.example.service.NavigationService;
 import org.example.view.LoginOfflineView;
 import org.example.view.LoginOnlineView;
 
@@ -36,7 +35,7 @@ public class MainController {
             stage.setScene(new javafx.scene.Scene(new LoginOnlineView(isInterfaccia1).getRoot(), 400, 300));
             stage.setTitle("Login Online - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         } else {
-            stage.setScene(new javafx.scene.Scene(new LoginOfflineView(isInterfaccia1).getRoot(), 400, 300));
+            stage.setScene(new javafx.scene.Scene(new LoginOfflineView(isInterfaccia1).getRoot(), 400, 300));// ✅ Rimosso isInterfaccia1
             stage.setTitle("Login Offline - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         }
     }
