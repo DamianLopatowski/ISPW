@@ -2,6 +2,8 @@ package org.example.controllergrafici;
 
 import javafx.stage.Stage;
 import org.example.ApplicationContext;
+import org.example.controllerapplicativo.NavigationController;
+import org.example.service.NavigationService;
 import org.example.view.View;
 import org.example.view.LoginOfflineView;
 import org.example.view.LoginOnlineView;
@@ -9,12 +11,18 @@ import org.example.view.LoginOnlineView;
 public class MainController {
     private final View mainView;
     private final ApplicationContext context;
-    private boolean isOnlineMode; // Online (DB) o Offline (config.properties)
+    private final NavigationService navigationService;
+    private final boolean isOnlineMode;
 
-    public MainController(View mainView, ApplicationContext context, boolean isOnlineMode) {
+    public MainController(View mainView, ApplicationContext context, boolean isOnlineMode, NavigationService navigationService) {
         this.mainView = mainView;
         this.context = context;
         this.isOnlineMode = isOnlineMode;
+        this.navigationService = navigationService;
+
+        // ✅ Imposta il NavigationService nella View
+        this.mainView.setNavigationService(navigationService);
+
         configureMainView();
     }
 
@@ -31,11 +39,13 @@ public class MainController {
     }
 
     private void navigateToLogin(Stage stage, boolean isInterfaccia1) {
+        NavigationController navigationController = new NavigationController(stage);  // ✅ Creiamo il NavigationController
+
         if (isOnlineMode) {
-            stage.setScene(new javafx.scene.Scene(new LoginOnlineView().getRoot(), 400, 300));
+            stage.setScene(new javafx.scene.Scene(new LoginOnlineView(stage, navigationController).getRoot(), 400, 300));
             stage.setTitle("Login Online - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         } else {
-            stage.setScene(new javafx.scene.Scene(new LoginOfflineView().getRoot(), 400, 300));// ✅ Rimosso isInterfaccia1
+            stage.setScene(new javafx.scene.Scene(new LoginOfflineView().getRoot(), 400, 300));
             stage.setTitle("Login Offline - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         }
     }

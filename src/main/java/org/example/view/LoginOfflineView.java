@@ -40,8 +40,12 @@ public class LoginOfflineView {
             statusLabel.setText("Ora inserisci la password:");
             avantiButton.setDisable(true);
             usernameField.setDisable(true);
+
             passwordField.setVisible(true);
+            passwordField.setDisable(false);  // ✅ Assicuriamoci che sia attiva!
+
             loginButton.setVisible(true);
+            loginButton.setDisable(false);  // ✅ Anche il bottone deve essere attivo!
         } else {
             statusLabel.setText("⚠️ Inserisci un nome utente prima di proseguire!");
         }

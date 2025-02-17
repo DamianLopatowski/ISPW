@@ -31,6 +31,7 @@ public class SessionController {
         this.isOnlineMode = isOnlineMode;
         this.navigationService = navigationService;
         View mainView = new View();
+        mainView.setNavigationService(navigationService);
         this.context = new ApplicationContext(stage, mainView);
         initializeView();
     }
@@ -96,8 +97,10 @@ public class SessionController {
         TextField usernameField;
         PasswordField passwordField;
 
+        NavigationController navigationController = new NavigationController(stage);  // ✅ Creiamo il NavigationController
+
         if (isInterfaccia1) {
-            LoginOnlineView loginView = new LoginOnlineView();
+            LoginOnlineView loginView = new LoginOnlineView(stage, navigationController);  // ✅ Passiamo i parametri corretti
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
