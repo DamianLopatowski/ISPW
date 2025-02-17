@@ -39,7 +39,9 @@ public class SessionController {
 
     private void initializeView() {
         View view = context.getMainView();
-        LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
+        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+            LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
+        }
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {

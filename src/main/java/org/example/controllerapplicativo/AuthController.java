@@ -24,8 +24,9 @@ public class AuthController {
 
 
     public boolean handleLogin(String username, String password, boolean isOfflineMode) {
-        LOGGER.info(String.format("🔑 Tentativo di login con username: %s, Modalità: %s", username, isOfflineMode ? "Offline" : "Online"));
-
+        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+            LOGGER.info(String.format("🔑 Tentativo di login con username: %s, Modalità: %s", username, isOfflineMode ? "Offline" : "Online"));
+        }
         if (isOfflineMode) {
             Gestore gestore = gestoreDAO.getGestore();
             LOGGER.info("🟢 Verifica credenziali offline per: " + gestore.getUsername());

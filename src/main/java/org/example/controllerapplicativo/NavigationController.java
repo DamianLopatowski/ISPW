@@ -4,7 +4,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.ApplicationContext;
 import org.example.controllergrafici.GestioneController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
@@ -70,9 +69,11 @@ public class NavigationController implements NavigationService {
 
     @Override
     public Parent navigateToGestioneView(boolean isOfflineMode, boolean isInterfaccia1) {
-        LOGGER.info(String.format("🔄 Creazione di GestioneProdottoController per %s, Interfaccia: %s",
-                isOfflineMode ? "Offline" : "Online",
-                isInterfaccia1 ? "1" : "2"));
+        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+            LOGGER.info(String.format("🔄 Creazione di GestioneProdottoController per %s, Interfaccia: %s",
+                    isOfflineMode ? "Offline" : "Online",
+                    isInterfaccia1 ? "1" : "2"));
+        }
 
         GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
         AuthController authController = new AuthController(gestoreDAO);
