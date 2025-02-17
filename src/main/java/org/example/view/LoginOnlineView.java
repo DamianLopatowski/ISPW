@@ -11,12 +11,10 @@ public class LoginOnlineView {
     private final PasswordField passwordField;
     private final Button loginButton;
     private final Label statusLabel;
-    private boolean isInterfaccia1;
-    private static final Logger LOGGER = Logger.getLogger(LoginOfflineView.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(LoginOnlineView.class.getName());
 
 
-    public LoginOnlineView(boolean isInterfaccia1) {
-        this.isInterfaccia1 = isInterfaccia1;
+    public LoginOnlineView() {
         root = new GridPane();
         usernameField = new TextField();
         passwordField = new PasswordField();

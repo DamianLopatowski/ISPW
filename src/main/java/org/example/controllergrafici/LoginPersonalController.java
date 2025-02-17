@@ -29,9 +29,9 @@ public class LoginPersonalController {
         this.isInterfaccia1 = isInterfaccia1;
 
         if (isOnlineMode) {
-            this.onlineView = new LoginOnlineView(isInterfaccia1);
+            this.onlineView = new LoginOnlineView();
         } else {
-            this.offlineView = new LoginOfflineView(isInterfaccia1);
+            this.offlineView = new LoginOfflineView();
         }
 
         setupHandlers();
@@ -47,11 +47,11 @@ public class LoginPersonalController {
 
     public void updateLoginView() {
         if (isOnlineMode) {
-            this.onlineView = new LoginOnlineView(isInterfaccia1);
+            this.onlineView = new LoginOnlineView();
             this.offlineView = null;
             LOGGER.info("🔄 Ricreata nuova LoginOnlineView.");
         } else {
-            this.offlineView = new LoginOfflineView(isInterfaccia1);
+            this.offlineView = new LoginOfflineView();
             this.onlineView = null;
             LOGGER.info("🔄 Ricreata nuova LoginOfflineView.");
         }

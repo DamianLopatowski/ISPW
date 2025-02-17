@@ -31,9 +31,9 @@ public class NavigationController implements NavigationService {
         Parent loginView;
 
         if (isInterfaccia1) {
-            loginView = new LoginOnlineView(isInterfaccia1).getRoot();
+            loginView = new LoginOnlineView().getRoot();
         } else {
-            loginView = new LoginOfflineView(isInterfaccia1).getRoot();
+            loginView = new LoginOfflineView().getRoot();
         }
 
         if (loginView != null) {

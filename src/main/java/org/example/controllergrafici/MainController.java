@@ -32,10 +32,10 @@ public class MainController {
 
     private void navigateToLogin(Stage stage, boolean isInterfaccia1) {
         if (isOnlineMode) {
-            stage.setScene(new javafx.scene.Scene(new LoginOnlineView(isInterfaccia1).getRoot(), 400, 300));
+            stage.setScene(new javafx.scene.Scene(new LoginOnlineView().getRoot(), 400, 300));
             stage.setTitle("Login Online - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         } else {
-            stage.setScene(new javafx.scene.Scene(new LoginOfflineView(isInterfaccia1).getRoot(), 400, 300));// ✅ Rimosso isInterfaccia1
+            stage.setScene(new javafx.scene.Scene(new LoginOfflineView().getRoot(), 400, 300));// ✅ Rimosso isInterfaccia1
             stage.setTitle("Login Offline - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         }
     }

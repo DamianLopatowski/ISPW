@@ -14,7 +14,7 @@ public class LoginOfflineView {
     private static final Logger LOGGER = Logger.getLogger(LoginOfflineView.class.getName());
 
 
-    public LoginOfflineView(boolean isInterfaccia1) {
+    public LoginOfflineView() {
         root = new VBox(15);
         statusLabel = new Label("Inserisci l'admin:");
         usernameField = new TextField();
