@@ -40,14 +40,14 @@ public class NavigationController implements NavigationService {
             stage.setScene(new Scene(loginView, 400, 300));
             stage.setTitle("Login Cliente");
 
-            // ✅ Controlliamo se il login funziona
-            setupLoginHandler(isCliente);
+            // ✅ Rimosso il parametro "isCliente"
+            setupLoginHandler();
         } else {
             LOGGER.warning("❌ Errore: LoginView è NULL!");
         }
     }
 
-    private void setupLoginHandler(boolean isCliente) {
+    private void setupLoginHandler() {
         LOGGER.info("✅ Cliente autenticato. Verifica credenziali in corso...");
 
         Parent loginRoot = stage.getScene().getRoot();
@@ -78,6 +78,7 @@ public class NavigationController implements NavigationService {
             }
         }
 
+        // ✅ Controllo corretto senza espressioni ridondanti
         if (usernameField == null || passwordField == null || loginButton == null || avantiButton == null) {
             LOGGER.warning("❌ Errore: uno dei campi di login è NULL! Controlla la UI.");
             return;
