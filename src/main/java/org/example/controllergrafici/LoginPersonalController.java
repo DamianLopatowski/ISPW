@@ -7,7 +7,6 @@ import org.example.view.LoginOnlineView;
 import org.example.view.LoginOfflineView;
 import org.example.controllerapplicativo.AuthController;
 import org.example.dao.GestoreDAOImpl;
-import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 

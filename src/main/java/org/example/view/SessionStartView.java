@@ -24,9 +24,9 @@ public class SessionStartView {
         confermaButton.setDisable(true);
 
         // Abilita il bottone solo quando un'opzione è selezionata
-        group.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
-            confermaButton.setDisable(newVal == null);
-        });
+        group.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
+                confermaButton.setDisable(newVal == null)
+        );
 
         root.getChildren().addAll(onlineOption, offlineOption, confermaButton);
     }

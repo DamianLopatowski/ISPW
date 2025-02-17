@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.example.service.NavigationService;
+import java.util.logging.Logger;
 
 public class View {
     private final VBox root;
@@ -11,6 +12,7 @@ public class View {
     private final RadioButton interfaccia2Option;
     private final Button loginButton;
     private NavigationService navigationService; // Aggiunto NavigationService
+    private static final Logger LOGGER = Logger.getLogger(View.class.getName());
 
 
 
@@ -39,7 +41,7 @@ public class View {
     private void setupHandlers() {
         loginButton.setOnAction(event -> {
             if (navigationService == null) {
-                System.err.println("❌ ERRORE: NavigationService è NULL!");
+                LOGGER.warning("❌ ERRORE: NavigationService è NULL!");
                 return;
             }
 
