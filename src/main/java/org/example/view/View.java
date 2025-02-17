@@ -3,67 +3,68 @@ package org.example.view;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.example.service.NavigationService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class View {
     private final VBox root;
-    private final RadioButton offlineOption;
-    private final RadioButton onlineOption;
+    private final RadioButton interfaccia1Option;
+    private final RadioButton interfaccia2Option;
     private final Button loginButton;
-    private final Button registratiButton;
-    private final Button loginPersonaleButton;
+    private NavigationService navigationService; // Aggiunto NavigationService
+
+
+
 
     public View() {
         root = new VBox(15);
 
-        offlineOption = new RadioButton("Entra Offline");
-        onlineOption = new RadioButton("Entra Online");
+        interfaccia1Option = new RadioButton("Interfaccia 1");
+        interfaccia2Option = new RadioButton("Interfaccia 2");
         ToggleGroup toggleGroup = new ToggleGroup();
-        offlineOption.setToggleGroup(toggleGroup);
-        onlineOption.setToggleGroup(toggleGroup);
+        interfaccia1Option.setToggleGroup(toggleGroup);
+        interfaccia2Option.setToggleGroup(toggleGroup);
 
         loginButton = new Button("Login");
-        registratiButton = new Button("Registrati");
-        loginPersonaleButton = new Button("LOGIN PERSONALE");
-
-        root.getChildren().addAll(offlineOption, onlineOption, loginButton, registratiButton, loginPersonaleButton);
+        root.getChildren().addAll(interfaccia1Option, interfaccia2Option, loginButton);
         root.setAlignment(Pos.CENTER);
+
+        setupHandlers();
     }
 
-    public void setOnlineOptionEnabled(boolean enabled) {
-        onlineOption.setDisable(!enabled);
-        if (!enabled) {
-            onlineOption.setSelected(false);
-        }
+    // ✅ Metodo per impostare il NavigationService
+    public void setNavigationService(NavigationService navigationService) {
+        this.navigationService = navigationService;
     }
+
+    private void setupHandlers() {
+        loginButton.setOnAction(event -> {
+            if (navigationService == null) {
+                System.err.println("❌ ERRORE: NavigationService è NULL!");
+                return;
+            }
+
+            boolean isInterfaccia1 = interfaccia1Option.isSelected();
+            navigationService.navigateToLogin(isInterfaccia1);
+        });
+    }
+
 
     public VBox getRoot() {
         return root;
     }
 
-    public RadioButton getOfflineOption() {
-        return offlineOption;
+    public RadioButton getInterfaccia1Option() {
+        return interfaccia1Option;
     }
 
-    public RadioButton getOnlineOption() {
-        return onlineOption;
+    public RadioButton getInterfaccia2Option() {
+        return interfaccia2Option;
     }
 
     public Button getLoginButton() {
         return loginButton;
-    }
-
-    public Button getRegistratiButton() {
-        return registratiButton;
-    }
-
-    public Button getLoginPersonaleButton() {
-        return loginPersonaleButton;
-    }
-
-    public List<javafx.scene.Node> getComponents() {
-        return new ArrayList<>(root.getChildren());
     }
 }

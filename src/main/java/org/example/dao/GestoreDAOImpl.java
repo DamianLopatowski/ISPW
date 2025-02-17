@@ -72,14 +72,18 @@ public class GestoreDAOImpl implements GestoreDAO {
     }
 
     public boolean authenticateOnline(String username, String password) {
+        LOGGER.info("Verifica credenziali online nel database...");
         Gestore dbGestore = findByUsername(username);
-        if (dbGestore != null && dbGestore.getPassword().equals(password)) {
-            this.gestore = dbGestore;
-            LOGGER.log(Level.INFO, "Login online riuscito: {0}", username);
-            return true;
+
+        if (dbGestore != null) {
+            LOGGER.info("Utente trovato nel database: " + dbGestore.getUsername());
+            boolean success = dbGestore.getPassword().equals(password);
+            LOGGER.info(success ? "Password corretta, login riuscito." : "Password errata.");
+            return success;
+        } else {
+            LOGGER.warning("Utente non trovato nel database.");
+            return false;
         }
-        LOGGER.warning("Credenziali errate per login online.");
-        return false;
     }
 
     public void resetToOfflineGestore() {

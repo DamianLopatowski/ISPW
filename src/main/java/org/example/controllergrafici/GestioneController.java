@@ -1,5 +1,6 @@
 package org.example.controllergrafici;
 
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 import org.example.controllerapplicativo.AuthController;
 import org.example.view.GestioneOnlineView;
@@ -10,27 +11,29 @@ import java.util.logging.Logger;
 public class GestioneController {
     private final Stage stage;
     private final boolean isOfflineMode;
+    private final boolean isInterfaccia1;
     private final NavigationService navigationService;
     private final GestioneOnlineView onlineView;
     private final GestioneOfflineView offlineView;
     private static final Logger LOGGER = Logger.getLogger(GestioneController.class.getName());
-    private final AuthController authController; // 🔹 Dipendenza iniettata
+    private final AuthController authController;
 
-    // 🔹 Modifica: Ora riceve un'istanza di AuthController
-    public GestioneController(Stage stage, boolean isOfflineMode, NavigationService navigationService, AuthController authController) {
+    public GestioneController(Stage stage, boolean isOfflineMode, boolean isInterfaccia1, NavigationService navigationService, AuthController authController) {
         this.stage = stage;
         this.isOfflineMode = isOfflineMode;
+        this.isInterfaccia1 = isInterfaccia1;
         this.navigationService = navigationService;
-        this.authController = authController; // Salva l'istanza
+        this.authController = authController;
 
-        this.onlineView = isOfflineMode ? null : new GestioneOnlineView();
-        this.offlineView = isOfflineMode ? new GestioneOfflineView() : null;
+        // Le interfacce rimangono sempre le stesse
+        this.onlineView = new GestioneOnlineView();
+        this.offlineView = new GestioneOfflineView();
 
         setupHandlers();
     }
 
     private void setupHandlers() {
-        if (!isOfflineMode) {
+        if (isInterfaccia1) {
             onlineView.getGestioneProdottiButton().setOnAction(event -> handleGestione("Prodotti"));
             onlineView.getGestioneSogliaButton().setOnAction(event -> handleGestione("Soglia"));
             onlineView.getGestioneSpedizioniButton().setOnAction(event -> handleGestione("Spedizioni"));
@@ -47,15 +50,32 @@ public class GestioneController {
     }
 
     private void handleLogout() {
-        authController.logout(); // Ora usa l'istanza corretta
-        navigationService.navigateToMainView(); // Torna alla pagina principale
+        authController.logout();
+        navigationService.navigateToMainView(); // Torna alla View
     }
+
+
+
 
     private void handleGestione(String sezione) {
         LOGGER.log(java.util.logging.Level.INFO, "Navigazione a: {0}", sezione);
     }
 
-    public javafx.scene.Parent getRootView() {
-        return isOfflineMode ? offlineView.getRoot() : onlineView.getRoot();
+    public Parent getRootView() {
+        LOGGER.info("📦 Restituzione root view di GestioneProdotto...");
+
+        Parent root;
+        if (isInterfaccia1) {
+            root = onlineView.getRoot();
+        } else {
+            root = offlineView.getRoot();
+        }
+
+        if (root == null) {
+            LOGGER.warning("❌ Errore: La vista di GestioneProdotto è NULL!");
+        }
+
+        return root;
     }
+
 }
