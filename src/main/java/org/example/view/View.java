@@ -5,9 +5,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.example.service.NavigationService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class View {
     private final VBox root;
     private final RadioButton interfaccia1Option;

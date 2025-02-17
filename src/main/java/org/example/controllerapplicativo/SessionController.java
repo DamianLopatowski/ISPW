@@ -7,9 +7,7 @@ import javafx.scene.Parent;
 
 
 import java.util.logging.Logger;
-import java.util.logging.Level;
 import org.example.ApplicationContext;
-import org.example.controllergrafici.LoginPersonalController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
 import org.example.view.LoginOfflineView;
@@ -18,10 +16,8 @@ import org.example.view.View;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
+
 
 
 public class SessionController {

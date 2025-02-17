@@ -2,9 +2,7 @@ package org.example.view;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import org.example.dao.GestoreDAOImpl;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 
 public class LoginOnlineView {

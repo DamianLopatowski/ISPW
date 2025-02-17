@@ -3,7 +3,6 @@ package org.example.view;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class LoginOfflineView {
     private final VBox root;

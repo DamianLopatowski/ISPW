@@ -4,7 +4,6 @@ import javafx.stage.Stage;
 import org.example.ApplicationContext;
 import org.example.view.View;
 import org.example.service.NavigationService;
-import org.example.dao.GestoreDAOImpl;
 import org.example.view.LoginOfflineView;
 import org.example.view.LoginOnlineView;
 

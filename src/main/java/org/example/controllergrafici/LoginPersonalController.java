@@ -9,7 +9,6 @@ import org.example.controllerapplicativo.AuthController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
 import org.example.view.View;
-import org.example.controllergrafici.GestioneController;
 
 import java.util.logging.Logger;
 
