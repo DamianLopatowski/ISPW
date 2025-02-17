@@ -30,11 +30,15 @@ public class SessionController {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
         this.navigationService = navigationService;
-        isOnlineModeStatic = isOnlineMode;  // ✅ Salviamo lo stato globale
         View mainView = new View();
         this.context = new ApplicationContext(stage, mainView);
         initializeView();
     }
+
+    public static void setIsOnlineModeStatic(boolean mode) {
+        isOnlineModeStatic = mode;
+    }
+
 
 
     private void initializeView() {

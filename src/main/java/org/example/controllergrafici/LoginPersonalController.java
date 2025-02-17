@@ -18,7 +18,6 @@ public class LoginPersonalController {
     private LoginOnlineView onlineView;
     private LoginOfflineView offlineView;
     private boolean isOnlineMode;
-    private boolean isInterfaccia1;
 
     private Runnable onLoginSuccess;
 
@@ -26,7 +25,6 @@ public class LoginPersonalController {
         this.stage = stage;
         this.authController = new AuthController(gestoreDAO);
         this.isOnlineMode = isOnlineMode;
-        this.isInterfaccia1 = isInterfaccia1;
 
         if (isOnlineMode) {
             this.onlineView = new LoginOnlineView();

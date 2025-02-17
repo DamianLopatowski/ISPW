@@ -33,6 +33,7 @@ public class MainApp extends Application {
         startButton.setOnAction(event -> {
             boolean isOnlineMode = onlineOption.isSelected();
             NavigationService navigationService = new NavigationController(primaryStage);
+            SessionController.setIsOnlineModeStatic(isOnlineMode);
             new SessionController(primaryStage, isOnlineMode, navigationService);
         });
 
