@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.controllergrafici.GestioneController;
@@ -32,16 +31,10 @@ public class NavigationController implements NavigationService {
     }
 
 
-    @Override
     public void navigateToLogin(boolean isInterfaccia1, boolean isCliente) {
         LOGGER.info("🔄 Navigazione al login cliente...");
 
-        Parent loginView;
-        if (isCliente) {
-            loginView = isInterfaccia1 ? new LoginOfflineView().getRoot() : new LoginOnlineView(stage, this).getRoot();
-        } else {
-            loginView = isInterfaccia1 ? new LoginOfflineView().getRoot() : new LoginOnlineView(stage, this).getRoot();
-        }
+        Parent loginView = isInterfaccia1 ? new LoginOfflineView().getRoot() : new LoginOnlineView(stage, this).getRoot();
 
         if (loginView != null) {
             stage.setScene(new Scene(loginView, 400, 300));
@@ -58,75 +51,85 @@ public class NavigationController implements NavigationService {
         LOGGER.info("✅ Cliente autenticato. Verifica credenziali in corso...");
 
         Parent loginRoot = stage.getScene().getRoot();
-        if (loginRoot instanceof VBox) {
-            VBox vbox = (VBox) loginRoot;
-
-            // Stampiamo tutti gli elementi per capire la struttura
-            for (int i = 0; i < vbox.getChildren().size(); i++) {
-                LOGGER.info("🔍 Elemento in VBox [" + i + "]: " + vbox.getChildren().get(i).getClass().getName());
-            }
-
-            final TextField[] usernameField = {null};
-            final PasswordField[] passwordField = {null};
-            final Button[] avantiButton = {null};
-            final Button[] loginButton = {null};
-
-            for (javafx.scene.Node node : vbox.getChildren()) {
-                if (node instanceof TextField && usernameField[0] == null) {
-                    usernameField[0] = (TextField) node;
-                } else if (node instanceof PasswordField && passwordField[0] == null) {
-                    passwordField[0] = (PasswordField) node;
-                } else if (node instanceof Button) {
-                    if (avantiButton[0] == null) {
-                        avantiButton[0] = (Button) node;
-                    } else if (loginButton[0] == null) {
-                        loginButton[0] = (Button) node;
-                    }
-                }
-            }
-
-            if (usernameField[0] == null || passwordField[0] == null || loginButton[0] == null || avantiButton[0] == null) {
-                LOGGER.warning("❌ Errore: uno dei campi di login è NULL! Controlla la UI.");
-                return;
-            }
-
-            // ✅ Imposta il bottone "Avanti" per attivare la password field
-            avantiButton[0].setOnAction(event -> {
-                LOGGER.info("✅ Bottone Avanti premuto! Ora puoi inserire la password.");
-                avantiButton[0].setDisable(true);
-                usernameField[0].setDisable(true);
-                passwordField[0].setVisible(true);
-                passwordField[0].setDisable(false);
-                loginButton[0].setVisible(true);
-                loginButton[0].setDisable(false);
-            });
-
-            // ✅ Il login viene eseguito SOLO quando si preme "Login"
-            loginButton[0].setOnAction(event -> {
-                String username = usernameField[0].getText().trim();
-                String password = passwordField[0].getText().trim();  // ✅ Ora la password è stata inserita!
-
-                LOGGER.info("🔑 Tentativo di login con username: " + username);
-                LOGGER.info("🔑 Password inserita dall'utente: " + password);
-
-                ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
-                Cliente cliente = clienteDAO.findByUsername(username);
-
-                if (cliente != null) {
-                    LOGGER.info("✅ Cliente trovato: " + cliente.getUsername());
-                    LOGGER.info("🔒 Password salvata nel database: " + cliente.getPassword());
-
-                    if (cliente.getPassword().equals(password)) {
-                        LOGGER.info("✅ Credenziali corrette! Navigazione al negozio...");
-                        navigateToNegozio();
-                    } else {
-                        LOGGER.warning("❌ Password errata! La password inserita: " + password + " | Password nel database: " + cliente.getPassword());
-                    }
-                } else {
-                    LOGGER.warning("❌ Nessun cliente trovato con username: " + username);
-                }
-            });
+        if (!(loginRoot instanceof VBox)) {
+            LOGGER.warning("❌ Errore: UI non è un VBox!");
+            return;
         }
+
+        VBox vbox = (VBox) loginRoot;
+        logVBoxElements(vbox);
+
+        TextField usernameField = null;
+        PasswordField passwordField = null;
+        Button avantiButton = null;
+        Button loginButton = null;
+
+        for (javafx.scene.Node node : vbox.getChildren()) {
+            if (node instanceof TextField && usernameField == null) {
+                usernameField = (TextField) node;
+            } else if (node instanceof PasswordField && passwordField == null) {
+                passwordField = (PasswordField) node;
+            } else if (node instanceof Button) {
+                if (avantiButton == null) {
+                    avantiButton = (Button) node;
+                } else if (loginButton == null) {
+                    loginButton = (Button) node;
+                }
+            }
+        }
+
+        if (usernameField == null || passwordField == null || loginButton == null || avantiButton == null) {
+            LOGGER.warning("❌ Errore: uno dei campi di login è NULL! Controlla la UI.");
+            return;
+        }
+
+        setupAvantiButton(avantiButton, usernameField, passwordField, loginButton);
+        setupLoginButton(loginButton, usernameField, passwordField);
+    }
+
+    private void logVBoxElements(VBox vbox) {
+        for (int i = 0; i < vbox.getChildren().size(); i++) {
+            LOGGER.info("🔍 Elemento in VBox [" + i + "]: " + vbox.getChildren().get(i).getClass().getName());
+        }
+    }
+
+    private void setupAvantiButton(Button avantiButton, TextField usernameField, PasswordField passwordField, Button loginButton) {
+        avantiButton.setOnAction(event -> {
+            LOGGER.info("✅ Bottone Avanti premuto! Ora puoi inserire la password.");
+            avantiButton.setDisable(true);
+            usernameField.setDisable(true);
+            passwordField.setVisible(true);
+            passwordField.setDisable(false);
+            loginButton.setVisible(true);
+            loginButton.setDisable(false);
+        });
+    }
+
+    private void setupLoginButton(Button loginButton, TextField usernameField, PasswordField passwordField) {
+        loginButton.setOnAction(event -> {
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText().trim();
+
+            LOGGER.info("🔑 Tentativo di login con username: " + username);
+            LOGGER.info("🔑 Password inserita dall'utente: " + password);
+
+            ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
+            Cliente cliente = clienteDAO.findByUsername(username);
+
+            if (cliente != null) {
+                LOGGER.info("✅ Cliente trovato: " + cliente.getUsername());
+                LOGGER.info("🔒 Password salvata nel database: " + cliente.getPassword());
+
+                if (cliente.getPassword().equals(password)) {
+                    LOGGER.info("✅ Credenziali corrette! Navigazione al negozio...");
+                    navigateToNegozio();
+                } else {
+                    LOGGER.warning("❌ Password errata! La password inserita: " + password + " | Password nel database: " + cliente.getPassword());
+                }
+            } else {
+                LOGGER.warning("❌ Nessun cliente trovato con username: " + username);
+            }
+        });
     }
 
 
