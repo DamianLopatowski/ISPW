@@ -28,12 +28,12 @@ public class SessionController {
     private PasswordField passwordField;
     private Parent loginRoot;
 
-    public SessionController(Stage stage, boolean isOnlineMode) {
+    public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
+        this.navigationService = navigationService;
         View mainView = new View();
         this.context = new ApplicationContext(stage, mainView);
-        this.navigationService = new NavigationController(stage, context);
         initializeView();
     }
 
@@ -61,9 +61,7 @@ public class SessionController {
 
     private void navigateToGestione() {
         LOGGER.info("🔄 Navigazione a GestioneProdotti...");
-
         Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
-
         if (gestioneView != null) {
             LOGGER.info("✅ Cambio scena a GestioneProdotti...");
             stage.setScene(new Scene(gestioneView, 600, 400));
@@ -75,7 +73,6 @@ public class SessionController {
 
     private void startLogin() {
         LOGGER.info("🔑 Avvio della schermata di login...");
-
         GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
         AuthController authController = new AuthController(gestoreDAO);
 
@@ -95,11 +92,10 @@ public class SessionController {
 
         // **🔄 Rimuoviamo e ri-registriamo il listener per evitare problemi**
         if (loginButton != null) {
-            loginButton.setOnAction(null); // Rimuove eventuali listener precedenti
+            loginButton.setOnAction(null);
             loginButton.setOnAction(event -> {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
-
                 LOGGER.info("🔑 Tentativo di login con username: " + username);
                 boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
@@ -114,7 +110,6 @@ public class SessionController {
             LOGGER.warning("⚠️ Bottone di login è NULL! Verifica la creazione della View.");
         }
 
-        // **🔄 Cambio scena alla schermata di login**
         if (loginRoot != null) {
             stage.setScene(new Scene(new VBox(loginRoot), 400, 300));
             stage.setTitle("Login - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
@@ -126,6 +121,6 @@ public class SessionController {
 
     public void resetSession() {
         LOGGER.info("🔄 Reset della sessione dopo il logout...");
-        new SessionController(stage, isOnlineMode);
+        new SessionController(stage, isOnlineMode, navigationService);
     }
 }

@@ -7,7 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
+import org.example.controllerapplicativo.NavigationController;
 import org.example.controllerapplicativo.SessionController;
+import org.example.service.NavigationService;
 
 public class MainApp extends Application {
 
@@ -30,7 +32,8 @@ public class MainApp extends Application {
 
         startButton.setOnAction(event -> {
             boolean isOnlineMode = onlineOption.isSelected();
-            new SessionController(primaryStage, isOnlineMode);
+            NavigationService navigationService = new NavigationController(primaryStage, null);
+            new SessionController(primaryStage, isOnlineMode, navigationService);
         });
 
         root.getChildren().addAll(onlineOption, offlineOption, startButton);

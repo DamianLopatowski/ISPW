@@ -60,7 +60,7 @@ public class NavigationController implements NavigationService {
             LOGGER.info("✅ Navigazione alla nuova View completata.");
 
             // **🔄 Reset della sessione dopo il logout**
-            new SessionController(stage, false);  // O `true` se online
+            new SessionController(stage, false, this);  // ✅ Ora passiamo anche `this` come NavigationService
         } else {
             LOGGER.warning("❌ Errore: View principale è NULL!");
         }
