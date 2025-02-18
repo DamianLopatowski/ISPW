@@ -98,13 +98,13 @@ public class SessionController {
         PasswordField passwordField;
 
         if (isInterfaccia1) {
-            LoginOnlineView loginView = new LoginOnlineView(stage, navigationService, isOnlineMode);  // ✅ Passiamo NavigationService
+            LoginOnlineView loginView = new LoginOnlineView(stage, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            LoginOfflineView loginView = new LoginOfflineView(navigationService);  // ✅ Passiamo NavigationService
+            LoginOfflineView loginView = new LoginOfflineView(navigationService);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();

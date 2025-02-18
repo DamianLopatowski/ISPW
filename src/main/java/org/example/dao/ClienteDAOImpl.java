@@ -38,10 +38,9 @@ public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
     public void saveCliente(Cliente cliente) {
-        boolean isCurrentlyOnline = SessionController.getIsOnlineModeStatic();
         String usernamePulito = cliente.getUsername().trim().toLowerCase();
 
-        if (isCurrentlyOnline) {
+        if (isOnlineMode) {
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement("INSERT INTO usercliente (username, nome, cognome, password) VALUES (?, ?, ?, ?)")) {
 
@@ -77,10 +76,11 @@ public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
     public Cliente findByUsername(String username) {
-        boolean isCurrentlyOnline = SessionController.getIsOnlineModeStatic();
         String usernamePulito = username.trim().toLowerCase();
 
-        if (isCurrentlyOnline) {
+
+
+        if (isOnlineMode) {
             LOGGER.info("🔎 Ricerca cliente nel DATABASE: " + usernamePulito);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement("SELECT * FROM usercliente WHERE LOWER(username) = ?")) {
