@@ -133,7 +133,7 @@ public class NavigationController implements NavigationService {
             String password = passwordField.getText().trim();
 
             LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
-            LOGGER.log(Level.INFO, "🔑 Password digitata dall'utente: {0}", password);
+            LOGGER.log(Level.INFO, "🔑 Password digitata dall utente: {0}", password);
 
             ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
             LOGGER.log(Level.INFO, "🔎 Modalità attuale: {0}", SessionController.getIsOnlineModeStatic() ? "ONLINE" : "OFFLINE");
@@ -161,7 +161,7 @@ public class NavigationController implements NavigationService {
     public void navigateToRegistrazioneCliente(boolean isInterfaccia1) {
         RegistratiClienteOfflineView offlineView = null;
         RegistratiClienteOnlineView onlineView = null;
-        Parent registrazioneView = null;
+        Parent registrazioneView;
 
         if (isInterfaccia1) {
             offlineView = new RegistratiClienteOfflineView(stage);
