@@ -32,21 +32,21 @@ public class NavigationController implements NavigationService {
     }
 
 
+    @Override
     public void navigateToLogin(boolean isInterfaccia1, boolean isCliente) {
-        LOGGER.info("🔄 Navigazione al login cliente...");
-
-        Parent loginView = isInterfaccia1 ? new LoginOfflineView(this).getRoot() : new LoginOnlineView(stage, this).getRoot();
+        Parent loginView = isInterfaccia1
+                ? new LoginOfflineView(this).getRoot()
+                : new LoginOnlineView(stage, this, SessionController.getIsOnlineModeStatic()).getRoot();
 
         if (loginView != null) {
             stage.setScene(new Scene(loginView, 400, 300));
             stage.setTitle("Login Cliente");
-
-            // ✅ Rimosso il parametro "isCliente"
-            setupLoginHandler();
+            stage.show();
         } else {
             LOGGER.warning("❌ Errore: LoginView è NULL!");
         }
     }
+
 
     private void setupLoginHandler() {
         LOGGER.info("✅ Cliente autenticato. Verifica credenziali in corso...");

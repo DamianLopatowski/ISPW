@@ -19,14 +19,17 @@ public class LoginOnlineView {
     private final Button loginButton;
     private final Label statusLabel;
     private static final Logger LOGGER = Logger.getLogger(LoginOnlineView.class.getName());
+    private final boolean isOnlineMode;
+
 
     // ✅ Dichiarazione delle variabili stage e navigationController
     private final Stage stage;
     private final NavigationService navigationService;
 
-    public LoginOnlineView(Stage stage, NavigationService navigationService) {
+    public LoginOnlineView(Stage stage, NavigationService navigationService, boolean isOnlineMode) {
         this.stage = stage;
         this.navigationService = navigationService;
+        this.isOnlineMode = isOnlineMode;
 
         root = new GridPane();
         usernameField = new TextField();
@@ -50,7 +53,7 @@ public class LoginOnlineView {
 
             LOGGER.info("🔑 Tentativo di login con username: " + username);
 
-            ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
+            ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
             Cliente cliente = clienteDAO.findByUsername(username);
 
             if (cliente != null) {
