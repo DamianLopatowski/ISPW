@@ -37,7 +37,7 @@ public class NavigationController implements NavigationService {
 
         Parent loginView = isInterfaccia1
                 ? new Login1View(this, isOnlineMode).getRoot() // ✅ Ora passiamo NavigationService e isOnlineMode!
-                : new Login2View(stage, this, isOnlineMode).getRoot();
+                : new Login2View(this, isOnlineMode).getRoot();
 
         if (loginView != null) {
             stage.setScene(new Scene(loginView, 400, 300));

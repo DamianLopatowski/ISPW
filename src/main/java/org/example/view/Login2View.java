@@ -2,7 +2,6 @@ package org.example.view;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -19,10 +18,7 @@ public class Login2View {
     private static final Logger LOGGER = Logger.getLogger(Login2View.class.getName());
 
 
-    // ✅ Dichiarazione delle variabili stage e navigationController
-
-
-    public Login2View(Stage stage, NavigationService navigationService, boolean isOnlineMode) {
+    public Login2View(NavigationService navigationService, boolean isOnlineMode) {
 
         root = new GridPane();
         usernameField = new TextField();

@@ -98,7 +98,7 @@ public class SessionController {
         PasswordField passwordField;
 
         if (isInterfaccia1) {
-            Login2View loginView = new Login2View(stage, navigationService, isOnlineMode);
+            Login2View loginView = new Login2View(navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();

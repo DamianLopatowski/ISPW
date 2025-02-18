@@ -4,6 +4,7 @@ import org.example.model.Cliente;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,7 +44,8 @@ public class ClienteDAOImpl implements ClienteDAO {
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement("INSERT INTO usercliente (username, nome, cognome, password) VALUES (?, ?, ?, ?)")) {
 
-                LOGGER.info("🔄 Tentativo di salvataggio cliente nel DATABASE: " + usernamePulito);
+                LOGGER.log(Level.INFO, "🔄 Tentativo di salvataggio cliente nel DATABASE: {0}", usernamePulito);
+
 
                 stmt.setString(1, usernamePulito);
                 stmt.setString(2, cliente.getNome());
@@ -62,7 +64,7 @@ public class ClienteDAOImpl implements ClienteDAO {
                 LOGGER.severe("❌ Errore SQL nella registrazione del cliente: " + e.getMessage());
             }
         } else {
-            LOGGER.info("🔄 Salvataggio cliente in RAM (OFFLINE): " + usernamePulito);
+            LOGGER.log(Level.INFO, "🔄 Salvataggio cliente in RAM (OFFLINE): {0}", usernamePulito);
 
             if (clientiOffline.containsKey(usernamePulito)) {
                 LOGGER.warning("❌ Cliente già esistente in RAM!");
@@ -78,7 +80,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         String usernamePulito = username.trim().toLowerCase();
 
         if (isOnlineMode) {  // ✅ Controlliamo la modalità scelta all'inizio!
-            LOGGER.info("🔎 Ricerca cliente nel DATABASE: " + usernamePulito);
+            LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE: {0}", usernamePulito);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement("SELECT * FROM usercliente WHERE LOWER(username) = ?")) {
                 stmt.setString(1, usernamePulito);
@@ -90,12 +92,12 @@ public class ClienteDAOImpl implements ClienteDAO {
                 LOGGER.severe("❌ Errore nella ricerca del cliente: " + e.getMessage());
             }
         } else {
-            LOGGER.info("🔎 Ricerca cliente in RAM (OFFLINE): " + usernamePulito);
+            LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM (OFFLINE): {0}", usernamePulito);
             Cliente cliente = clientiOffline.get(usernamePulito);
             if (cliente != null) {
-                LOGGER.info("✅ Cliente trovato in RAM: " + usernamePulito);
+                LOGGER.log(Level.INFO, "✅ Cliente trovato in RAM: {0}", usernamePulito);
             } else {
-                LOGGER.warning("❌ Cliente NON trovato in RAM: " + usernamePulito);
+                LOGGER.log(Level.WARNING, "❌ Cliente NON trovato in RAM: {0}", usernamePulito);
             }
             return cliente;
         }
