@@ -110,7 +110,8 @@ public class NavigationController implements NavigationService {
 
     private void logVBoxElements(VBox vbox) {
         for (int i = 0; i < vbox.getChildren().size(); i++) {
-            LOGGER.info("🔍 Elemento in VBox [" + i + "]: " + vbox.getChildren().get(i).getClass().getName());
+            LOGGER.log(Level.INFO, "🔍 Elemento in VBox [{0}]: {1}",
+                    new Object[]{i, vbox.getChildren().get(i).getClass().getName()});
         }
     }
 
@@ -132,10 +133,10 @@ public class NavigationController implements NavigationService {
             String password = passwordField.getText().trim();
 
             LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
-            LOGGER.log(Level.INFO, "🔑 Password inserita dall'utente: {0}", password);
+            LOGGER.log(Level.INFO, "🔑 Password digitata dall'utente: {0}", password);
 
             ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
-            LOGGER.info("🔎 Modalità attuale: " + (SessionController.getIsOnlineModeStatic() ? "ONLINE" : "OFFLINE"));
+            LOGGER.log(Level.INFO, "🔎 Modalità attuale: {0}", SessionController.getIsOnlineModeStatic() ? "ONLINE" : "OFFLINE");
             Cliente cliente = clienteDAO.findByUsername(username);
 
             if (cliente != null) {
@@ -173,7 +174,7 @@ public class NavigationController implements NavigationService {
         if (registrazioneView != null) {
             stage.setScene(new Scene(registrazioneView, 400, 300));
             stage.setTitle("Registrazione Cliente");
-            LOGGER.info("🔄 Navigazione alla registrazione cliente " + (isInterfaccia1 ? "Offline" : "Online"));
+            LOGGER.log(Level.INFO, "🔄 Navigazione alla registrazione cliente {0}", isInterfaccia1 ? "Offline" : "Online");
 
             setupRegistrazioneHandler(isInterfaccia1, offlineView, onlineView);
         } else {
@@ -236,7 +237,7 @@ public class NavigationController implements NavigationService {
             return;
         }
 
-        LOGGER.info("📌 Tentativo di registrazione per: " + username + " - " + nome + " " + cognome);
+        LOGGER.log(Level.INFO, "📌 Tentativo di registrazione per: {0} - {1} {2}", new Object[]{username, nome, cognome});
 
         Cliente cliente = new Cliente(username, nome, cognome, password);
         ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
