@@ -193,18 +193,6 @@ public class NavigationController implements NavigationService {
     }
 
     @Override
-    public Parent createMainView() {
-        LOGGER.info("🔄 Creazione di una nuova Main View per il logout...");
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/MainView.fxml"));
-            return loader.load();
-        } catch (IOException e) {
-            LOGGER.severe("❌ Errore nel caricamento della Main View: " + e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
     public void navigateToNegozio() {
         LOGGER.info("🔄 Navigazione all'interfaccia del negozio...");
         Parent negozioView = new NegozioView().getRoot();
