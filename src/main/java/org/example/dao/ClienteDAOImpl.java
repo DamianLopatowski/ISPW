@@ -78,9 +78,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     public Cliente findByUsername(String username) {
         String usernamePulito = username.trim().toLowerCase();
 
-
-
-        if (isOnlineMode) {
+        if (isOnlineMode) {  // ✅ Controlliamo la modalità scelta all'inizio!
             LOGGER.info("🔎 Ricerca cliente nel DATABASE: " + usernamePulito);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement("SELECT * FROM usercliente WHERE LOWER(username) = ?")) {
@@ -95,7 +93,6 @@ public class ClienteDAOImpl implements ClienteDAO {
         } else {
             LOGGER.info("🔎 Ricerca cliente in RAM (OFFLINE): " + usernamePulito);
             Cliente cliente = clientiOffline.get(usernamePulito);
-            LOGGER.info("📌 Clienti attualmente in RAM: " + clientiOffline.keySet());
             if (cliente != null) {
                 LOGGER.info("✅ Cliente trovato in RAM: " + usernamePulito);
             } else {

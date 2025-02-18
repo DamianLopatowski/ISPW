@@ -3,13 +3,13 @@ package org.example.view;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-public class GestioneOfflineView {
+public class Gestione1View {
     private final VBox root;
     private final ComboBox<String> menuTendina;
     private final Button confermaButton;
     private final Button logoutButton;
 
-    public GestioneOfflineView() {
+    public Gestione1View() {
         root = new VBox(15);
 
         // Menu a tendina con le opzioni disponibili

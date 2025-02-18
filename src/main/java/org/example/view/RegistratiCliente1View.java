@@ -4,7 +4,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class RegistratiClienteOnlineView {
+public class RegistratiCliente1View {
     private final VBox root;
     private final TextField usernameField;
     private final TextField nomeField;
@@ -13,41 +13,32 @@ public class RegistratiClienteOnlineView {
     private final PasswordField confirmPasswordField;
     private final Button registratiButton;
     private final Label statusLabel;
-    private final Stage stage;  // ✅ Aggiunto lo Stage!
+    private final Stage stage;  // ✅ Aggiunto lo Stage
 
-    public RegistratiClienteOnlineView(Stage stage) {  // ✅ Modificato costruttore
+    public RegistratiCliente1View(Stage stage) {  // ✅ Modificato costruttore
         this.stage = stage;
-        root = new VBox(15);
 
-        statusLabel = new Label("Registrazione Cliente Online");
+        root = new VBox(15);
+        statusLabel = new Label("Registrazione Cliente Offline");
         usernameField = new TextField();
         usernameField.setPromptText("Inserisci username");
-
         nomeField = new TextField();
         nomeField.setPromptText("Inserisci nome");
-
         cognomeField = new TextField();
         cognomeField.setPromptText("Inserisci cognome");
-
         passwordField = new PasswordField();
         passwordField.setPromptText("Inserisci password");
-
         confirmPasswordField = new PasswordField();
         confirmPasswordField.setPromptText("Conferma password");
 
         registratiButton = new Button("Registrati");
         registratiButton.setDisable(true);
-        registratiButton.setOnAction(event -> {
-            System.out.println("🔘 Bottone REGISTRATI premuto direttamente nella View!");
-        });
-
 
         confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
             boolean fieldsFilled = !usernameField.getText().trim().isEmpty()
                     && !nomeField.getText().trim().isEmpty()
                     && !cognomeField.getText().trim().isEmpty()
                     && !passwordField.getText().trim().isEmpty();
-
             registratiButton.setDisable(!fieldsFilled || !passwordField.getText().equals(newVal));
         });
 

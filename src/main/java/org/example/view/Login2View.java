@@ -2,9 +2,7 @@ package org.example.view;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import org.example.controllerapplicativo.NavigationController;
 import javafx.stage.Stage;
-import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -12,13 +10,13 @@ import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
-public class LoginOnlineView {
+public class Login2View {
     private final GridPane root;
     private final TextField usernameField;
     private final PasswordField passwordField;
     private final Button loginButton;
     private final Label statusLabel;
-    private static final Logger LOGGER = Logger.getLogger(LoginOnlineView.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Login2View.class.getName());
     private final boolean isOnlineMode;
 
 
@@ -26,7 +24,7 @@ public class LoginOnlineView {
     private final Stage stage;
     private final NavigationService navigationService;
 
-    public LoginOnlineView(Stage stage, NavigationService navigationService, boolean isOnlineMode) {
+    public Login2View(Stage stage, NavigationService navigationService, boolean isOnlineMode) {
         this.stage = stage;
         this.navigationService = navigationService;
         this.isOnlineMode = isOnlineMode;

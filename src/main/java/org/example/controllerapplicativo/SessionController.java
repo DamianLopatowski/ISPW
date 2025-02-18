@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 import org.example.ApplicationContext;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
-import org.example.view.LoginOfflineView;
-import org.example.view.LoginOnlineView;
+import org.example.view.Login1View;
+import org.example.view.Login2View;
 import org.example.view.View;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -98,13 +98,13 @@ public class SessionController {
         PasswordField passwordField;
 
         if (isInterfaccia1) {
-            LoginOnlineView loginView = new LoginOnlineView(stage, navigationService, isOnlineMode);
+            Login2View loginView = new Login2View(stage, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            LoginOfflineView loginView = new LoginOfflineView(navigationService);
+            Login1View loginView = new Login1View(navigationService);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();

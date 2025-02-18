@@ -5,8 +5,8 @@ import org.example.ApplicationContext;
 import org.example.controllerapplicativo.NavigationController;
 import org.example.service.NavigationService;
 import org.example.view.View;
-import org.example.view.LoginOfflineView;
-import org.example.view.LoginOnlineView;
+import org.example.view.Login1View;
+import org.example.view.Login2View;
 
 public class MainController {
     private final View mainView;
@@ -42,10 +42,10 @@ public class MainController {
         NavigationController navigationController = new NavigationController(stage);  // ✅ Creiamo il NavigationController
 
         if (isOnlineMode) {
-            stage.setScene(new javafx.scene.Scene(new LoginOnlineView(stage, navigationService, isOnlineMode).getRoot(), 400, 300));
+            stage.setScene(new javafx.scene.Scene(new Login2View(stage, navigationService, isOnlineMode).getRoot(), 400, 300));
             stage.setTitle("Login Online - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         } else {
-            stage.setScene(new javafx.scene.Scene(new LoginOfflineView(navigationController).getRoot(), 400, 300));
+            stage.setScene(new javafx.scene.Scene(new Login1View(navigationController).getRoot(), 400, 300));
             stage.setTitle("Login Offline - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         }
     }

@@ -2,7 +2,7 @@ package org.example.view;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import org.example.controllerapplicativo.NavigationController;
+import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -10,19 +10,19 @@ import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
-public class LoginOfflineView {
+public class Login1View {
     private final VBox root;
     private final TextField usernameField;
     private final PasswordField passwordField;
     private final Button avantiButton;
     private final Button loginButton;
     private final Label statusLabel;
-    private static final Logger LOGGER = Logger.getLogger(LoginOfflineView.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Login1View.class.getName());
 
 
     private final NavigationService navigationService;
 
-    public LoginOfflineView(NavigationService navigationService) { // ✅ Modificato
+    public Login1View(NavigationService navigationService) { // ✅ Modificato
         this.navigationService = navigationService;
 
         root = new VBox(15);
@@ -50,7 +50,8 @@ public class LoginOfflineView {
 
             LOGGER.info("🔑 Tentativo di login OFFLINE con username: " + username);
 
-            ClienteDAO clienteDAO = new ClienteDAOImpl(false); // Assicuriamoci che sia offline
+            boolean isOnlineMode = SessionController.getIsOnlineModeStatic(); // ✅ Otteniamo la modalità scelta all'inizio
+            ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
             Cliente cliente = clienteDAO.findByUsername(username);
 
             if (cliente != null && cliente.getPassword().equals(password)) {

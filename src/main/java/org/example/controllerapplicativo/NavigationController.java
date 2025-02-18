@@ -35,8 +35,8 @@ public class NavigationController implements NavigationService {
     @Override
     public void navigateToLogin(boolean isInterfaccia1, boolean isCliente) {
         Parent loginView = isInterfaccia1
-                ? new LoginOfflineView(this).getRoot()
-                : new LoginOnlineView(stage, this, SessionController.getIsOnlineModeStatic()).getRoot();
+                ? new Login1View(this).getRoot()
+                : new Login2View(stage, this, SessionController.getIsOnlineModeStatic()).getRoot();
 
         if (loginView != null) {
             stage.setScene(new Scene(loginView, 400, 300));
@@ -135,7 +135,8 @@ public class NavigationController implements NavigationService {
             LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
             LOGGER.log(Level.INFO, "🔑 Password digitata dall utente: {0}", password);
 
-            ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
+            boolean isOnlineMode = SessionController.getIsOnlineModeStatic(); // ✅ Otteniamo la modalità scelta all'inizio
+            ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
             LOGGER.log(Level.INFO, "🔎 Modalità attuale: {0}", SessionController.getIsOnlineModeStatic() ? "ONLINE" : "OFFLINE");
             Cliente cliente = clienteDAO.findByUsername(username);
 
@@ -159,15 +160,15 @@ public class NavigationController implements NavigationService {
 
     @Override
     public void navigateToRegistrazioneCliente(boolean isInterfaccia1) {
-        RegistratiClienteOfflineView offlineView = null;
-        RegistratiClienteOnlineView onlineView = null;
+        RegistratiCliente1View offlineView = null;
+        RegistratiCliente2View onlineView = null;
         Parent registrazioneView;
 
         if (isInterfaccia1) {
-            offlineView = new RegistratiClienteOfflineView(stage);
+            offlineView = new RegistratiCliente1View(stage);
             registrazioneView = offlineView.getRoot();
         } else {
-            onlineView = new RegistratiClienteOnlineView(stage);
+            onlineView = new RegistratiCliente2View(stage);
             registrazioneView = onlineView.getRoot();
         }
 
@@ -183,8 +184,8 @@ public class NavigationController implements NavigationService {
     }
 
     private void setupRegistrazioneHandler(boolean isInterfaccia1,
-                                           RegistratiClienteOfflineView offlineView,
-                                           RegistratiClienteOnlineView onlineView) {
+                                           RegistratiCliente1View offlineView,
+                                           RegistratiCliente2View onlineView) {
         Button registratiButton;
         TextField usernameField;
         TextField nomeField;
@@ -240,7 +241,8 @@ public class NavigationController implements NavigationService {
         LOGGER.log(Level.INFO, "📌 Tentativo di registrazione per: {0} - {1} {2}", new Object[]{username, nome, cognome});
 
         Cliente cliente = new Cliente(username, nome, cognome, password);
-        ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
+        boolean isOnlineMode = SessionController.getIsOnlineModeStatic(); // ✅ Otteniamo la modalità scelta all'inizio
+        ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
         clienteDAO.saveCliente(cliente);
 
         // Verifica se il cliente è stato salvato

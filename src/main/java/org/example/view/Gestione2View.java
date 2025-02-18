@@ -3,14 +3,14 @@ package org.example.view;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
-public class GestioneOnlineView {
+public class Gestione2View {
     private final VBox root;
     private final Button gestioneProdottiButton;
     private final Button gestioneSogliaButton;
     private final Button gestioneSpedizioniButton;
     private final Button logoutButton;
 
-    public GestioneOnlineView() {
+    public Gestione2View() {
         root = new VBox(15);
         gestioneProdottiButton = new Button("Gestione Prodotti");
         gestioneSogliaButton = new Button("Gestione Soglia");

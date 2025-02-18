@@ -3,8 +3,8 @@ package org.example.controllergrafici;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import org.example.controllerapplicativo.AuthController;
-import org.example.view.GestioneOnlineView;
-import org.example.view.GestioneOfflineView;
+import org.example.view.Gestione2View;
+import org.example.view.Gestione1View;
 import org.example.service.NavigationService;
 import java.util.logging.Logger;
 
@@ -12,8 +12,8 @@ public class GestioneController {
     private final Stage stage;
     private final boolean isInterfaccia1;
     private final NavigationService navigationService;
-    private final GestioneOnlineView onlineView;
-    private final GestioneOfflineView offlineView;
+    private final Gestione2View onlineView;
+    private final Gestione1View offlineView;
     private static final Logger LOGGER = Logger.getLogger(GestioneController.class.getName());
     private final AuthController authController;
 
@@ -23,8 +23,8 @@ public class GestioneController {
         this.navigationService = navigationService;
         this.authController = authController;
 
-        this.onlineView = new GestioneOnlineView();
-        this.offlineView = new GestioneOfflineView();
+        this.onlineView = new Gestione2View();
+        this.offlineView = new Gestione1View();
 
         setupHandlers();
     }
