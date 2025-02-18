@@ -32,21 +32,28 @@ public class GestioneController {
 
     private void setupHandlers() {
         if (isInterfaccia1) {
-            onlineView.getGestioneProdottiButton().setOnAction(event -> handleGestione("Prodotti"));
-            onlineView.getGestioneSogliaButton().setOnAction(event -> handleGestione("Soglia"));
-            onlineView.getGestioneSpedizioniButton().setOnAction(event -> handleGestione("Spedizioni"));
-            onlineView.getLogoutButton().setOnAction(event -> handleLogout());
+            setupOnlineHandlers();
         } else {
-            offlineView.getConfermaButton().setOnAction(event -> {
-                String selectedOption = offlineView.getMenuTendina().getValue();
-                if (selectedOption != null) {
-                    handleGestione(selectedOption);
-                }
-            });
-            offlineView.getLogoutButton().setOnAction(event -> handleLogout());
+            setupOfflineHandlers();
         }
     }
 
+    private void setupOnlineHandlers() {
+        onlineView.getGestioneProdottiButton().setOnAction(event -> handleGestione("Prodotti"));
+        onlineView.getGestioneSogliaButton().setOnAction(event -> handleGestione("Soglia"));
+        onlineView.getGestioneSpedizioniButton().setOnAction(event -> handleGestione("Spedizioni"));
+        onlineView.getLogoutButton().setOnAction(event -> handleLogout());
+    }
+
+    private void setupOfflineHandlers() {
+        offlineView.getConfermaButton().setOnAction(event -> {
+            String selectedOption = offlineView.getMenuTendina().getValue();
+            if (selectedOption != null) {
+                handleGestione(selectedOption);
+            }
+        });
+        offlineView.getLogoutButton().setOnAction(event -> handleLogout());
+    }
     private void handleLogout() {
         LOGGER.info("🔄 Logout in corso...");
         authController.logout(navigationService); // ✅ Passiamo NavigationService

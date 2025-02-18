@@ -142,8 +142,4 @@ public class SessionController {
         return isOnlineModeStatic;
     }
 
-    public void resetSession() {
-        LOGGER.info("🔄 Reset della sessione dopo il logout...");
-        new SessionController(stage, isOnlineMode, navigationService);
-    }
 }
