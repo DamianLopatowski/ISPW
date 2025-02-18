@@ -1,6 +1,5 @@
 package org.example.dao;
 
-import org.example.controllerapplicativo.SessionController;
 import org.example.model.Cliente;
 import java.sql.*;
 import java.util.HashMap;

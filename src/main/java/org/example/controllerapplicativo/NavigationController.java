@@ -34,9 +34,11 @@ public class NavigationController implements NavigationService {
 
     @Override
     public void navigateToLogin(boolean isInterfaccia1, boolean isCliente) {
+        boolean isOnlineMode = SessionController.getIsOnlineModeStatic(); // ✅ Recuperiamo lo stato attuale
+
         Parent loginView = isInterfaccia1
-                ? new Login1View(this).getRoot()
-                : new Login2View(stage, this, SessionController.getIsOnlineModeStatic()).getRoot();
+                ? new Login1View(this, isOnlineMode).getRoot() // ✅ Ora passiamo NavigationService e isOnlineMode!
+                : new Login2View(stage, this, isOnlineMode).getRoot();
 
         if (loginView != null) {
             stage.setScene(new Scene(loginView, 400, 300));
@@ -45,36 +47,6 @@ public class NavigationController implements NavigationService {
         } else {
             LOGGER.warning("❌ Errore: LoginView è NULL!");
         }
-    }
-
-
-    private void setupLoginHandler() {
-        LOGGER.info("✅ Cliente autenticato. Verifica credenziali in corso...");
-
-        Parent loginRoot = stage.getScene().getRoot();
-        if (!(loginRoot instanceof VBox)) {
-            LOGGER.warning("❌ Errore: UI non è un VBox!");
-            return;
-        }
-
-        VBox vbox = (VBox) loginRoot;
-        logVBoxElements(vbox);
-
-        // Recupera gli elementi dall'interfaccia
-        TextField usernameField = findTextField(vbox);
-        PasswordField passwordField = findPasswordField(vbox);
-        Button avantiButton = findButton(vbox, "Avanti");
-        Button loginButton = findButton(vbox, "Login");
-
-        // Controllo unificato: verifica che tutti gli elementi siano presenti prima di configurarli
-        if (usernameField == null || passwordField == null || avantiButton == null || loginButton == null) {
-            LOGGER.warning("❌ Errore: uno dei campi di login è NULL! Controlla la UI.");
-            return;
-        }
-
-        // Configurazione dei pulsanti solo se tutti gli elementi sono stati trovati
-        setupAvantiButton(avantiButton, usernameField, passwordField, loginButton);
-        setupLoginButton(loginButton, usernameField, passwordField);
     }
 
     // Metodi di supporto per trovare gli elementi specifici

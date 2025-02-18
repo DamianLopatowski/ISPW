@@ -45,7 +45,7 @@ public class MainController {
             stage.setScene(new javafx.scene.Scene(new Login2View(stage, navigationService, isOnlineMode).getRoot(), 400, 300));
             stage.setTitle("Login Online - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         } else {
-            stage.setScene(new javafx.scene.Scene(new Login1View(navigationController).getRoot(), 400, 300));
+            stage.setScene(new javafx.scene.Scene(new Login1View(navigationController, isOnlineMode).getRoot(), 400, 300));
             stage.setTitle("Login Offline - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
         }
     }

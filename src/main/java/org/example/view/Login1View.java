@@ -21,8 +21,10 @@ public class Login1View {
 
 
     private final NavigationService navigationService;
+    private final boolean isOnlineMode;
 
-    public Login1View(NavigationService navigationService) { // ✅ Modificato
+    public Login1View(NavigationService navigationService, boolean isOnlineMode) {
+        this.isOnlineMode = isOnlineMode;
         this.navigationService = navigationService;
 
         root = new VBox(15);
@@ -49,8 +51,7 @@ public class Login1View {
             String password = passwordField.getText().trim();
 
             LOGGER.info("🔑 Tentativo di login OFFLINE con username: " + username);
-
-            boolean isOnlineMode = SessionController.getIsOnlineModeStatic(); // ✅ Otteniamo la modalità scelta all'inizio
+            
             ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
             Cliente cliente = clienteDAO.findByUsername(username);
 
