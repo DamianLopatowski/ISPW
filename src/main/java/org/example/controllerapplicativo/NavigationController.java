@@ -59,31 +59,11 @@ public class NavigationController implements NavigationService {
         VBox vbox = (VBox) loginRoot;
         logVBoxElements(vbox);
 
-        TextField usernameField = null;
-        PasswordField passwordField = null;
-        Button avantiButton = null;
-        Button loginButton = null;
-
-        // Iterazione sui nodi del VBox per assegnare i riferimenti corretti
-        for (javafx.scene.Node node : vbox.getChildren()) {
-            if (node instanceof TextField && usernameField == null) {
-                usernameField = (TextField) node;
-            } else if (node instanceof PasswordField && passwordField == null) {
-                passwordField = (PasswordField) node;
-            } else if (node instanceof Button) {
-                if (avantiButton == null) {
-                    avantiButton = (Button) node;
-                } else if (loginButton == null) {
-                    loginButton = (Button) node;
-                }
-            }
-        }
-
-        // Debug per capire quali elementi sono NULL
-        if (usernameField == null) LOGGER.warning("⚠️ usernameField è NULL!");
-        if (passwordField == null) LOGGER.warning("⚠️ passwordField è NULL!");
-        if (avantiButton == null) LOGGER.warning("⚠️ avantiButton è NULL!");
-        if (loginButton == null) LOGGER.warning("⚠️ loginButton è NULL!");
+        // Recupera gli elementi dall'interfaccia
+        TextField usernameField = findTextField(vbox);
+        PasswordField passwordField = findPasswordField(vbox);
+        Button avantiButton = findButton(vbox, "Avanti");
+        Button loginButton = findButton(vbox, "Login");
 
         // Controllo unificato: verifica che tutti gli elementi siano presenti prima di configurarli
         if (usernameField == null || passwordField == null || avantiButton == null || loginButton == null) {
@@ -94,6 +74,37 @@ public class NavigationController implements NavigationService {
         // Configurazione dei pulsanti solo se tutti gli elementi sono stati trovati
         setupAvantiButton(avantiButton, usernameField, passwordField, loginButton);
         setupLoginButton(loginButton, usernameField, passwordField);
+    }
+
+    // Metodi di supporto per trovare gli elementi specifici
+    private TextField findTextField(VBox vbox) {
+        for (javafx.scene.Node node : vbox.getChildren()) {
+            if (node instanceof TextField) {
+                return (TextField) node;
+            }
+        }
+        return null;
+    }
+
+    private PasswordField findPasswordField(VBox vbox) {
+        for (javafx.scene.Node node : vbox.getChildren()) {
+            if (node instanceof PasswordField) {
+                return (PasswordField) node;
+            }
+        }
+        return null;
+    }
+
+    private Button findButton(VBox vbox, String buttonText) {
+        for (javafx.scene.Node node : vbox.getChildren()) {
+            if (node instanceof Button) {
+                Button button = (Button) node;
+                if (button.getText().equalsIgnoreCase(buttonText)) {
+                    return button;
+                }
+            }
+        }
+        return null;
     }
 
     private void logVBoxElements(VBox vbox) {
