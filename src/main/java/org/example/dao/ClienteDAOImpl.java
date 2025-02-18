@@ -6,17 +6,34 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 public class ClienteDAOImpl implements ClienteDAO {
     private static final Logger LOGGER = Logger.getLogger(ClienteDAOImpl.class.getName());
-    private static final Map<String, Cliente> clientiOffline = new HashMap<>(); // ✅ Ora è statica!
+    private static final Map<String, Cliente> clientiOffline = new HashMap<>();
     private final boolean isOnlineMode;
-    private final String dbUrl = "jdbc:mysql://localhost:3306/bikegarage";
-    private final String dbUsername = "root";
-    private final String dbPassword = "Kazik+10";
+    private String dbUrl;
+    private String dbUsername;
+    private String dbPassword;
 
     public ClienteDAOImpl(boolean isOnlineMode) {
         this.isOnlineMode = isOnlineMode;
+        loadDatabaseConfig();
+    }
+
+    private void loadDatabaseConfig() {
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream("config.properties")) {
+            properties.load(fis);
+            this.dbUrl = properties.getProperty("db.url");
+            this.dbUsername = properties.getProperty("db.username");
+            this.dbPassword = properties.getProperty("db.password");
+            LOGGER.info("✅ Configurazione database caricata con successo!");
+        } catch (IOException e) {
+            LOGGER.severe("❌ Errore nel caricamento del file di configurazione: " + e.getMessage());
+        }
     }
 
     @Override
