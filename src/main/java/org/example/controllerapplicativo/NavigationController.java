@@ -17,6 +17,7 @@ import org.example.service.NavigationService;
 import org.example.view.*;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class NavigationController implements NavigationService {
@@ -34,7 +35,7 @@ public class NavigationController implements NavigationService {
     public void navigateToLogin(boolean isInterfaccia1, boolean isCliente) {
         LOGGER.info("🔄 Navigazione al login cliente...");
 
-        Parent loginView = isInterfaccia1 ? new LoginOfflineView().getRoot() : new LoginOnlineView(stage, this).getRoot();
+        Parent loginView = isInterfaccia1 ? new LoginOfflineView(this).getRoot() : new LoginOnlineView(stage, this).getRoot();
 
         if (loginView != null) {
             stage.setScene(new Scene(loginView, 400, 300));
@@ -130,24 +131,26 @@ public class NavigationController implements NavigationService {
             String username = usernameField.getText().trim();
             String password = passwordField.getText().trim();
 
-            LOGGER.info("🔑 Tentativo di login con username: " + username);
-            LOGGER.info("🔑 Password inserita dall'utente: " + password);
+            LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
+            LOGGER.log(Level.INFO, "🔑 Password inserita dall'utente: {0}", password);
 
             ClienteDAO clienteDAO = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
+            LOGGER.info("🔎 Modalità attuale: " + (SessionController.getIsOnlineModeStatic() ? "ONLINE" : "OFFLINE"));
             Cliente cliente = clienteDAO.findByUsername(username);
 
             if (cliente != null) {
-                LOGGER.info("✅ Cliente trovato: " + cliente.getUsername());
-                LOGGER.info("🔒 Password salvata nel database: " + cliente.getPassword());
+                LOGGER.log(Level.INFO, "✅ Cliente trovato: {0}", cliente.getUsername());
+                LOGGER.log(Level.INFO, "🔒 Password salvata nel database: {0}", cliente.getPassword());
 
                 if (cliente.getPassword().equals(password)) {
                     LOGGER.info("✅ Credenziali corrette! Navigazione al negozio...");
                     navigateToNegozio();
                 } else {
-                    LOGGER.warning("❌ Password errata! La password inserita: " + password + " | Password nel database: " + cliente.getPassword());
+                    LOGGER.log(Level.WARNING, "❌ Password errata! La password inserita: {0} | Password nel database: {1}",
+                            new Object[]{password, cliente.getPassword()});
                 }
             } else {
-                LOGGER.warning("❌ Nessun cliente trovato con username: " + username);
+                LOGGER.log(Level.WARNING, "❌ Nessun cliente trovato con username: {0}", username);
             }
         });
     }

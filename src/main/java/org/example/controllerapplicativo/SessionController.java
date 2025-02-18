@@ -106,7 +106,7 @@ public class SessionController {
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            LoginOfflineView loginView = new LoginOfflineView();
+            LoginOfflineView loginView = new LoginOfflineView(navigationController);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();

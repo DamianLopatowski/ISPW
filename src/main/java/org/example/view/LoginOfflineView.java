@@ -2,6 +2,11 @@ package org.example.view;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.example.controllerapplicativo.NavigationController;
+import org.example.dao.ClienteDAO;
+import org.example.dao.ClienteDAOImpl;
+import org.example.model.Cliente;
+
 import java.util.logging.Logger;
 
 public class LoginOfflineView {
@@ -14,7 +19,11 @@ public class LoginOfflineView {
     private static final Logger LOGGER = Logger.getLogger(LoginOfflineView.class.getName());
 
 
-    public LoginOfflineView() {
+    private final NavigationController navigationController;
+
+    public LoginOfflineView(NavigationController navigationController) {
+        this.navigationController = navigationController;
+
         root = new VBox(15);
         statusLabel = new Label("Inserisci l'admin:");
         usernameField = new TextField();
@@ -32,6 +41,27 @@ public class LoginOfflineView {
         avantiButton.setOnAction(event -> showPasswordField());
 
         root.getChildren().addAll(statusLabel, usernameField, avantiButton, passwordField, loginButton);
+
+        // **Aggiungi l'azione per il login offline**
+        loginButton.setOnAction(event -> {
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText().trim();
+
+            LOGGER.info("🔑 Tentativo di login OFFLINE con username: " + username);
+
+            ClienteDAO clienteDAO = new ClienteDAOImpl(false); // Assicuriamoci che sia offline
+            Cliente cliente = clienteDAO.findByUsername(username);
+
+            if (cliente != null && cliente.getPassword().equals(password)) {
+                LOGGER.info("✅ Login OFFLINE riuscito!");
+                statusLabel.setText("✅ Accesso effettuato!");
+                // Navigazione al negozio offline
+                navigationController.navigateToNegozio();
+            } else {
+                LOGGER.warning("❌ Credenziali errate o utente inesistente in modalità offline!");
+                statusLabel.setText("❌ Errore: credenziali non valide.");
+            }
+        });
     }
 
 

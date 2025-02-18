@@ -78,6 +78,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         } else {
             LOGGER.info("🔎 Ricerca cliente in RAM (OFFLINE): " + usernamePulito);
             Cliente cliente = clientiOffline.get(usernamePulito);
+            LOGGER.info("📌 Clienti attualmente in RAM: " + clientiOffline.keySet());
             if (cliente != null) {
                 LOGGER.info("✅ Cliente trovato in RAM: " + usernamePulito);
             } else {
