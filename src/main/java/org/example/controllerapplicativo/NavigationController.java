@@ -79,12 +79,6 @@ public class NavigationController implements NavigationService {
             }
         }
 
-        // Controllo unico per verificare che nessuno degli elementi sia null
-        if (usernameField == null || passwordField == null || loginButton == null || avantiButton == null) {
-            LOGGER.warning("❌ Errore: uno dei campi di login è NULL! Controlla la UI.");
-            return;
-        }
-
         // Configurazione dei pulsanti
         setupAvantiButton(avantiButton, usernameField, passwordField, loginButton);
         setupLoginButton(loginButton, usernameField, passwordField);
