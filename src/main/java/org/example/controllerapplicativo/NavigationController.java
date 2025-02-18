@@ -64,6 +64,7 @@ public class NavigationController implements NavigationService {
         Button avantiButton = null;
         Button loginButton = null;
 
+        // Iterazione sui nodi del VBox per assegnare i riferimenti corretti
         for (javafx.scene.Node node : vbox.getChildren()) {
             if (node instanceof TextField && usernameField == null) {
                 usernameField = (TextField) node;
@@ -78,12 +79,13 @@ public class NavigationController implements NavigationService {
             }
         }
 
-        // ✅ Controllo corretto senza espressioni ridondanti
+        // Controllo unico per verificare che nessuno degli elementi sia null
         if (usernameField == null || passwordField == null || loginButton == null || avantiButton == null) {
             LOGGER.warning("❌ Errore: uno dei campi di login è NULL! Controlla la UI.");
             return;
         }
 
+        // Configurazione dei pulsanti
         setupAvantiButton(avantiButton, usernameField, passwordField, loginButton);
         setupLoginButton(loginButton, usernameField, passwordField);
     }
