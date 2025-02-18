@@ -82,7 +82,9 @@ public class ClienteDAOImpl implements ClienteDAO {
         if (isOnlineMode) {  // ✅ Controlliamo la modalità scelta all'inizio!
             LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE: {0}", usernamePulito);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                 PreparedStatement stmt = conn.prepareStatement("SELECT * FROM usercliente WHERE LOWER(username) = ?")) {
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "SELECT username, nome, cognome, password FROM usercliente WHERE LOWER(username) = ?"
+                 )){
                 stmt.setString(1, usernamePulito);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
