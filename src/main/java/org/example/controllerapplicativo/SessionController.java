@@ -97,16 +97,14 @@ public class SessionController {
         TextField usernameField;
         PasswordField passwordField;
 
-        NavigationController navigationController = new NavigationController(stage);  // ✅ Creiamo il NavigationController
-
         if (isInterfaccia1) {
-            LoginOnlineView loginView = new LoginOnlineView(stage, navigationController);  // ✅ Passiamo i parametri corretti
+            LoginOnlineView loginView = new LoginOnlineView(stage, navigationService);  // ✅ Passiamo NavigationService
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            LoginOfflineView loginView = new LoginOfflineView(navigationController);
+            LoginOfflineView loginView = new LoginOfflineView(navigationService);  // ✅ Passiamo NavigationService
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
@@ -114,7 +112,6 @@ public class SessionController {
         }
 
         if (loginButton != null) {
-            loginButton.setOnAction(null);
             loginButton.setOnAction(event -> {
                 String username = usernameField.getText();
                 String password = passwordField.getText();

@@ -254,22 +254,6 @@ public class NavigationController implements NavigationService {
         navigateToLogin(isInterfaccia1, true);
     }
 
-
-
-    public void navigateToNegozio() {
-        LOGGER.info("🔄 Navigazione all'interfaccia del negozio...");
-        Parent negozioView = new NegozioView().getRoot();
-        if (negozioView != null) {
-            stage.setScene(new Scene(negozioView, 600, 400));
-            stage.setTitle("Negozio");
-            LOGGER.info("✅ Navigazione al negozio completata.");
-        } else {
-            LOGGER.warning("❌ Errore: NegozioView è NULL!");
-        }
-    }
-
-
-
     @Override
     public void navigateToMainView() {
         LOGGER.info("🔄 Creazione di una NUOVA istanza di View per il logout...");
@@ -326,6 +310,20 @@ public class NavigationController implements NavigationService {
         } catch (IOException e) {
             LOGGER.severe("❌ Errore nel caricamento della Main View: " + e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public void navigateToNegozio() {
+        LOGGER.info("🔄 Navigazione all'interfaccia del negozio...");
+        Parent negozioView = new NegozioView().getRoot();
+        if (negozioView != null) {
+            stage.setScene(new Scene(negozioView, 600, 400));
+            stage.setTitle("Negozio");
+            stage.show();
+            LOGGER.info("✅ Navigazione al negozio completata.");
+        } else {
+            LOGGER.warning("❌ Errore: NegozioView è NULL!");
         }
     }
 }

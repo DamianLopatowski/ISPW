@@ -6,6 +6,7 @@ import org.example.controllerapplicativo.NavigationController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
+import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
@@ -19,10 +20,10 @@ public class LoginOfflineView {
     private static final Logger LOGGER = Logger.getLogger(LoginOfflineView.class.getName());
 
 
-    private final NavigationController navigationController;
+    private final NavigationService navigationService;
 
-    public LoginOfflineView(NavigationController navigationController) {
-        this.navigationController = navigationController;
+    public LoginOfflineView(NavigationService navigationService) { // ✅ Modificato
+        this.navigationService = navigationService;
 
         root = new VBox(15);
         statusLabel = new Label("Inserisci l'admin:");
@@ -56,7 +57,7 @@ public class LoginOfflineView {
                 LOGGER.info("✅ Login OFFLINE riuscito!");
                 statusLabel.setText("✅ Accesso effettuato!");
                 // Navigazione al negozio offline
-                navigationController.navigateToNegozio();
+                navigationService.navigateToNegozio();
             } else {
                 LOGGER.warning("❌ Credenziali errate o utente inesistente in modalità offline!");
                 statusLabel.setText("❌ Errore: credenziali non valide.");

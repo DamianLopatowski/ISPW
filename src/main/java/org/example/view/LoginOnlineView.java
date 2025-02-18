@@ -8,6 +8,7 @@ import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
+import org.example.service.NavigationService;
 
 import java.util.logging.Logger;
 
@@ -21,11 +22,11 @@ public class LoginOnlineView {
 
     // ✅ Dichiarazione delle variabili stage e navigationController
     private final Stage stage;
-    private final NavigationController navigationController;
+    private final NavigationService navigationService;
 
-    public LoginOnlineView(Stage stage, NavigationController navigationController) {
+    public LoginOnlineView(Stage stage, NavigationService navigationService) {
         this.stage = stage;
-        this.navigationController = navigationController;
+        this.navigationService = navigationService;
 
         root = new GridPane();
         usernameField = new TextField();
@@ -58,7 +59,7 @@ public class LoginOnlineView {
 
                 if (cliente.getPassword().equals(password)) {
                     LOGGER.info("✅ Credenziali corrette! Navigazione al negozio...");
-                    navigationController.navigateToNegozio();  // ✅ Navigazione alla schermata del negozio!
+                    navigationService.navigateToNegozio();// ✅ Navigazione alla schermata del negozio!
                 } else {
                     LOGGER.warning("❌ Password errata!");
                     statusLabel.setText("❌ Password errata! Riprova.");
