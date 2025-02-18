@@ -1,6 +1,5 @@
 package org.example.controllerapplicativo;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,8 +13,6 @@ import org.example.dao.GestoreDAOImpl;
 import org.example.model.Cliente;
 import org.example.service.NavigationService;
 import org.example.view.*;
-
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

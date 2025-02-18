@@ -75,6 +75,4 @@ public class View {
     public Button getLoginButton() {
         return loginButton;
     }
-    public Button getLoginClienteButton() { return loginClienteButton; }
-    public Button getRegistratiClienteButton() { return registratiClienteButton; }
 }
