@@ -2,7 +2,6 @@ package org.example.view;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -20,12 +19,7 @@ public class Login1View {
     private static final Logger LOGGER = Logger.getLogger(Login1View.class.getName());
 
 
-    private final NavigationService navigationService;
-    private final boolean isOnlineMode;
-
     public Login1View(NavigationService navigationService, boolean isOnlineMode) {
-        this.isOnlineMode = isOnlineMode;
-        this.navigationService = navigationService;
 
         root = new VBox(15);
         statusLabel = new Label("Inserisci l'admin:");
@@ -51,7 +45,7 @@ public class Login1View {
             String password = passwordField.getText().trim();
 
             LOGGER.info("🔑 Tentativo di login OFFLINE con username: " + username);
-            
+
             ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
             Cliente cliente = clienteDAO.findByUsername(username);
 
@@ -103,21 +97,6 @@ public class Login1View {
 
     public PasswordField getPasswordField() {
         return passwordField;
-    }
-
-    public Label getStatusLabel() {
-        return statusLabel;
-    }
-
-    public Button getAvantiButton() {
-        return avantiButton;
-    }
-
-    public void enableLogin() {
-        avantiButton.setDisable(false);
-        usernameField.setDisable(false);
-        passwordField.setVisible(true);
-        loginButton.setVisible(true);
     }
 
 }

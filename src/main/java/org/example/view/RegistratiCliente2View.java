@@ -37,9 +37,6 @@ public class RegistratiCliente2View {
 
         registratiButton = new Button("Registrati");
         registratiButton.setDisable(true);
-        registratiButton.setOnAction(event -> {
-            System.out.println("🔘 Bottone REGISTRATI premuto direttamente nella View!");
-        });
 
 
         confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {

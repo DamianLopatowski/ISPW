@@ -17,17 +17,12 @@ public class Login2View {
     private final Button loginButton;
     private final Label statusLabel;
     private static final Logger LOGGER = Logger.getLogger(Login2View.class.getName());
-    private final boolean isOnlineMode;
 
 
     // ✅ Dichiarazione delle variabili stage e navigationController
-    private final Stage stage;
-    private final NavigationService navigationService;
+
 
     public Login2View(Stage stage, NavigationService navigationService, boolean isOnlineMode) {
-        this.stage = stage;
-        this.navigationService = navigationService;
-        this.isOnlineMode = isOnlineMode;
 
         root = new GridPane();
         usernameField = new TextField();
@@ -88,7 +83,4 @@ public class Login2View {
         return passwordField;
     }
 
-    public Label getStatusLabel() {
-        return statusLabel;
-    }
 }
