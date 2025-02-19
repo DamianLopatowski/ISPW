@@ -7,6 +7,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.controllergrafici.GestioneController;
+import org.example.controllergrafici.LoginController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.dao.GestoreDAOImpl;
@@ -32,18 +33,26 @@ public class NavigationController implements NavigationService {
     public void navigateToLogin(boolean isInterfaccia1, boolean isCliente) {
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic(); // ✅ Recuperiamo lo stato attuale
 
-        Parent loginView = isInterfaccia1
-                ? new Login1View(this, isOnlineMode).getRoot() // ✅ Ora passiamo NavigationService e isOnlineMode!
-                : new Login2View(this, isOnlineMode).getRoot();
+        Parent loginRoot;
+        if (isInterfaccia1) {
+            Login1View loginView = new Login1View();
+            new LoginController(loginView, this, isOnlineMode); // ✅ Assicuriamo che il controller venga creato
+            loginRoot = loginView.getRoot();
+        } else {
+            Login2View loginView = new Login2View();
+            new LoginController(loginView, this, isOnlineMode);
+            loginRoot = loginView.getRoot();
+        }
 
-        if (loginView != null) {
-            stage.setScene(new Scene(loginView, 400, 300));
+        if (loginRoot != null) {
+            stage.setScene(new Scene(loginRoot, 400, 300));
             stage.setTitle("Login Cliente");
             stage.show();
         } else {
             LOGGER.warning("❌ Errore: LoginView è NULL!");
         }
     }
+
     @Override
     public void navigateToRegistrazioneCliente(boolean isInterfaccia1) {
         RegistratiCliente1View offlineView = null;

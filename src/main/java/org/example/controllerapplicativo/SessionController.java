@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import java.util.logging.Logger;
 import org.example.ApplicationContext;
+import org.example.controllergrafici.LoginController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
@@ -98,13 +99,16 @@ public class SessionController {
         PasswordField passwordField;
 
         if (isInterfaccia1) {
-            Login2View loginView = new Login2View(navigationService, isOnlineMode);
+            Login2View loginView = new Login2View();
+            new LoginController(loginView, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            Login1View loginView = new Login1View(navigationService, isOnlineMode);
+            // ✅ CREAZIONE LOGIN1VIEW E ASSOCIAZIONE A LOGINCONTROLLER
+            Login1View loginView = new Login1View();// Senza parametri, solo UI
+            new LoginController(loginView, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
