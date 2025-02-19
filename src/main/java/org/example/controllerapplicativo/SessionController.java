@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import java.util.logging.Logger;
 import org.example.ApplicationContext;
 import org.example.controllergrafici.LoginController;
+import org.example.controllergrafici.ViewController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
@@ -31,8 +32,14 @@ public class SessionController {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
         this.navigationService = navigationService;
+
+        // Creazione dell'istanza di View
         View mainView = new View();
-        mainView.setNavigationService(navigationService);
+
+        // Creazione del ViewController e assegnazione del servizio di navigazione
+        new ViewController(mainView, navigationService);
+
+        // Creazione del contesto con la View aggiornata
         this.context = new ApplicationContext(stage, mainView);
         initializeView();
     }
@@ -45,9 +52,11 @@ public class SessionController {
 
     private void initializeView() {
         View view = context.getMainView();
+
         if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
             LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
         }
+
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {

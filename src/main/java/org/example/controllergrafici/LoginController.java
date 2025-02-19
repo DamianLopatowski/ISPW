@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoginController {
@@ -72,7 +74,8 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        LOGGER.info("🔑 Tentativo di login con username: " + username);
+        LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
+
 
         ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
         Cliente cliente = clienteDAO.findByUsername(username);

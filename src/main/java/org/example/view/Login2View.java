@@ -2,7 +2,6 @@ package org.example.view;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import java.util.logging.Logger;
 
 public class Login2View {
     private final GridPane root;
@@ -10,8 +9,6 @@ public class Login2View {
     private final PasswordField passwordField;
     private final Button loginButton;
     private final Label statusLabel;
-    private static final Logger LOGGER = Logger.getLogger(Login2View.class.getName());
-
     public Login2View() {
         root = new GridPane();
         usernameField = new TextField();

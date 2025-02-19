@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.controllergrafici.GestioneController;
 import org.example.controllergrafici.LoginController;
+import org.example.controllergrafici.ViewController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.dao.GestoreDAOImpl;
@@ -156,7 +157,9 @@ public class NavigationController implements NavigationService {
         LOGGER.info("🔄 Creazione di una NUOVA istanza di View per il logout...");
 
         View newMainView = new View();
-        newMainView.setNavigationService(this);
+
+        // Creazione del ViewController che gestirà la View e la navigazione
+        new ViewController(newMainView, this);
 
         Parent root = newMainView.getRoot();
         if (root != null) {
@@ -170,8 +173,6 @@ public class NavigationController implements NavigationService {
             LOGGER.warning("❌ Errore: View principale è NULL!");
         }
     }
-
-
 
 
     @Override

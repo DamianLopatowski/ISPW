@@ -3,8 +3,6 @@ package org.example.view;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import org.example.service.NavigationService;
-import java.util.logging.Logger;
 
 public class View {
     private final VBox root;
@@ -13,8 +11,6 @@ public class View {
     private final Button loginButton;
     private final Button loginClienteButton;
     private final Button registratiClienteButton;
-    private NavigationService navigationService;
-    private static final Logger LOGGER = Logger.getLogger(View.class.getName());
 
     public View() {
         root = new VBox(15);
@@ -31,38 +27,9 @@ public class View {
 
         root.getChildren().addAll(interfaccia1Option, interfaccia2Option, loginButton, loginClienteButton, registratiClienteButton);
         root.setAlignment(Pos.CENTER);
-
-        setupHandlers();
     }
 
-    public void setNavigationService(NavigationService navigationService) {
-        this.navigationService = navigationService;
-    }
 
-    private void setupHandlers() {
-        loginButton.setOnAction(event -> navigateToLogin(false));
-        loginClienteButton.setOnAction(event -> navigateToLogin(true));
-        registratiClienteButton.setOnAction(event -> navigateToRegistrazioneCliente());
-    }
-
-    private void navigateToLogin(boolean isCliente) {
-        if (navigationService == null) {
-            LOGGER.warning("❌ ERRORE: NavigationService è NULL! Assicurati di impostarlo prima di usare la navigazione.");
-            return;
-        }
-        boolean isInterfaccia1 = interfaccia1Option.isSelected();
-        navigationService.navigateToLogin(isInterfaccia1, isCliente);
-    }
-
-    private void navigateToRegistrazioneCliente() {
-        if (navigationService == null) {
-            LOGGER.warning("❌ ERRORE: NavigationService è NULL! Assicurati di impostarlo prima di usare la navigazione.");
-            return;
-        }
-
-        boolean isInterfaccia1 = interfaccia1Option.isSelected();
-        navigationService.navigateToRegistrazioneCliente(isInterfaccia1);
-    }
     public VBox getRoot() {
         return root;
     }
@@ -74,5 +41,11 @@ public class View {
     }
     public Button getLoginButton() {
         return loginButton;
+    }
+    public Button getLoginClienteButton() {
+        return loginClienteButton;
+    }
+    public Button getRegistratiClienteButton() {
+        return registratiClienteButton;
     }
 }
