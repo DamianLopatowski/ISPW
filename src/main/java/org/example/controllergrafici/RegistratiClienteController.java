@@ -69,6 +69,19 @@ public class RegistratiClienteController {
         }
     }
 
+    public void aggiornaStatoRegistratiButton(RegistratiCliente1View view) {
+        boolean isFilled = !view.getUsernameField().getText().trim().isEmpty() &&
+                !view.getEmailField().getText().trim().isEmpty() &&
+                !view.getNomeField().getText().trim().isEmpty() &&
+                !view.getCognomeField().getText().trim().isEmpty() &&
+                !view.getPasswordField().getText().trim().isEmpty() &&
+                !view.getConfirmPasswordField().getText().trim().isEmpty() &&
+                !view.getCodiceUnivocoField().getText().trim().isEmpty();
+
+        view.getRegistratiButton().setDisable(!isFilled);
+    }
+
+
     private void registraCliente(Object view) {
         String username;
         String nome;

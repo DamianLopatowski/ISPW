@@ -47,11 +47,11 @@ public class NavigationController implements NavigationService {
     }
 
     @Override
-    public void navigateToRegistrazioneCliente(boolean isInterfaccia1) {
+    public Parent navigateToRegistrazioneCliente(boolean isInterfaccia1) {
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
         ClienteDAOImpl clienteDAO = new ClienteDAOImpl(isOnlineMode);
 
-        RegistratiClienteController registratiClienteController = new RegistratiClienteController(stage, clienteDAO, this,isInterfaccia1);
+        RegistratiClienteController registratiClienteController = new RegistratiClienteController(stage, clienteDAO, this, isInterfaccia1);
         Parent registrazioneView = registratiClienteController.getViewRoot();
 
         if (registrazioneView != null) {
@@ -61,6 +61,7 @@ public class NavigationController implements NavigationService {
         } else {
             LOGGER.warning("❌ Errore: registrazioneView è NULL!");
         }
+        return registrazioneView;
     }
 
     @Override

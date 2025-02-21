@@ -30,7 +30,6 @@ public class RegistratiCliente1View {
         usernameField = new TextField();
         usernameField.setPromptText("Inserisci username");
 
-        // Label di feedback (inizialmente invisibile)
         usernameFeedback = new Label();
         usernameFeedback.setTextFill(Color.RED);
 
@@ -55,23 +54,30 @@ public class RegistratiCliente1View {
         registratiButton = new Button("Registrati");
         registratiButton.setDisable(true);
 
-        // Validazione dello username usando il Controller (MVC)
         controller.aggiungiValidazioneUsername(usernameField, usernameFeedback, root);
 
-        // Aggiungere gli elementi alla root
         root.getChildren().addAll(
                 statusLabel, usernameField, emailField, nomeField, cognomeField,
                 passwordField, confirmPasswordField, codiceUnivocoField, registratiButton
         );
 
-        // Creazione dello ScrollPane
         scrollPane = new ScrollPane();
         scrollPane.setContent(root);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(false);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        // ➡ Aggiungiamo i listener per aggiornare il bottone
+        usernameField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
+        emailField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
+        nomeField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
+        cognomeField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
+        passwordField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
+        confirmPasswordField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
+        codiceUnivocoField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
     }
+
 
     public ScrollPane getRoot() {
         return scrollPane;
