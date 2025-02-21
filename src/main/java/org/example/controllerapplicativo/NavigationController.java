@@ -51,7 +51,7 @@ public class NavigationController implements NavigationService {
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
         ClienteDAOImpl clienteDAO = new ClienteDAOImpl(isOnlineMode);
 
-        RegistratiClienteController registratiClienteController = new RegistratiClienteController(stage, clienteDAO, isInterfaccia1);
+        RegistratiClienteController registratiClienteController = new RegistratiClienteController(stage, clienteDAO, isInterfaccia1, this);
         Parent registrazioneView = registratiClienteController.getViewRoot();
 
         if (registrazioneView != null) {

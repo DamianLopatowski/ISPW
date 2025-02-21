@@ -3,10 +3,10 @@ package org.example.controllergrafici;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import org.example.controllerapplicativo.NavigationController;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.model.Cliente;
+import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;
 import org.example.view.RegistratiCliente2View;
 
@@ -18,15 +18,15 @@ public class RegistratiClienteController {
     private final Parent viewRoot;
     private final ClienteDAO clienteDAO;
     private final boolean isOnlineMode;
-    private final NavigationController navigationController;
+    private final NavigationService navigationService;
     private final String codiceUnivoco;
     private int tentativiErrati = 0;
     private static final int MAX_TENTATIVI = 3;
 
-    public RegistratiClienteController(Stage stage, ClienteDAO clienteDAO, boolean isInterfaccia1) {
+    public RegistratiClienteController(Stage stage, ClienteDAO clienteDAO, boolean isInterfaccia1, NavigationService navigationService) {
         this.isOnlineMode = SessionController.getIsOnlineModeStatic();
         this.clienteDAO = clienteDAO;
-        this.navigationController = new NavigationController(stage);
+        this.navigationService = navigationService;
         this.codiceUnivoco = caricaCodiceUnivoco();
 
         if (isInterfaccia1) {
@@ -56,7 +56,12 @@ public class RegistratiClienteController {
     }
 
     private void registraCliente(Object view, boolean isInterfaccia1) {
-        String username, nome, cognome, password, confirmPassword, codiceInserito;
+        String username;
+        String nome;
+        String cognome;
+        String password;
+        String confirmPassword;
+        String codiceInserito;
 
         if (view instanceof RegistratiCliente1View) {
             RegistratiCliente1View offlineView = (RegistratiCliente1View) view;
@@ -101,7 +106,7 @@ public class RegistratiClienteController {
         clienteDAO.saveCliente(nuovoCliente);
         mostraMessaggioSuccesso(isOnlineMode ? "Cliente registrato con successo nel database!" : "Cliente registrato offline!");
 
-        navigationController.navigateToLogin(isInterfaccia1, true);
+        navigationService.navigateToLogin(isInterfaccia1, true);
     }
 
     private void mostraMessaggioErrore(String messaggio) {
