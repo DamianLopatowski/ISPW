@@ -62,7 +62,6 @@ public class NavigationController implements NavigationService {
         }
         return registrazioneView;
     }
-
     @Override
     public void navigateToMainView() {
         LOGGER.info("🔄 Creazione di una NUOVA istanza di View per il logout...");

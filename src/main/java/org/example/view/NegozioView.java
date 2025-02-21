@@ -8,7 +8,6 @@ public class NegozioView {
     private final VBox root;
     private final Label welcomeLabel;
 
-
     public NegozioView() {
         root = new VBox(15);
         welcomeLabel = new Label("Benvenuto nel negozio!");

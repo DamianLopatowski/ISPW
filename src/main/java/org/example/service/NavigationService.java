@@ -10,5 +10,3 @@ public interface NavigationService {
     Parent navigateToRegistrazioneCliente(boolean isInterfaccia1);
 
 }
-
-

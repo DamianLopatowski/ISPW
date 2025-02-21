@@ -22,7 +22,6 @@ public class AuthController {
         navigationService.navigateToMainView();
     }
 
-
     public boolean handleLogin(String username, String password, boolean isOfflineMode) {
         if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
             LOGGER.info(String.format("🔑 Tentativo di login con username: %s, Modalità: %s", username, isOfflineMode ? "Offline" : "Online"));

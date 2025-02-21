@@ -44,7 +44,6 @@ public class GestioneController {
         onlineView.getGestioneSpedizioniButton().setOnAction(event -> handleGestione("Spedizioni"));
         onlineView.getLogoutButton().setOnAction(event -> handleLogout());
     }
-
     private void setupOfflineHandlers() {
         offlineView.getConfermaButton().setOnAction(event -> {
             String selectedOption = offlineView.getMenuTendina().getValue();
@@ -79,5 +78,4 @@ public class GestioneController {
 
         return root;
     }
-
 }

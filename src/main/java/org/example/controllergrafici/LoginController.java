@@ -76,7 +76,6 @@ public class LoginController {
 
         LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
 
-
         ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
         Cliente cliente = clienteDAO.findByUsername(username);
 

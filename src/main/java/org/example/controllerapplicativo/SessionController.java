@@ -25,7 +25,6 @@ public class SessionController {
     private final NavigationService navigationService;
     private boolean isOnlineMode;
     private boolean isInterfaccia1;
-
     protected static boolean isOnlineModeStatic = true;   // ✅ Salviamo lo stato globale
 
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
