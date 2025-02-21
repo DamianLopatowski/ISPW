@@ -4,11 +4,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+import org.example.controllergrafici.RegistratiClienteController;
 
 public class RegistratiCliente1View {
     private final ScrollPane scrollPane;
     private final VBox root;
     private final TextField usernameField;
+    private Label usernameFeedback; // Non lo aggiungiamo inizialmente
     private final TextField emailField;
     private final TextField nomeField;
     private final TextField cognomeField;
@@ -19,14 +22,17 @@ public class RegistratiCliente1View {
     private final Label statusLabel;
     private final Stage stage;
 
-    public RegistratiCliente1View(Stage stage) {
+    public RegistratiCliente1View(Stage stage, RegistratiClienteController controller) {
         this.stage = stage;
-
-        root = new VBox(15);
+        root = new VBox(10);
         statusLabel = new Label("Registrazione Cliente Offline");
 
         usernameField = new TextField();
         usernameField.setPromptText("Inserisci username");
+
+        // Label di feedback (inizialmente invisibile)
+        usernameFeedback = new Label();
+        usernameFeedback.setTextFill(Color.RED);
 
         emailField = new TextField();
         emailField.setPromptText("Inserisci email");
@@ -49,25 +55,22 @@ public class RegistratiCliente1View {
         registratiButton = new Button("Registrati");
         registratiButton.setDisable(true);
 
-        confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
-            boolean fieldsFilled = !usernameField.getText().trim().isEmpty()
-                    && !nomeField.getText().trim().isEmpty()
-                    && !cognomeField.getText().trim().isEmpty()
-                    && !passwordField.getText().trim().isEmpty();
-            registratiButton.setDisable(!fieldsFilled || !passwordField.getText().equals(newVal));
-        });
+        // Validazione dello username usando il Controller (MVC)
+        controller.validaUsername(usernameField, usernameFeedback, root);
 
-        // Aggiungiamo tutti i campi alla VBox
-        root.getChildren().addAll(statusLabel, usernameField, emailField, nomeField, cognomeField, passwordField, confirmPasswordField, codiceUnivocoField, registratiButton);
+        // Aggiungere gli elementi alla root
+        root.getChildren().addAll(
+                statusLabel, usernameField, emailField, nomeField, cognomeField,
+                passwordField, confirmPasswordField, codiceUnivocoField, registratiButton
+        );
 
-        // Creiamo lo ScrollPane e aggiungiamo la VBox al suo interno
+        // Creazione dello ScrollPane
         scrollPane = new ScrollPane();
         scrollPane.setContent(root);
-        scrollPane.setFitToWidth(true); // Permette il ridimensionamento automatico in larghezza
-        scrollPane.setFitToHeight(false); // Permette lo scrolling verticale
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(false);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
     }
 
     public ScrollPane getRoot() {

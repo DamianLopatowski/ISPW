@@ -2,6 +2,7 @@ package org.example.controllergrafici;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
@@ -11,11 +12,15 @@ import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;
 import org.example.view.RegistratiCliente2View;
 
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class RegistratiClienteController {
     private static final Logger LOGGER = Logger.getLogger(RegistratiClienteController.class.getName());
@@ -27,6 +32,8 @@ public class RegistratiClienteController {
     private final String codiceUnivoco;
     private int tentativiErrati = 0;
     private static final int MAX_TENTATIVI = 3;
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
 
     public RegistratiClienteController(Stage stage, ClienteDAO clienteDAO, NavigationService navigationService, boolean isInterfaccia1) {
         this.isOnlineMode = SessionController.getIsOnlineModeStatic();
@@ -36,14 +43,15 @@ public class RegistratiClienteController {
 
         // 🔹 Usa il parametro `isInterfaccia1` per decidere la view
         if (isInterfaccia1) {
-            RegistratiCliente1View offlineView = new RegistratiCliente1View(stage);
+            RegistratiCliente1View offlineView = new RegistratiCliente1View(stage, this); // Passa il controller
             this.viewRoot = offlineView.getRoot();
             offlineView.getRegistratiButton().setOnAction(e -> registraCliente(offlineView));
         } else {
-            RegistratiCliente2View onlineView = new RegistratiCliente2View(stage);
+            RegistratiCliente2View onlineView = new RegistratiCliente2View(stage, this); // Passa il controller
             this.viewRoot = onlineView.getRoot();
             onlineView.getRegistratiButton().setOnAction(e -> registraCliente(onlineView));
         }
+
     }
 
     public Parent getViewRoot() {
@@ -72,34 +80,55 @@ public class RegistratiClienteController {
 
         if (view instanceof RegistratiCliente1View) {
             RegistratiCliente1View offlineView = (RegistratiCliente1View) view;
-            username = offlineView.getUsernameField().getText();
-            nome = offlineView.getNomeField().getText();
-            cognome = offlineView.getCognomeField().getText();
-            password = offlineView.getPasswordField().getText();
-            confirmPassword = offlineView.getConfirmPasswordField().getText();
-            codiceInserito = offlineView.getCodiceUnivocoField().getText();
-            email = offlineView.getEmailField().getText();
+            username = offlineView.getUsernameField().getText().trim();
+            nome = offlineView.getNomeField().getText().trim();
+            cognome = offlineView.getCognomeField().getText().trim();
+            password = offlineView.getPasswordField().getText().trim();
+            confirmPassword = offlineView.getConfirmPasswordField().getText().trim();
+            codiceInserito = offlineView.getCodiceUnivocoField().getText().trim();
+            email = offlineView.getEmailField().getText().trim();
         } else {
             RegistratiCliente2View onlineView = (RegistratiCliente2View) view;
-            username = onlineView.getUsernameField().getText();
-            nome = onlineView.getNomeField().getText();
-            cognome = onlineView.getCognomeField().getText();
-            password = onlineView.getPasswordField().getText();
-            confirmPassword = onlineView.getConfirmPasswordField().getText();
-            codiceInserito = onlineView.getCodiceUnivocoField().getText();
-            email = onlineView.getEmailField().getText();
+            username = onlineView.getUsernameField().getText().trim();
+            nome = onlineView.getNomeField().getText().trim();
+            cognome = onlineView.getCognomeField().getText().trim();
+            password = onlineView.getPasswordField().getText().trim();
+            confirmPassword = onlineView.getConfirmPasswordField().getText().trim();
+            codiceInserito = onlineView.getCodiceUnivocoField().getText().trim();
+            email = onlineView.getEmailField().getText().trim();
         }
 
+        // Controllo campi vuoti
         if (username.isEmpty() || nome.isEmpty() || cognome.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || codiceInserito.isEmpty() || email.isEmpty()) {
             mostraMessaggioErrore("Tutti i campi devono essere compilati!");
             return;
         }
 
+        // Controllo lunghezza username
+        if (username.length() < 8) {
+            mostraMessaggioErrore("Lo username deve essere di almeno 8 caratteri!");
+            return;
+        }
+
+        // Controllo formato email
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            mostraMessaggioErrore("Inserisci un'email valida!");
+            return;
+        }
+
+        // Controllo password
+        if (!PASSWORD_PATTERN.matcher(password).matches()) {
+            mostraMessaggioErrore("La password deve essere di almeno 8 caratteri e contenere una maiuscola, una minuscola, un numero e un carattere speciale!");
+            return;
+        }
+
+        // Controllo password coincidenti
         if (!password.equals(confirmPassword)) {
             mostraMessaggioErrore("Le password non coincidono!");
             return;
         }
 
+        // Controllo codice univoco
         if (!codiceInserito.equals(codiceUnivoco)) {
             tentativiErrati++;
             if (tentativiErrati >= MAX_TENTATIVI) {
@@ -111,7 +140,8 @@ public class RegistratiClienteController {
             return;
         }
 
-        Cliente nuovoCliente = new Cliente(username, nome, cognome, password);
+        // Creazione e salvataggio del cliente
+        Cliente nuovoCliente = new Cliente(username, nome, cognome, password, email);
         clienteDAO.saveCliente(nuovoCliente);
 
         if (isOnlineMode) {
@@ -120,9 +150,36 @@ public class RegistratiClienteController {
         }
 
         mostraMessaggioSuccesso(isOnlineMode ? "Cliente registrato con successo nel database! Email inviata." : "Cliente registrato offline!");
-
         navigationService.navigateToLogin(true, true);
     }
+
+    public void validaUsername(TextField usernameField, Label usernameFeedback, VBox root) {
+        usernameField.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.length() < 8) {
+                usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                usernameFeedback.setText("Lo username deve avere almeno 8 caratteri ⚠");
+                usernameFeedback.setTextFill(Color.RED);
+                if (!root.getChildren().contains(usernameFeedback)) {
+                    root.getChildren().add(root.getChildren().indexOf(usernameField) + 1, usernameFeedback);
+                }
+            } else {
+                usernameField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                usernameFeedback.setText("✅ Username valido");
+                usernameFeedback.setTextFill(Color.GREEN);
+                if (!root.getChildren().contains(usernameFeedback)) {
+                    root.getChildren().add(root.getChildren().indexOf(usernameField) + 1, usernameFeedback);
+                }
+            }
+        });
+
+        usernameField.focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused && usernameField.getText().length() >= 8) {
+                root.getChildren().remove(usernameFeedback);
+            }
+        });
+    }
+
+
 
     private void mostraMessaggioErrore(String messaggio) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

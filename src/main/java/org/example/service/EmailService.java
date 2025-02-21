@@ -12,20 +12,26 @@ import java.util.logging.Logger;
 public class EmailService {
     private static final Logger LOGGER = Logger.getLogger(EmailService.class.getName());
 
-    private static String SMTP_HOST;
-    private static String SMTP_PORT;
-    private static String EMAIL_SENDER;
-    private static String EMAIL_PASSWORD;
+    // 🔹 Campi rinominati per seguire le convenzioni Java (java:S3008)
+    private static String smtpHost;
+    private static String smtpPort;
+    private static String emailSender;
+    private static String emailPassword;
+
+    // 🔹 Costruttore privato per nascondere quello pubblico implicito (java:S1118)
+    private EmailService() {
+        throw new UnsupportedOperationException("Questa è una classe di utility e non può essere istanziata.");
+    }
 
     static {
         try {
             Properties properties = new Properties();
             properties.load(new FileInputStream("config.properties"));
 
-            SMTP_HOST = properties.getProperty("email.smtp.host");
-            SMTP_PORT = properties.getProperty("email.smtp.port");
-            EMAIL_SENDER = properties.getProperty("email.sender");
-            EMAIL_PASSWORD = properties.getProperty("email.password");
+            smtpHost = properties.getProperty("email.smtp.host");
+            smtpPort = properties.getProperty("email.smtp.port");
+            emailSender = properties.getProperty("email.sender");
+            emailPassword = properties.getProperty("email.password");
 
             LOGGER.info("📩 Configurazione email caricata con successo.");
         } catch (IOException e) {
@@ -37,25 +43,27 @@ public class EmailService {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", SMTP_HOST);
-        props.put("mail.smtp.port", SMTP_PORT);
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(EMAIL_SENDER, EMAIL_PASSWORD);
+                return new PasswordAuthentication(emailSender, emailPassword);
             }
         });
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(EMAIL_SENDER));
+            message.setFrom(new InternetAddress(emailSender));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject("Conferma Registrazione");
-            message.setText("Ciao " + username + ",\n\nGrazie per esserti registrato con successo!");
+            message.setText(String.format("Ciao %s,\n\nGrazie per esserti registrato con successo!", username));
 
             Transport.send(message);
-            LOGGER.info("✅ Email di conferma inviata a " + recipientEmail);
+
+            // 🔹 Uso del logging con built-in formatting (java:S2629)
+            LOGGER.log(Level.INFO, "✅ Email di conferma inviata a {0}", recipientEmail);
         } catch (MessagingException e) {
             LOGGER.log(Level.SEVERE, "❌ Errore nell'invio dell'email", e);
         }

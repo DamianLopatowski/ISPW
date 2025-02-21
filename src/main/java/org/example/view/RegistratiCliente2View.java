@@ -4,11 +4,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.example.controllergrafici.RegistratiClienteController;
 
 public class RegistratiCliente2View {
     private final VBox root;
     private final TextField usernameField;
+    private final Label usernameFeedback;
     private final TextField emailField;
     private final TextField nomeField;
     private final TextField cognomeField;
@@ -23,12 +26,16 @@ public class RegistratiCliente2View {
 
     private int step = 1;
 
-    public RegistratiCliente2View(Stage stage) {
+    public RegistratiCliente2View(Stage stage, RegistratiClienteController controller) {
         this.stage = stage;
         root = new VBox(15);
         root.setAlignment(Pos.CENTER);
 
         statusLabel = new Label("Registrazione Cliente Online - Passo 1");
+
+        // Label per il feedback (inizialmente invisibile)
+        usernameFeedback = new Label();
+        usernameFeedback.setTextFill(Color.RED);
 
         usernameField = new TextField();
         emailField = new TextField();
@@ -44,6 +51,9 @@ public class RegistratiCliente2View {
         registratiButton = new Button("Registrati");
 
         registratiButton.setDisable(true);
+
+        // 👉 Chiamata alla validazione dello username tramite Controller (MVC)
+        controller.validaUsername(usernameField, usernameFeedback, root);
 
         avantiButton.setOnAction(e -> mostraStep(step + 1));
         indietroButton.setOnAction(e -> mostraStep(step - 1));
@@ -66,6 +76,7 @@ public class RegistratiCliente2View {
                 root.getChildren().addAll(
                         statusLabel,
                         creaInput("Username:", usernameField),
+                        usernameFeedback,
                         creaInput("email:", emailField),
                         creaNavigazione());
                 break;
