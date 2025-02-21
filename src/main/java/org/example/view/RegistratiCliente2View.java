@@ -1,6 +1,8 @@
 package org.example.view;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -11,44 +13,96 @@ public class RegistratiCliente2View {
     private final TextField cognomeField;
     private final PasswordField passwordField;
     private final PasswordField confirmPasswordField;
+    private final TextField codiceUnivocoField;
+    private final Button avantiButton;
+    private final Button indietroButton;
     private final Button registratiButton;
     private final Label statusLabel;
-    private final Stage stage;  // ✅ Aggiunto lo Stage!
+    private final Stage stage;
 
-    public RegistratiCliente2View(Stage stage) {  // ✅ Modificato costruttore
+    private int step = 1;
+
+    public RegistratiCliente2View(Stage stage) {
         this.stage = stage;
         root = new VBox(15);
+        root.setAlignment(Pos.CENTER);
 
-        statusLabel = new Label("Registrazione Cliente Online");
+        statusLabel = new Label("Registrazione Cliente Online - Passo 1");
+
         usernameField = new TextField();
-        usernameField.setPromptText("Inserisci username");
-
         nomeField = new TextField();
-        nomeField.setPromptText("Inserisci nome");
-
         cognomeField = new TextField();
-        cognomeField.setPromptText("Inserisci cognome");
-
         passwordField = new PasswordField();
-        passwordField.setPromptText("Inserisci password");
-
         confirmPasswordField = new PasswordField();
-        confirmPasswordField.setPromptText("Conferma password");
+        codiceUnivocoField = new TextField();  // Inizializzato correttamente
+        codiceUnivocoField.setPromptText("Inserisci codice univoco");
 
+        avantiButton = new Button("Avanti");
+        indietroButton = new Button("Indietro");
         registratiButton = new Button("Registrati");
+
         registratiButton.setDisable(true);
 
+        avantiButton.setOnAction(e -> mostraStep(step + 1));
+        indietroButton.setOnAction(e -> mostraStep(step - 1));
 
-        confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
-            boolean fieldsFilled = !usernameField.getText().trim().isEmpty()
-                    && !nomeField.getText().trim().isEmpty()
-                    && !cognomeField.getText().trim().isEmpty()
-                    && !passwordField.getText().trim().isEmpty();
+        mostraStep(1);
+    }
 
-            registratiButton.setDisable(!fieldsFilled || !passwordField.getText().equals(newVal));
-        });
+    private void mostraStep(int newStep) {
+        if (newStep < 1 || newStep > 3) return; // Impedisce step non validi
 
-        root.getChildren().addAll(statusLabel, usernameField, nomeField, cognomeField, passwordField, confirmPasswordField, registratiButton);
+        root.getChildren().clear();
+        step = newStep;
+
+        indietroButton.setDisable(step == 1); // Disabilita "Indietro" solo al primo step
+        avantiButton.setDisable(step == 3); // Disabilita "Avanti" solo nell'ultimo step
+
+        switch (step) {
+            case 1:
+                statusLabel.setText("Passo 1: Inserisci il tuo Username");
+                root.getChildren().addAll(statusLabel, creaInput("Username:", usernameField), creaNavigazione());
+                break;
+            case 2:
+                statusLabel.setText("Passo 2: Inserisci Nome e Cognome");
+                root.getChildren().addAll(
+                        statusLabel,
+                        creaInput("Nome:", nomeField),
+                        creaInput("Cognome:", cognomeField),
+                        creaNavigazione()
+                );
+                break;
+            case 3:
+                statusLabel.setText("Passo 3: Scegli una Password e inserisci il codice univoco");
+                root.getChildren().addAll(
+                        statusLabel,
+                        creaInput("Password:", passwordField),
+                        creaInput("Conferma Password:", confirmPasswordField),
+                        creaInput("Codice Univoco:", codiceUnivocoField),
+                        creaNavigazioneFinale()
+                );
+                break;
+        }
+    }
+
+    private HBox creaInput(String labelText, TextField field) {
+        Label label = new Label(labelText);
+        HBox box = new HBox(10, label, field);
+        box.setAlignment(Pos.CENTER);
+        return box;
+    }
+
+    private HBox creaNavigazione() {
+        HBox navBox = new HBox(10, indietroButton, avantiButton);
+        navBox.setAlignment(Pos.CENTER);
+        return navBox;
+    }
+
+    private HBox creaNavigazioneFinale() {
+        registratiButton.setDisable(false);
+        HBox navBox = new HBox(10, indietroButton, registratiButton);
+        navBox.setAlignment(Pos.CENTER);
+        return navBox;
     }
 
     public VBox getRoot() { return root; }
@@ -57,5 +111,6 @@ public class RegistratiCliente2View {
     public TextField getCognomeField() { return cognomeField; }
     public PasswordField getPasswordField() { return passwordField; }
     public PasswordField getConfirmPasswordField() { return confirmPasswordField; }
+    public TextField getCodiceUnivocoField() { return codiceUnivocoField; }
     public Button getRegistratiButton() { return registratiButton; }
 }

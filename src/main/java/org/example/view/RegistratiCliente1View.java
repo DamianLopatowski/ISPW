@@ -11,6 +11,7 @@ public class RegistratiCliente1View {
     private final TextField cognomeField;
     private final PasswordField passwordField;
     private final PasswordField confirmPasswordField;
+    private final TextField codiceUnivocoField;
     private final Button registratiButton;
     private final Label statusLabel;
     private final Stage stage;  // ✅ Aggiunto lo Stage
@@ -30,6 +31,8 @@ public class RegistratiCliente1View {
         passwordField.setPromptText("Inserisci password");
         confirmPasswordField = new PasswordField();
         confirmPasswordField.setPromptText("Conferma password");
+        codiceUnivocoField = new TextField();
+        codiceUnivocoField.setPromptText("Inserisci codice univoco");
 
         registratiButton = new Button("Registrati");
         registratiButton.setDisable(true);
@@ -45,11 +48,28 @@ public class RegistratiCliente1View {
         root.getChildren().addAll(statusLabel, usernameField, nomeField, cognomeField, passwordField, confirmPasswordField, registratiButton);
     }
 
-    public VBox getRoot() { return root; }
-    public TextField getUsernameField() { return usernameField; }
-    public TextField getNomeField() { return nomeField; }
-    public TextField getCognomeField() { return cognomeField; }
-    public PasswordField getPasswordField() { return passwordField; }
-    public PasswordField getConfirmPasswordField() { return confirmPasswordField; }
-    public Button getRegistratiButton() { return registratiButton; }
+    public VBox getRoot() {
+        return root;
+    }
+    public TextField getUsernameField() {
+        return usernameField;
+    }
+    public TextField getNomeField() {
+        return nomeField;
+    }
+    public TextField getCognomeField() {
+        return cognomeField;
+    }
+    public PasswordField getPasswordField() {
+        return passwordField;
+    }
+    public PasswordField getConfirmPasswordField() {
+        return confirmPasswordField;
+    }
+    public TextField getCodiceUnivocoField() {
+        return codiceUnivocoField;
+    }
+    public Button getRegistratiButton() {
+        return registratiButton;
+    }
 }
