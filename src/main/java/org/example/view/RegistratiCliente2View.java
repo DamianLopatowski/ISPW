@@ -53,7 +53,7 @@ public class RegistratiCliente2View {
         registratiButton.setDisable(true);
 
         // 👉 Chiamata alla validazione dello username tramite Controller (MVC)
-        controller.validaUsername(usernameField, usernameFeedback, root);
+        controller.aggiungiValidazioneUsername(usernameField, usernameFeedback, root);
 
         avantiButton.setOnAction(e -> mostraStep(step + 1));
         indietroButton.setOnAction(e -> mostraStep(step - 1));

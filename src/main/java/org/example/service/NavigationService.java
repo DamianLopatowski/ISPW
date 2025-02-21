@@ -8,4 +8,7 @@ public interface NavigationService {
     Parent navigateToGestioneView(boolean isOfflineMode, boolean isInterfaccia1);
     void navigateToLogin(boolean isInterfaccia1, boolean isCliente);
     void navigateToRegistrazioneCliente(boolean isInterfaccia1);
+
 }
+
+

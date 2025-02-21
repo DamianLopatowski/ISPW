@@ -43,11 +43,11 @@ public class RegistratiClienteController {
 
         // 🔹 Usa il parametro `isInterfaccia1` per decidere la view
         if (isInterfaccia1) {
-            RegistratiCliente1View offlineView = new RegistratiCliente1View(stage, this); // Passa il controller
+            RegistratiCliente1View offlineView = new RegistratiCliente1View(stage, this);
             this.viewRoot = offlineView.getRoot();
             offlineView.getRegistratiButton().setOnAction(e -> registraCliente(offlineView));
         } else {
-            RegistratiCliente2View onlineView = new RegistratiCliente2View(stage, this); // Passa il controller
+            RegistratiCliente2View onlineView = new RegistratiCliente2View(stage, this);
             this.viewRoot = onlineView.getRoot();
             onlineView.getRegistratiButton().setOnAction(e -> registraCliente(onlineView));
         }
@@ -153,7 +153,7 @@ public class RegistratiClienteController {
         navigationService.navigateToLogin(true, true);
     }
 
-    public void validaUsername(TextField usernameField, Label usernameFeedback, VBox root) {
+    public void aggiungiValidazioneUsername(TextField usernameField, Label usernameFeedback, VBox root) {
         usernameField.textProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue.length() < 8) {
                 usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");

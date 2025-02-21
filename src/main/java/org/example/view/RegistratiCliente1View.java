@@ -56,7 +56,7 @@ public class RegistratiCliente1View {
         registratiButton.setDisable(true);
 
         // Validazione dello username usando il Controller (MVC)
-        controller.validaUsername(usernameField, usernameFeedback, root);
+        controller.aggiungiValidazioneUsername(usernameField, usernameFeedback, root);
 
         // Aggiungere gli elementi alla root
         root.getChildren().addAll(
