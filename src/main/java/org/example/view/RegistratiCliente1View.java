@@ -77,8 +77,6 @@ public class RegistratiCliente1View {
         confirmPasswordField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
         codiceUnivocoField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
     }
-
-
     public ScrollPane getRoot() {
         return scrollPane;
     }

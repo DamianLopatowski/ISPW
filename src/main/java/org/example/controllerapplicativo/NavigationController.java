@@ -45,7 +45,6 @@ public class NavigationController implements NavigationService {
             LOGGER.warning("❌ Errore: LoginView è NULL!");
         }
     }
-
     @Override
     public Parent navigateToRegistrazioneCliente(boolean isInterfaccia1) {
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();

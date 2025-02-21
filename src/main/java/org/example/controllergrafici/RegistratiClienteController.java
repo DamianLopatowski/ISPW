@@ -81,7 +81,6 @@ public class RegistratiClienteController {
         view.getRegistratiButton().setDisable(!isFilled);
     }
 
-
     private void registraCliente(Object view) {
         String username;
         String nome;
