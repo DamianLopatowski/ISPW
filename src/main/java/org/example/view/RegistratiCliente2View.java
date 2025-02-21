@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 public class RegistratiCliente2View {
     private final VBox root;
     private final TextField usernameField;
+    private final TextField emailField;
     private final TextField nomeField;
     private final TextField cognomeField;
     private final PasswordField passwordField;
@@ -30,11 +31,12 @@ public class RegistratiCliente2View {
         statusLabel = new Label("Registrazione Cliente Online - Passo 1");
 
         usernameField = new TextField();
+        emailField = new TextField();
         nomeField = new TextField();
         cognomeField = new TextField();
         passwordField = new PasswordField();
         confirmPasswordField = new PasswordField();
-        codiceUnivocoField = new TextField();  // Inizializzato correttamente
+        codiceUnivocoField = new TextField();
         codiceUnivocoField.setPromptText("Inserisci codice univoco");
 
         avantiButton = new Button("Avanti");
@@ -60,8 +62,12 @@ public class RegistratiCliente2View {
 
         switch (step) {
             case 1:
-                statusLabel.setText("Passo 1: Inserisci il tuo Username");
-                root.getChildren().addAll(statusLabel, creaInput("Username:", usernameField), creaNavigazione());
+                statusLabel.setText("Passo 1: Inserisci il tuo Username e l email");
+                root.getChildren().addAll(
+                        statusLabel,
+                        creaInput("Username:", usernameField),
+                        creaInput("email:", emailField),
+                        creaNavigazione());
                 break;
             case 2:
                 statusLabel.setText("Passo 2: Inserisci Nome e Cognome");
@@ -109,12 +115,31 @@ public class RegistratiCliente2View {
         return navBox;
     }
 
-    public VBox getRoot() { return root; }
-    public TextField getUsernameField() { return usernameField; }
-    public TextField getNomeField() { return nomeField; }
-    public TextField getCognomeField() { return cognomeField; }
-    public PasswordField getPasswordField() { return passwordField; }
-    public PasswordField getConfirmPasswordField() { return confirmPasswordField; }
-    public TextField getCodiceUnivocoField() { return codiceUnivocoField; }
-    public Button getRegistratiButton() { return registratiButton; }
+    public VBox getRoot() {
+        return root;
+    }
+    public TextField getUsernameField() {
+        return usernameField;
+    }
+    public TextField getEmailField() {
+        return emailField;
+    }
+    public TextField getNomeField() {
+        return nomeField;
+    }
+    public TextField getCognomeField() {
+        return cognomeField;
+    }
+    public PasswordField getPasswordField() {
+        return passwordField;
+    }
+    public PasswordField getConfirmPasswordField() {
+        return confirmPasswordField;
+    }
+    public TextField getCodiceUnivocoField() {
+        return codiceUnivocoField;
+    }
+    public Button getRegistratiButton() {
+        return registratiButton;
+    }
 }

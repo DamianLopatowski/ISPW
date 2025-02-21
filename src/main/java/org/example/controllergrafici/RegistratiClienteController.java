@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.model.Cliente;
+import org.example.service.EmailService;
 import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;
 import org.example.view.RegistratiCliente2View;
@@ -13,8 +14,12 @@ import org.example.view.RegistratiCliente2View;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RegistratiClienteController {
+    private static final Logger LOGGER = Logger.getLogger(RegistratiClienteController.class.getName());
+
     private final Parent viewRoot;
     private final ClienteDAO clienteDAO;
     private final boolean isOnlineMode;
@@ -23,20 +28,21 @@ public class RegistratiClienteController {
     private int tentativiErrati = 0;
     private static final int MAX_TENTATIVI = 3;
 
-    public RegistratiClienteController(Stage stage, ClienteDAO clienteDAO, boolean isInterfaccia1, NavigationService navigationService) {
+    public RegistratiClienteController(Stage stage, ClienteDAO clienteDAO, NavigationService navigationService, boolean isInterfaccia1) {
         this.isOnlineMode = SessionController.getIsOnlineModeStatic();
         this.clienteDAO = clienteDAO;
         this.navigationService = navigationService;
         this.codiceUnivoco = caricaCodiceUnivoco();
 
+        // 🔹 Usa il parametro `isInterfaccia1` per decidere la view
         if (isInterfaccia1) {
-            RegistratiCliente1View viewOffline = new RegistratiCliente1View(stage);
-            this.viewRoot = viewOffline.getRoot();
-            viewOffline.getRegistratiButton().setOnAction(e -> registraCliente(viewOffline, true));
+            RegistratiCliente1View offlineView = new RegistratiCliente1View(stage);
+            this.viewRoot = offlineView.getRoot();
+            offlineView.getRegistratiButton().setOnAction(e -> registraCliente(offlineView));
         } else {
-            RegistratiCliente2View viewOnline = new RegistratiCliente2View(stage);
-            this.viewRoot = viewOnline.getRoot();
-            viewOnline.getRegistratiButton().setOnAction(e -> registraCliente(viewOnline, false));
+            RegistratiCliente2View onlineView = new RegistratiCliente2View(stage);
+            this.viewRoot = onlineView.getRoot();
+            onlineView.getRegistratiButton().setOnAction(e -> registraCliente(onlineView));
         }
     }
 
@@ -55,13 +61,14 @@ public class RegistratiClienteController {
         }
     }
 
-    private void registraCliente(Object view, boolean isInterfaccia1) {
+    private void registraCliente(Object view) {
         String username;
         String nome;
         String cognome;
         String password;
         String confirmPassword;
         String codiceInserito;
+        String email;
 
         if (view instanceof RegistratiCliente1View) {
             RegistratiCliente1View offlineView = (RegistratiCliente1View) view;
@@ -71,6 +78,7 @@ public class RegistratiClienteController {
             password = offlineView.getPasswordField().getText();
             confirmPassword = offlineView.getConfirmPasswordField().getText();
             codiceInserito = offlineView.getCodiceUnivocoField().getText();
+            email = offlineView.getEmailField().getText();
         } else {
             RegistratiCliente2View onlineView = (RegistratiCliente2View) view;
             username = onlineView.getUsernameField().getText();
@@ -79,9 +87,10 @@ public class RegistratiClienteController {
             password = onlineView.getPasswordField().getText();
             confirmPassword = onlineView.getConfirmPasswordField().getText();
             codiceInserito = onlineView.getCodiceUnivocoField().getText();
+            email = onlineView.getEmailField().getText();
         }
 
-        if (username.isEmpty() || nome.isEmpty() || cognome.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || codiceInserito.isEmpty()) {
+        if (username.isEmpty() || nome.isEmpty() || cognome.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || codiceInserito.isEmpty() || email.isEmpty()) {
             mostraMessaggioErrore("Tutti i campi devono essere compilati!");
             return;
         }
@@ -104,9 +113,15 @@ public class RegistratiClienteController {
 
         Cliente nuovoCliente = new Cliente(username, nome, cognome, password);
         clienteDAO.saveCliente(nuovoCliente);
-        mostraMessaggioSuccesso(isOnlineMode ? "Cliente registrato con successo nel database!" : "Cliente registrato offline!");
 
-        navigationService.navigateToLogin(isInterfaccia1, true);
+        if (isOnlineMode) {
+            LOGGER.log(Level.INFO, "📧 Invio email di conferma a: {0}", email);
+            EmailService.sendConfirmationEmail(email, username);
+        }
+
+        mostraMessaggioSuccesso(isOnlineMode ? "Cliente registrato con successo nel database! Email inviata." : "Cliente registrato offline!");
+
+        navigationService.navigateToLogin(true, true);
     }
 
     private void mostraMessaggioErrore(String messaggio) {

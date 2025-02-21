@@ -21,6 +21,8 @@ org\example\controllerapplicativo\SessionController.class
 org\example\model\Cliente.class
 org\example\view\NegozioView.class
 org\example\dao\ClienteDAOImpl.class
+org\example\service\EmailService.class
 org\example\view\Gestione2View.class
 org\example\dao\GestoreDAOImpl.class
 org\example\ApplicationContext.class
+org\example\service\EmailService$1.class
