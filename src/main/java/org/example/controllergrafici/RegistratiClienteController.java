@@ -12,6 +12,7 @@ import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;
 import org.example.view.RegistratiCliente2View;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RegistratiClienteController {
@@ -87,7 +88,7 @@ public class RegistratiClienteController {
                 break;
             default:
                 // Se il fieldType non è riconosciuto, logghiamo un warning e lo consideriamo non valido
-                LOGGER.warning("⚠ Warning: Tipo di campo non riconosciuto - " + fieldType);
+                LOGGER.log(Level.WARNING, "⚠ Warning: Tipo di campo non riconosciuto - {0}", fieldType);
                 isValid = false;
                 break;
         }
@@ -272,7 +273,7 @@ public class RegistratiClienteController {
     }
 
     private void registraCliente(Object view) {
-        System.out.println("📢 Registrazione avviata!");
+        LOGGER.info("📢 Registrazione avviata!");
 
         String username;
         String nome;
