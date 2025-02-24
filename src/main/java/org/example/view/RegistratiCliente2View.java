@@ -117,6 +117,10 @@ public class RegistratiCliente2View {
                         creaNavigazioneFinale()
                 );
                 break;
+            default:
+                statusLabel.setText("⚠ Errore: Passo non valido!");
+                root.getChildren().add(statusLabel);
+                break;
         }
     }
 

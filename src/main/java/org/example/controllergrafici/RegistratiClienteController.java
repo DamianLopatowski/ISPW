@@ -12,7 +12,10 @@ import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;
 import org.example.view.RegistratiCliente2View;
 
+import java.util.logging.Logger;
+
 public class RegistratiClienteController {
+    private static final Logger LOGGER = Logger.getLogger(RegistratiClienteController.class.getName());
     private final Object view;
     private final RegistrazioneService registrazioneService;
     private final NavigationService navigationService;
@@ -84,7 +87,7 @@ public class RegistratiClienteController {
                 break;
             default:
                 // Se il fieldType non è riconosciuto, logghiamo un warning e lo consideriamo non valido
-                System.err.println("⚠ Warning: Tipo di campo non riconosciuto - " + fieldType);
+                LOGGER.warning("⚠ Warning: Tipo di campo non riconosciuto - " + fieldType);
                 isValid = false;
                 break;
         }
@@ -271,7 +274,12 @@ public class RegistratiClienteController {
     private void registraCliente(Object view) {
         System.out.println("📢 Registrazione avviata!");
 
-        String username, nome, cognome, password, confirmPassword, codiceUnivocoInserito, email;
+        String username;
+        String nome;
+        String cognome;
+        String password;
+        String codiceUnivocoInserito;
+        String email;
 
         if (view instanceof RegistratiCliente1View) {
             RegistratiCliente1View v = (RegistratiCliente1View) view;
@@ -279,7 +287,6 @@ public class RegistratiClienteController {
             nome = v.getNomeField().getText().trim();
             cognome = v.getCognomeField().getText().trim();
             password = v.getPasswordField().getText().trim();
-            confirmPassword = v.getConfirmPasswordField().getText().trim();
             codiceUnivocoInserito = v.getCodiceUnivocoField().getText().trim();
             email = v.getEmailField().getText().trim();
         } else {
@@ -288,7 +295,6 @@ public class RegistratiClienteController {
             nome = v.getNomeField().getText().trim();
             cognome = v.getCognomeField().getText().trim();
             password = v.getPasswordField().getText().trim();
-            confirmPassword = v.getConfirmPasswordField().getText().trim();
             codiceUnivocoInserito = v.getCodiceUnivocoField().getText().trim();
             email = v.getEmailField().getText().trim();
         }
