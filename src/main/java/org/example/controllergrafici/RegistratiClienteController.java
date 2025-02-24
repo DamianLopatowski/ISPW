@@ -2,6 +2,9 @@ package org.example.controllergrafici;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.dao.ClienteDAO;
 import org.example.service.RegistrazioneException;
@@ -32,24 +35,222 @@ public class RegistratiClienteController {
         }
     }
 
+    private void aggiornaFeedbackUsername(TextField usernameField, Label feedbackLabel, String username) {
+        if (username.isEmpty()) {
+            usernameField.setStyle("");
+            feedbackLabel.setText("");
+            feedbackLabel.setVisible(false);
+            feedbackLabel.setManaged(false);
+        } else {
+            feedbackLabel.setManaged(true);
+            feedbackLabel.setVisible(true);
+
+            if (registrazioneService.isUsernameValid(username)) {
+                usernameField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                feedbackLabel.setText("✔ Username valido");
+                feedbackLabel.setStyle("-fx-text-fill: green;");
+            } else {
+                usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                feedbackLabel.setText("❌ Lo username deve avere almeno 8 caratteri");
+                feedbackLabel.setStyle("-fx-text-fill: red;");
+            }
+        }
+    }
+
+    private void nascondiFeedbackSeValido(TextField field, Label feedbackLabel, String fieldType, String password) {
+        boolean isValid = false;
+
+        switch (fieldType) {
+            case "username":
+                isValid = registrazioneService.isUsernameValid(field.getText().trim());
+                break;
+            case "email":
+                isValid = registrazioneService.isEmailValid(field.getText().trim());
+                break;
+            case "password":
+                isValid = registrazioneService.isPasswordValid(field.getText().trim());
+                break;
+            case "confirmPassword":
+                isValid = field.getText().trim().equals(password);
+                break;
+        }
+
+        if (isValid) {
+            feedbackLabel.setText("");
+            feedbackLabel.setVisible(false);
+            feedbackLabel.setManaged(false);
+        } else {
+            feedbackLabel.setVisible(true);
+            feedbackLabel.setManaged(true);
+        }
+    }
+
+    private void aggiornaFeedbackEmail(TextField emailField, Label feedbackLabel, String email) {
+        if (email.isEmpty()) {
+            emailField.setStyle(""); // Reset stile
+            feedbackLabel.setText("");
+            feedbackLabel.setVisible(false);
+            feedbackLabel.setManaged(false);
+        } else {
+            feedbackLabel.setManaged(true); // Assicura che sia visibile
+            feedbackLabel.setVisible(true);
+
+            if (registrazioneService.isEmailValid(email)) {
+                emailField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                feedbackLabel.setText("✔ Email valida");
+                feedbackLabel.setStyle("-fx-text-fill: green;");
+            } else {
+                emailField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                feedbackLabel.setText("❌ L'email non è valida");
+                feedbackLabel.setStyle("-fx-text-fill: red;");
+            }
+        }
+    }
+
+    private void aggiornaFeedbackPassword(PasswordField passwordField, Label feedbackLabel, String password) {
+        if (password.isEmpty()) {
+            passwordField.setStyle(""); // Reset stile
+            feedbackLabel.setText("");
+            feedbackLabel.setVisible(false);
+            feedbackLabel.setManaged(false);
+        } else {
+            feedbackLabel.setManaged(true); // Rendi visibile il messaggio
+            feedbackLabel.setVisible(true);
+
+            if (registrazioneService.isPasswordValid(password)) {
+                passwordField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                feedbackLabel.setText("✔ Password valida");
+                feedbackLabel.setStyle("-fx-text-fill: green;");
+            } else {
+                passwordField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                feedbackLabel.setText("❌ La password non rispetta i requisiti");
+                feedbackLabel.setStyle("-fx-text-fill: red;");
+            }
+        }
+    }
+
+    private void aggiornaFeedbackConfirmPassword(PasswordField confirmPasswordField, Label feedbackLabel, String confirmPassword, String password) {
+        if (confirmPassword.isEmpty()) {
+            confirmPasswordField.setStyle(""); // Reset stile
+            feedbackLabel.setText("");
+            feedbackLabel.setVisible(false);
+            feedbackLabel.setManaged(false);
+        } else {
+            feedbackLabel.setManaged(true);
+            feedbackLabel.setVisible(true);
+
+            if (confirmPassword.equals(password)) {
+                confirmPasswordField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                feedbackLabel.setText("✔ Conferma corretta");
+                feedbackLabel.setStyle("-fx-text-fill: green;");
+            } else {
+                confirmPasswordField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                feedbackLabel.setText("❌ Le password non corrispondono");
+                feedbackLabel.setStyle("-fx-text-fill: red;");
+            }
+        }
+    }
+
+
 
     private void setupListeners(RegistratiCliente1View view) {
-        view.getUsernameField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        view.getEmailField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
+        view.getUsernameField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackUsername(view.getUsernameField(), view.getUsernameFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        view.getEmailField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackEmail(view.getEmailField(), view.getEmailFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        view.getPasswordField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackPassword(view.getPasswordField(), view.getPasswordFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        view.getConfirmPasswordField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackConfirmPassword(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), newVal, view.getPasswordField().getText());
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        // Nascondere feedback quando il campo è valido e perde il focus
+        view.getUsernameField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), "username", "");
+            }
+        });
+
+        view.getEmailField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), "email", "");
+            }
+        });
+
+        view.getPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), "password", "");
+            }
+        });
+
+        view.getConfirmPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), "confirmPassword", view.getPasswordField().getText());
+            }
+        });
+
         view.getNomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCognomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        view.getPasswordField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        view.getConfirmPasswordField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCodiceUnivocoField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
     }
 
     private void setupListeners(RegistratiCliente2View view) {
-        view.getUsernameField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        view.getEmailField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
+        view.getUsernameField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackUsername(view.getUsernameField(), view.getUsernameFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        view.getEmailField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackEmail(view.getEmailField(), view.getEmailFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        view.getPasswordField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackPassword(view.getPasswordField(), view.getPasswordFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        view.getConfirmPasswordField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackConfirmPassword(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), newVal, view.getPasswordField().getText());
+            aggiornaStatoRegistratiButton(view);
+        });
+
+        // Nascondere feedback quando il campo è valido e perde il focus
+        view.getUsernameField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), "username", "");
+            }
+        });
+
+        view.getEmailField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), "email", "");
+            }
+        });
+
+        view.getPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), "password", "");
+            }
+        });
+
+        view.getConfirmPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (!isFocused) {
+                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), "confirmPassword", view.getPasswordField().getText());
+            }
+        });
         view.getNomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCognomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        view.getPasswordField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        view.getConfirmPasswordField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCodiceUnivocoField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
     }
 

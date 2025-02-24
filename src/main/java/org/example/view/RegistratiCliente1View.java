@@ -17,6 +17,10 @@ public class RegistratiCliente1View {
     private final TextField codiceUnivocoField;
     private final Button registratiButton;
     private final Label statusLabel;
+    private final Label emailFeedback;
+    private final Label passwordFeedback;
+    private final Label confirmPasswordFeedback;
+
 
     public RegistratiCliente1View() {
         root = new VBox(10);
@@ -27,9 +31,16 @@ public class RegistratiCliente1View {
 
         usernameFeedback = new Label();
         usernameFeedback.setStyle("-fx-text-fill: red;");
+        usernameFeedback.setVisible(false);
+        usernameFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
 
         emailField = new TextField();
         emailField.setPromptText("Inserisci email");
+
+        emailFeedback = new Label();
+        emailFeedback.setStyle("-fx-text-fill: red;");
+        emailFeedback.setVisible(false);
+        emailFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
 
         nomeField = new TextField();
         nomeField.setPromptText("Inserisci nome");
@@ -40,8 +51,18 @@ public class RegistratiCliente1View {
         passwordField = new PasswordField();
         passwordField.setPromptText("Inserisci password");
 
+        passwordFeedback = new Label();
+        passwordFeedback.setStyle("-fx-text-fill: red;");
+        passwordFeedback.setVisible(false);
+        passwordFeedback.setManaged(false);
+
         confirmPasswordField = new PasswordField();
         confirmPasswordField.setPromptText("Conferma password");
+
+        confirmPasswordFeedback = new Label();
+        confirmPasswordFeedback.setStyle("-fx-text-fill: red;");
+        confirmPasswordFeedback.setVisible(false);
+        confirmPasswordFeedback.setManaged(false);
 
         codiceUnivocoField = new TextField();
         codiceUnivocoField.setPromptText("Inserisci codice univoco");
@@ -50,8 +71,8 @@ public class RegistratiCliente1View {
         registratiButton.setDisable(true);
 
         root.getChildren().addAll(
-                statusLabel, usernameField, usernameFeedback, emailField, nomeField, cognomeField,
-                passwordField, confirmPasswordField, codiceUnivocoField, registratiButton
+                statusLabel, usernameField, usernameFeedback, emailField, emailFeedback, nomeField, cognomeField,
+                passwordField, passwordFeedback, confirmPasswordField, confirmPasswordFeedback, codiceUnivocoField, registratiButton
         );
 
         scrollPane = new ScrollPane(root);
@@ -102,4 +123,17 @@ public class RegistratiCliente1View {
     public void setRegistratiButtonEnabled(boolean enabled) {
         registratiButton.setDisable(!enabled);
     }
+
+    public Label getEmailFeedback() {
+        return emailFeedback;
+    }
+
+    public Label getPasswordFeedback() {
+        return passwordFeedback;
+    }
+
+    public Label getConfirmPasswordFeedback() {
+        return confirmPasswordFeedback;
+    }
+
 }

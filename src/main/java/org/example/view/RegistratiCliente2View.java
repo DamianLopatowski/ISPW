@@ -19,6 +19,10 @@ public class RegistratiCliente2View {
     private final Button indietroButton;
     private final Button registratiButton;
     private final Label statusLabel;
+    private final Label emailFeedback;
+    private final Label passwordFeedback;
+    private final Label confirmPasswordFeedback;
+
 
     private int step = 1;
 
@@ -30,13 +34,32 @@ public class RegistratiCliente2View {
 
         usernameFeedback = new Label();
         usernameFeedback.setStyle("-fx-text-fill: red;");
+        usernameFeedback.setVisible(false);
+        usernameFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
 
         usernameField = new TextField();
+
         emailField = new TextField();
+        emailFeedback = new Label();
+        emailFeedback.setStyle("-fx-text-fill: red;");
+        emailFeedback.setVisible(false);
+        emailFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
+
         nomeField = new TextField();
         cognomeField = new TextField();
+
         passwordField = new PasswordField();
+        passwordFeedback = new Label();
+        passwordFeedback.setStyle("-fx-text-fill: red;");
+        passwordFeedback.setVisible(false);
+        passwordFeedback.setManaged(false);
+
         confirmPasswordField = new PasswordField();
+        confirmPasswordFeedback = new Label();
+        confirmPasswordFeedback.setStyle("-fx-text-fill: red;");
+        confirmPasswordFeedback.setVisible(false);
+        confirmPasswordFeedback.setManaged(false);
+
         codiceUnivocoField = new TextField();
         codiceUnivocoField.setPromptText("Inserisci codice univoco");
 
@@ -69,6 +92,7 @@ public class RegistratiCliente2View {
                         creaInput("Username:", usernameField),
                         usernameFeedback,
                         creaInput("Email:", emailField),
+                        emailFeedback,
                         creaNavigazione());
                 break;
             case 2:
@@ -85,7 +109,9 @@ public class RegistratiCliente2View {
                 root.getChildren().addAll(
                         statusLabel,
                         creaInput("Password:", passwordField),
+                        passwordFeedback,
                         creaInput("Conferma Password:", confirmPasswordField),
+                        confirmPasswordFeedback,
                         creaInput("Codice Univoco:", codiceUnivocoField),
                         creaNavigazioneFinale()
                 );
@@ -143,4 +169,17 @@ public class RegistratiCliente2View {
     public Button getRegistratiButton() {
         return registratiButton;
     }
+
+    public Label getEmailFeedback() {
+        return emailFeedback;
+    }
+
+    public Label getPasswordFeedback() {
+        return passwordFeedback;
+    }
+
+    public Label getConfirmPasswordFeedback() {
+        return confirmPasswordFeedback;
+    }
+
 }
