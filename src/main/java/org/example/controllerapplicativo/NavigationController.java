@@ -58,7 +58,7 @@ public class NavigationController implements NavigationService {
         // 🔹 Carichiamo il codice univoco dal file di configurazione
         String codiceUnivoco = caricaCodiceUnivoco();
 
-        RegistratiClienteController registratiClienteController = new RegistratiClienteController(stage, clienteDAO, this, codiceUnivoco, isInterfaccia1);
+        RegistratiClienteController registratiClienteController = new RegistratiClienteController(clienteDAO, this, codiceUnivoco, isInterfaccia1);
         Parent registrazioneView = registratiClienteController.getView();
 
         if (registrazioneView != null) {
@@ -77,7 +77,6 @@ public class NavigationController implements NavigationService {
         try (FileInputStream fis = new FileInputStream(CONFIG_FILE_PATH)) {
             properties.load(fis);
             String codice = properties.getProperty("codiceUnivoco", "DEFAULT-CODE");
-            LOGGER.info("✅ Codice Univoco caricato da config.properties: " + codice);
             return codice;
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "❌ Errore nel caricamento del codice univoco!", e);

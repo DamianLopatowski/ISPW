@@ -5,7 +5,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import org.example.dao.ClienteDAO;
 import org.example.service.RegistrazioneException;
 import org.example.service.RegistrazioneService;
@@ -17,8 +16,13 @@ public class RegistratiClienteController {
     private final Object view;
     private final RegistrazioneService registrazioneService;
     private final NavigationService navigationService;
+    private static final String BORDER_GREEN = "-fx-border-color: green; -fx-border-width: 2px;";
+    private static final String TEXT_GREEN = "-fx-text-fill: green;";
+    private static final String BORDER_RED = "-fx-border-color: red; -fx-border-width: 2px;";
+    private static final String TEXT_RED = "-fx-text-fill: red;";
 
-    public RegistratiClienteController(Stage stage, ClienteDAO clienteDAO, NavigationService navigationService, String codiceUnivoco, boolean isInterfaccia1) {
+
+    public RegistratiClienteController(ClienteDAO clienteDAO, NavigationService navigationService, String codiceUnivoco, boolean isInterfaccia1) {
         this.registrazioneService = new RegistrazioneService(clienteDAO, codiceUnivoco);
         this.navigationService = navigationService;
 
@@ -46,13 +50,13 @@ public class RegistratiClienteController {
             feedbackLabel.setVisible(true);
 
             if (registrazioneService.isUsernameValid(username)) {
-                usernameField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                usernameField.setStyle(BORDER_GREEN);
                 feedbackLabel.setText("✔ Username valido");
-                feedbackLabel.setStyle("-fx-text-fill: green;");
+                feedbackLabel.setStyle(TEXT_GREEN);
             } else {
-                usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                usernameField.setStyle(BORDER_RED);
                 feedbackLabel.setText("❌ Lo username deve avere almeno 8 caratteri");
-                feedbackLabel.setStyle("-fx-text-fill: red;");
+                feedbackLabel.setStyle(TEXT_RED);
             }
         }
     }
@@ -72,6 +76,11 @@ public class RegistratiClienteController {
                 break;
             case "confirmPassword":
                 isValid = field.getText().trim().equals(password);
+                break;
+            default:
+                // Se il fieldType non è riconosciuto, logghiamo un warning e lo consideriamo non valido
+                System.err.println("⚠ Warning: Tipo di campo non riconosciuto - " + fieldType);
+                isValid = false;
                 break;
         }
 
@@ -96,13 +105,13 @@ public class RegistratiClienteController {
             feedbackLabel.setVisible(true);
 
             if (registrazioneService.isEmailValid(email)) {
-                emailField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                emailField.setStyle(BORDER_GREEN);
                 feedbackLabel.setText("✔ Email valida");
-                feedbackLabel.setStyle("-fx-text-fill: green;");
+                feedbackLabel.setStyle(TEXT_GREEN);
             } else {
-                emailField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                emailField.setStyle(BORDER_RED);
                 feedbackLabel.setText("❌ L'email non è valida");
-                feedbackLabel.setStyle("-fx-text-fill: red;");
+                feedbackLabel.setStyle(TEXT_RED);
             }
         }
     }
@@ -118,13 +127,13 @@ public class RegistratiClienteController {
             feedbackLabel.setVisible(true);
 
             if (registrazioneService.isPasswordValid(password)) {
-                passwordField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                passwordField.setStyle(BORDER_GREEN);
                 feedbackLabel.setText("✔ Password valida");
-                feedbackLabel.setStyle("-fx-text-fill: green;");
+                feedbackLabel.setStyle(TEXT_GREEN);
             } else {
-                passwordField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                passwordField.setStyle(BORDER_RED);
                 feedbackLabel.setText("❌ La password non rispetta i requisiti");
-                feedbackLabel.setStyle("-fx-text-fill: red;");
+                feedbackLabel.setStyle(TEXT_RED);
             }
         }
     }
@@ -140,13 +149,13 @@ public class RegistratiClienteController {
             feedbackLabel.setVisible(true);
 
             if (confirmPassword.equals(password)) {
-                confirmPasswordField.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                confirmPasswordField.setStyle(BORDER_GREEN);
                 feedbackLabel.setText("✔ Conferma corretta");
-                feedbackLabel.setStyle("-fx-text-fill: green;");
+                feedbackLabel.setStyle(TEXT_GREEN);
             } else {
-                confirmPasswordField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                confirmPasswordField.setStyle(BORDER_RED);
                 feedbackLabel.setText("❌ Le password non corrispondono");
-                feedbackLabel.setStyle("-fx-text-fill: red;");
+                feedbackLabel.setStyle(TEXT_RED);
             }
         }
     }

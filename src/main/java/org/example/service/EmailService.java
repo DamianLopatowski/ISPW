@@ -58,7 +58,7 @@ public class EmailService {
             message.setFrom(new InternetAddress(emailSender));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject("Conferma Registrazione");
-            message.setText(String.format("Ciao %s,\n\nGrazie per esserti registrato con successo!", username));
+            message.setText(String.format("Ciao %s,%n%nGrazie per esserti registrato con successo!", username));
 
             Transport.send(message);
 
