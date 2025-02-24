@@ -20,6 +20,11 @@ public class RegistratiClienteController {
     private static final String TEXT_GREEN = "-fx-text-fill: green;";
     private static final String BORDER_RED = "-fx-border-color: red; -fx-border-width: 2px;";
     private static final String TEXT_RED = "-fx-text-fill: red;";
+    private static final String FIELD_USERNAME = "username";
+    private static final String FIELD_EMAIL = "email";
+    private static final String FIELD_PASSWORD = "password";
+    private static final String FIELD_CONFIRM_PASSWORD = "confirmPassword";
+
 
 
     public RegistratiClienteController(ClienteDAO clienteDAO, NavigationService navigationService, String codiceUnivoco, boolean isInterfaccia1) {
@@ -65,16 +70,16 @@ public class RegistratiClienteController {
         boolean isValid = false;
 
         switch (fieldType) {
-            case "username":
+            case FIELD_USERNAME:
                 isValid = registrazioneService.isUsernameValid(field.getText().trim());
                 break;
-            case "email":
+            case FIELD_EMAIL:
                 isValid = registrazioneService.isEmailValid(field.getText().trim());
                 break;
-            case "password":
+            case FIELD_PASSWORD:
                 isValid = registrazioneService.isPasswordValid(field.getText().trim());
                 break;
-            case "confirmPassword":
+            case FIELD_CONFIRM_PASSWORD:
                 isValid = field.getText().trim().equals(password);
                 break;
             default:
@@ -185,26 +190,26 @@ public class RegistratiClienteController {
 
         // Nascondere feedback quando il campo è valido e perde il focus
         view.getUsernameField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), "username", "");
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), FIELD_USERNAME, "");
             }
         });
 
         view.getEmailField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), "email", "");
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), FIELD_EMAIL, "");
             }
         });
 
         view.getPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), "password", "");
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), FIELD_PASSWORD, "");
             }
         });
 
         view.getConfirmPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), "confirmPassword", view.getPasswordField().getText());
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), FIELD_CONFIRM_PASSWORD, view.getPasswordField().getText());
             }
         });
 
@@ -236,26 +241,26 @@ public class RegistratiClienteController {
 
         // Nascondere feedback quando il campo è valido e perde il focus
         view.getUsernameField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), "username", "");
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), FIELD_USERNAME, "");
             }
         });
 
         view.getEmailField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), "email", "");
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), FIELD_EMAIL, "");
             }
         });
 
         view.getPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), "password", "");
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), FIELD_PASSWORD, "");
             }
         });
 
         view.getConfirmPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!isFocused) {
-                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), "confirmPassword", view.getPasswordField().getText());
+            if (!Boolean.TRUE.equals(isFocused)) {
+                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), FIELD_CONFIRM_PASSWORD, view.getPasswordField().getText());
             }
         });
         view.getNomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));

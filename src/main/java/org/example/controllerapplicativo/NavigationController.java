@@ -76,8 +76,7 @@ public class NavigationController implements NavigationService {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream(CONFIG_FILE_PATH)) {
             properties.load(fis);
-            String codice = properties.getProperty("codiceUnivoco", "DEFAULT-CODE");
-            return codice;
+            return properties.getProperty("codiceUnivoco", "DEFAULT-CODE");
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "❌ Errore nel caricamento del codice univoco!", e);
             return "DEFAULT-CODE"; // Valore di fallback

@@ -22,6 +22,7 @@ public class RegistratiCliente2View {
     private final Label emailFeedback;
     private final Label passwordFeedback;
     private final Label confirmPasswordFeedback;
+    private static final String TEXT_RED = "-fx-text-fill: red;";
 
 
     private int step = 1;
@@ -33,7 +34,7 @@ public class RegistratiCliente2View {
         statusLabel = new Label("Registrazione Cliente Online - Passo 1");
 
         usernameFeedback = new Label();
-        usernameFeedback.setStyle("-fx-text-fill: red;");
+        usernameFeedback.setStyle(TEXT_RED);
         usernameFeedback.setVisible(false);
         usernameFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
 
@@ -41,7 +42,7 @@ public class RegistratiCliente2View {
 
         emailField = new TextField();
         emailFeedback = new Label();
-        emailFeedback.setStyle("-fx-text-fill: red;");
+        emailFeedback.setStyle(TEXT_RED);
         emailFeedback.setVisible(false);
         emailFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
 
@@ -50,13 +51,13 @@ public class RegistratiCliente2View {
 
         passwordField = new PasswordField();
         passwordFeedback = new Label();
-        passwordFeedback.setStyle("-fx-text-fill: red;");
+        passwordFeedback.setStyle(TEXT_RED);
         passwordFeedback.setVisible(false);
         passwordFeedback.setManaged(false);
 
         confirmPasswordField = new PasswordField();
         confirmPasswordFeedback = new Label();
-        confirmPasswordFeedback.setStyle("-fx-text-fill: red;");
+        confirmPasswordFeedback.setStyle(TEXT_RED);
         confirmPasswordFeedback.setVisible(false);
         confirmPasswordFeedback.setManaged(false);
 

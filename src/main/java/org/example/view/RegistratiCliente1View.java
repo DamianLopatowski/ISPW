@@ -20,6 +20,8 @@ public class RegistratiCliente1View {
     private final Label emailFeedback;
     private final Label passwordFeedback;
     private final Label confirmPasswordFeedback;
+    private static final String TEXT_RED = "-fx-text-fill: red;";
+
 
 
     public RegistratiCliente1View() {
@@ -30,7 +32,7 @@ public class RegistratiCliente1View {
         usernameField.setPromptText("Inserisci username");
 
         usernameFeedback = new Label();
-        usernameFeedback.setStyle("-fx-text-fill: red;");
+        usernameFeedback.setStyle(TEXT_RED);
         usernameFeedback.setVisible(false);
         usernameFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
 
@@ -38,7 +40,7 @@ public class RegistratiCliente1View {
         emailField.setPromptText("Inserisci email");
 
         emailFeedback = new Label();
-        emailFeedback.setStyle("-fx-text-fill: red;");
+        emailFeedback.setStyle(TEXT_RED);
         emailFeedback.setVisible(false);
         emailFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
 
@@ -52,7 +54,7 @@ public class RegistratiCliente1View {
         passwordField.setPromptText("Inserisci password");
 
         passwordFeedback = new Label();
-        passwordFeedback.setStyle("-fx-text-fill: red;");
+        passwordFeedback.setStyle(TEXT_RED);
         passwordFeedback.setVisible(false);
         passwordFeedback.setManaged(false);
 
@@ -60,7 +62,7 @@ public class RegistratiCliente1View {
         confirmPasswordField.setPromptText("Conferma password");
 
         confirmPasswordFeedback = new Label();
-        confirmPasswordFeedback.setStyle("-fx-text-fill: red;");
+        confirmPasswordFeedback.setStyle(TEXT_RED);
         confirmPasswordFeedback.setVisible(false);
         confirmPasswordFeedback.setManaged(false);
 
