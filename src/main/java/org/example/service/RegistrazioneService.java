@@ -73,15 +73,23 @@ public class RegistrazioneService {
             throw new RegistrazioneException("Hai superato il numero massimo di tentativi per il codice univoco.");
         }
 
+        // Controllo se lo username o l'email esistono già
+        if (clienteDAO.findByUsername(username) != null) {
+            throw new RegistrazioneException("Lo username è già in uso. Scegli un altro username.");
+        }
+        if (clienteDAO.findByEmail(email) != null) {
+            throw new RegistrazioneException("L'email è già registrata. Usa un'altra email.");
+        }
+
         Cliente nuovoCliente = new Cliente(username, nome, cognome, password, email);
 
         try {
-            clienteDAO.saveCliente(nuovoCliente); // Se il metodo è void, non serve l'if
+            clienteDAO.saveCliente(nuovoCliente);
         } catch (Exception e) {
             throw new RegistrazioneException("Errore durante la registrazione del cliente: " + e.getMessage());
         }
 
         LOGGER.log(Level.INFO, "Cliente registrato con successo: {0}", username);
-        resetTentativiErrati(); // Resetta i tentativi errati dopo una registrazione riuscita
+        resetTentativiErrati();
     }
 }

@@ -78,6 +78,37 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
+    public Cliente findByEmail(String email) {
+        String emailPulita = email.trim().toLowerCase();
+
+        if (isOnlineMode) {
+            LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE tramite email: {0}", emailPulita);
+            try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "SELECT username, nome, cognome, password, email FROM usercliente WHERE LOWER(email) = ?"
+                 )) {
+                stmt.setString(1, emailPulita);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"), rs.getString("password"), rs.getString("email"));
+                }
+            } catch (SQLException e) {
+                LOGGER.severe("❌ Errore nella ricerca del cliente per email: " + e.getMessage());
+            }
+        } else {
+            LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM tramite email: {0}", emailPulita);
+            for (Cliente cliente : clientiOffline.values()) {
+                if (cliente.getEmail().equalsIgnoreCase(emailPulita)) {
+                    LOGGER.log(Level.INFO, "✅ Cliente trovato in RAM: {0}", emailPulita);
+                    return cliente;
+                }
+            }
+            LOGGER.log(Level.WARNING, "❌ Cliente NON trovato in RAM per email: {0}", emailPulita);
+        }
+        return null;
+    }
+
+    @Override
     public Cliente findByUsername(String username) {
 
         if (isOnlineMode) {  // ✅ Controlliamo la modalità scelta all'inizio!
