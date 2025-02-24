@@ -4,9 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import org.example.controllergrafici.RegistratiClienteController;
 
 public class RegistratiCliente2View {
     private final VBox root;
@@ -22,20 +19,17 @@ public class RegistratiCliente2View {
     private final Button indietroButton;
     private final Button registratiButton;
     private final Label statusLabel;
-    private final Stage stage;
 
     private int step = 1;
 
-    public RegistratiCliente2View(Stage stage, RegistratiClienteController controller) {
-        this.stage = stage;
+    public RegistratiCliente2View() {
         root = new VBox(15);
         root.setAlignment(Pos.CENTER);
 
         statusLabel = new Label("Registrazione Cliente Online - Passo 1");
 
-        // Label per il feedback (inizialmente invisibile)
         usernameFeedback = new Label();
-        usernameFeedback.setTextFill(Color.RED);
+        usernameFeedback.setStyle("-fx-text-fill: red;");
 
         usernameField = new TextField();
         emailField = new TextField();
@@ -52,9 +46,6 @@ public class RegistratiCliente2View {
 
         registratiButton.setDisable(true);
 
-        // 👉 Chiamata alla validazione dello username tramite Controller (MVC)
-        controller.aggiungiValidazioneUsername(usernameField, usernameFeedback, root);
-
         avantiButton.setOnAction(e -> mostraStep(step + 1));
         indietroButton.setOnAction(e -> mostraStep(step - 1));
 
@@ -62,22 +53,22 @@ public class RegistratiCliente2View {
     }
 
     private void mostraStep(int newStep) {
-        if (newStep < 1 || newStep > 3) return; // Impedisce step non validi
+        if (newStep < 1 || newStep > 3) return;
 
         root.getChildren().clear();
         step = newStep;
 
-        indietroButton.setDisable(step == 1); // Disabilita "Indietro" solo al primo step
-        avantiButton.setDisable(step == 3); // Disabilita "Avanti" solo nell'ultimo step
+        indietroButton.setDisable(step == 1);
+        avantiButton.setDisable(step == 3);
 
         switch (step) {
             case 1:
-                statusLabel.setText("Passo 1: Inserisci il tuo Username e l email");
+                statusLabel.setText("Passo 1: Inserisci il tuo Username e l'email");
                 root.getChildren().addAll(
                         statusLabel,
                         creaInput("Username:", usernameField),
                         usernameFeedback,
-                        creaInput("email:", emailField),
+                        creaInput("Email:", emailField),
                         creaNavigazione());
                 break;
             case 2:
@@ -98,10 +89,6 @@ public class RegistratiCliente2View {
                         creaInput("Codice Univoco:", codiceUnivocoField),
                         creaNavigazioneFinale()
                 );
-                break;
-            default:
-                statusLabel.setText("Errore: Passo non valido");
-                root.getChildren().addAll(statusLabel, creaNavigazione());
                 break;
         }
     }
@@ -131,6 +118,9 @@ public class RegistratiCliente2View {
     }
     public TextField getUsernameField() {
         return usernameField;
+    }
+    public Label getUsernameFeedback() {
+        return usernameFeedback;
     }
     public TextField getEmailField() {
         return emailField;

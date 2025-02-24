@@ -3,15 +3,12 @@ package org.example.view;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
-import javafx.stage.Stage;
-import javafx.scene.paint.Color;
-import org.example.controllergrafici.RegistratiClienteController;
 
 public class RegistratiCliente1View {
     private final ScrollPane scrollPane;
     private final VBox root;
     private final TextField usernameField;
-    private Label usernameFeedback; // Non lo aggiungiamo inizialmente
+    private final Label usernameFeedback;
     private final TextField emailField;
     private final TextField nomeField;
     private final TextField cognomeField;
@@ -20,10 +17,8 @@ public class RegistratiCliente1View {
     private final TextField codiceUnivocoField;
     private final Button registratiButton;
     private final Label statusLabel;
-    private final Stage stage;
 
-    public RegistratiCliente1View(Stage stage, RegistratiClienteController controller) {
-        this.stage = stage;
+    public RegistratiCliente1View() {
         root = new VBox(10);
         statusLabel = new Label("Registrazione Cliente Offline");
 
@@ -31,7 +26,7 @@ public class RegistratiCliente1View {
         usernameField.setPromptText("Inserisci username");
 
         usernameFeedback = new Label();
-        usernameFeedback.setTextFill(Color.RED);
+        usernameFeedback.setStyle("-fx-text-fill: red;");
 
         emailField = new TextField();
         emailField.setPromptText("Inserisci email");
@@ -54,35 +49,26 @@ public class RegistratiCliente1View {
         registratiButton = new Button("Registrati");
         registratiButton.setDisable(true);
 
-        controller.aggiungiValidazioneUsername(usernameField, usernameFeedback, root);
-
         root.getChildren().addAll(
-                statusLabel, usernameField, emailField, nomeField, cognomeField,
+                statusLabel, usernameField, usernameFeedback, emailField, nomeField, cognomeField,
                 passwordField, confirmPasswordField, codiceUnivocoField, registratiButton
         );
 
-        scrollPane = new ScrollPane();
-        scrollPane.setContent(root);
+        scrollPane = new ScrollPane(root);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(false);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-        // ➡ Aggiungiamo i listener per aggiornare il bottone
-        usernameField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
-        emailField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
-        nomeField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
-        cognomeField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
-        passwordField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
-        confirmPasswordField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
-        codiceUnivocoField.textProperty().addListener((obs, oldValue, newValue) -> controller.aggiornaStatoRegistratiButton(this));
     }
+
     public ScrollPane getRoot() {
         return scrollPane;
     }
 
     public TextField getUsernameField() {
         return usernameField;
+    }
+
+    public Label getUsernameFeedback() {
+        return usernameFeedback;
     }
 
     public TextField getEmailField() {
@@ -111,5 +97,9 @@ public class RegistratiCliente1View {
 
     public Button getRegistratiButton() {
         return registratiButton;
+    }
+
+    public void setRegistratiButtonEnabled(boolean enabled) {
+        registratiButton.setDisable(!enabled);
     }
 }

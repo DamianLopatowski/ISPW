@@ -1,6 +1,7 @@
 org\example\exception\DatabaseConfigurationException.class
 org\example\view\Login2View.class
 org\example\view\Gestione1View.class
+org\example\service\RegistrazioneService.class
 org\example\controllergrafici\LoginController.class
 org\example\controllerapplicativo\NavigationController.class
 org\example\view\RegistratiCliente2View.class
@@ -18,6 +19,7 @@ org\example\view\View.class
 org\example\dao\ClienteDAO.class
 org\example\view\Login1View.class
 org\example\controllerapplicativo\SessionController.class
+org\example\service\RegistrazioneException.class
 org\example\model\Cliente.class
 org\example\view\NegozioView.class
 org\example\dao\ClienteDAOImpl.class

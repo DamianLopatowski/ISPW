@@ -11,12 +11,18 @@ import org.example.dao.ClienteDAOImpl;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
 import org.example.view.*;
+
+import java.io.FileInputStream;
+import java.util.Properties;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class NavigationController implements NavigationService {
     private static final Logger LOGGER = Logger.getLogger(NavigationController.class.getName());
     private final Stage stage;
+    private static final String CONFIG_FILE_PATH = "config.properties";
 
     public NavigationController(Stage stage) {
         this.stage = stage;
@@ -50,8 +56,11 @@ public class NavigationController implements NavigationService {
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
         ClienteDAOImpl clienteDAO = new ClienteDAOImpl(isOnlineMode);
 
-        RegistratiClienteController registratiClienteController = new RegistratiClienteController(stage, clienteDAO, this, isInterfaccia1);
-        Parent registrazioneView = registratiClienteController.getViewRoot();
+        // 🔹 Carichiamo il codice univoco dal file di configurazione
+        String codiceUnivoco = caricaCodiceUnivoco();
+
+        RegistratiClienteController registratiClienteController = new RegistratiClienteController(stage, clienteDAO, this, codiceUnivoco, isInterfaccia1);
+        Parent registrazioneView = registratiClienteController.getView();
 
         if (registrazioneView != null) {
             stage.setScene(new Scene(registrazioneView, 400, 300));
@@ -62,6 +71,21 @@ public class NavigationController implements NavigationService {
         }
         return registrazioneView;
     }
+
+    // 🔹 Metodo per caricare il codice univoco da config.properties
+    private String caricaCodiceUnivoco() {
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(CONFIG_FILE_PATH)) {
+            properties.load(fis);
+            String codice = properties.getProperty("codiceUnivoco", "DEFAULT-CODE");
+            LOGGER.info("✅ Codice Univoco caricato da config.properties: " + codice);
+            return codice;
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "❌ Errore nel caricamento del codice univoco!", e);
+            return "DEFAULT-CODE"; // Valore di fallback
+        }
+    }
+
     @Override
     public void navigateToMainView() {
         LOGGER.info("🔄 Creazione di una NUOVA istanza di View per il logout...");
