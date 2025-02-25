@@ -41,10 +41,11 @@ public class ClienteDAOImpl implements ClienteDAO {
         String emailPulita = cliente.getEmail().trim().toLowerCase();
         String usernameOriginale = cliente.getUsername().trim();
         String passwordOriginale = cliente.getPassword().trim();
+        String partitaIvaPulita = cliente.getPartitaIva().trim();
 
         if (isOnlineMode) {
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                 PreparedStatement stmt = conn.prepareStatement("INSERT INTO usercliente (username, nome, cognome, password, email) VALUES (?, ?, ?, ?, ?)")) {
+                 PreparedStatement stmt = conn.prepareStatement("INSERT INTO usercliente (username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
                 LOGGER.log(Level.INFO, "🔄 Tentativo di salvataggio cliente nel DATABASE: {0}", usernameOriginale);
 
@@ -53,6 +54,11 @@ public class ClienteDAOImpl implements ClienteDAO {
                 stmt.setString(3, cliente.getCognome());
                 stmt.setString(4, passwordOriginale);
                 stmt.setString(5, emailPulita);
+                stmt.setString(6, partitaIvaPulita);
+                stmt.setString(7, cliente.getIndirizzo());
+                stmt.setString(8, cliente.getCivico());
+                stmt.setString(9, cliente.getCap());
+                stmt.setString(10, cliente.getCitta());
 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
@@ -85,12 +91,13 @@ public class ClienteDAOImpl implements ClienteDAO {
             LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE tramite email: {0}", emailPulita);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement(
-                         "SELECT username, nome, cognome, password, email FROM usercliente WHERE LOWER(email) = ?"
+                         "SELECT username, nome, cognome, password, email, partitaiva FROM usercliente WHERE LOWER(email) = ?"
                  )) {
                 stmt.setString(1, emailPulita);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"), rs.getString("password"), rs.getString("email"));
+                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"), rs.getString("password"), rs.getString("email"), rs.getString("partitaiva"),
+                            rs.getString("indirizzo"), rs.getString("civico"), rs.getString("cap"), rs.getString("citta"));
                 }
             } catch (SQLException e) {
                 LOGGER.severe("❌ Errore nella ricerca del cliente per email: " + e.getMessage());
@@ -120,7 +127,8 @@ public class ClienteDAOImpl implements ClienteDAO {
                 stmt.setString(1, username);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"), rs.getString("password"), rs.getString("email"));
+                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"), rs.getString("password"), rs.getString("email"), rs.getString("partitaiva"),
+                            rs.getString("indirizzo"), rs.getString("civico"), rs.getString("cap"), rs.getString("citta"));
                 }
             } catch (SQLException e) {
                 LOGGER.severe("❌ Errore nella ricerca del cliente: " + e.getMessage());

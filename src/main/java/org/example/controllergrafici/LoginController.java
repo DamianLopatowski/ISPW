@@ -48,7 +48,7 @@ public class LoginController {
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
             loginButton = loginView.getLoginButton();
-            statusLabel = new Label("Login Online");
+            statusLabel = new Label("Login");
 
             // Non serve "Avanti" per Login2View, si inserisce tutto subito
         }

@@ -12,6 +12,8 @@ public class RegistratiCliente1View {
     private final TextField emailField;
     private final TextField nomeField;
     private final TextField cognomeField;
+    private final TextField partitaIvaField;
+    private final Label partitaIvaFeedback;
     private final PasswordField passwordField;
     private final PasswordField confirmPasswordField;
     private final TextField codiceUnivocoField;
@@ -20,13 +22,17 @@ public class RegistratiCliente1View {
     private final Label emailFeedback;
     private final Label passwordFeedback;
     private final Label confirmPasswordFeedback;
+    private final TextField indirizzoField;
+    private final Label indirizzoFeedback;
+    private final TextField civicoField;
+    private final TextField capField;
+    private final Label capFeedback;
+    private final TextField cittaField;
     private static final String TEXT_RED = "-fx-text-fill: red;";
-
-
 
     public RegistratiCliente1View() {
         root = new VBox(10);
-        statusLabel = new Label("Registrazione Cliente Offline");
+        statusLabel = new Label("Registrazione Cliente");
 
         usernameField = new TextField();
         usernameField.setPromptText("Inserisci username");
@@ -50,6 +56,14 @@ public class RegistratiCliente1View {
         cognomeField = new TextField();
         cognomeField.setPromptText("Inserisci cognome");
 
+        partitaIvaField = new TextField();
+        partitaIvaField.setPromptText("Inserisci Partita IVA");
+
+        partitaIvaFeedback = new Label();
+        partitaIvaFeedback.setStyle(TEXT_RED);
+        partitaIvaFeedback.setVisible(false);
+        partitaIvaFeedback.setManaged(false);
+
         passwordField = new PasswordField();
         passwordField.setPromptText("Inserisci password");
 
@@ -66,6 +80,28 @@ public class RegistratiCliente1View {
         confirmPasswordFeedback.setVisible(false);
         confirmPasswordFeedback.setManaged(false);
 
+        indirizzoField = new TextField();
+        indirizzoField.setPromptText("Inserisci Indirizzo (Via/Piazza...)");
+
+        indirizzoFeedback = new Label();
+        indirizzoFeedback.setStyle(TEXT_RED);
+        indirizzoFeedback.setVisible(false);
+        indirizzoFeedback.setManaged(false);
+
+        civicoField = new TextField();
+        civicoField.setPromptText("Inserisci Numero Civico");
+
+        capField = new TextField();
+        capField.setPromptText("Inserisci CAP");
+
+        capFeedback = new Label();
+        capFeedback.setStyle(TEXT_RED);
+        capFeedback.setVisible(false);
+        capFeedback.setManaged(false);
+
+        cittaField = new TextField();
+        cittaField.setPromptText("Inserisci Città");
+
         codiceUnivocoField = new TextField();
         codiceUnivocoField.setPromptText("Inserisci codice univoco");
 
@@ -73,8 +109,9 @@ public class RegistratiCliente1View {
         registratiButton.setDisable(true);
 
         root.getChildren().addAll(
-                statusLabel, usernameField, usernameFeedback, emailField, emailFeedback, nomeField, cognomeField,
-                passwordField, passwordFeedback, confirmPasswordField, confirmPasswordFeedback, codiceUnivocoField, registratiButton
+                statusLabel, usernameField, usernameFeedback, emailField, emailFeedback, nomeField, cognomeField, partitaIvaField, partitaIvaFeedback,
+                passwordField, passwordFeedback, confirmPasswordField, confirmPasswordFeedback, indirizzoField, indirizzoFeedback, civicoField, capField,
+                capFeedback, cittaField, codiceUnivocoField, registratiButton
         );
 
         scrollPane = new ScrollPane(root);
@@ -122,8 +159,12 @@ public class RegistratiCliente1View {
         return registratiButton;
     }
 
-    public void setRegistratiButtonEnabled(boolean enabled) {
-        registratiButton.setDisable(!enabled);
+    public TextField getPartitaIvaField() {
+        return partitaIvaField;
+    }
+
+    public Label getPartitaIvaFeedback() {
+        return partitaIvaFeedback;
     }
 
     public Label getEmailFeedback() {
@@ -137,5 +178,22 @@ public class RegistratiCliente1View {
     public Label getConfirmPasswordFeedback() {
         return confirmPasswordFeedback;
     }
-
+    public TextField getIndirizzoField() {
+        return indirizzoField;
+    }
+    public Label getIndirizzoFeedback() {
+        return indirizzoFeedback;
+    }
+    public TextField getCivicoField() {
+        return civicoField;
+    }
+    public TextField getCapField() {
+        return capField;
+    }
+    public Label getCapFeedback() {
+        return capFeedback;
+    }
+    public TextField getCittaField() {
+        return cittaField;
+    }
 }

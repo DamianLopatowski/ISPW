@@ -11,8 +11,6 @@ import org.example.service.RegistrazioneService;
 import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;
 import org.example.view.RegistratiCliente2View;
-
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RegistratiClienteController {
@@ -24,10 +22,6 @@ public class RegistratiClienteController {
     private static final String TEXT_GREEN = "-fx-text-fill: green;";
     private static final String BORDER_RED = "-fx-border-color: red; -fx-border-width: 2px;";
     private static final String TEXT_RED = "-fx-text-fill: red;";
-    private static final String FIELD_USERNAME = "username";
-    private static final String FIELD_EMAIL = "email";
-    private static final String FIELD_PASSWORD = "password";
-    private static final String FIELD_CONFIRM_PASSWORD = "confirmPassword";
 
 
 
@@ -70,36 +64,46 @@ public class RegistratiClienteController {
         }
     }
 
-    private void nascondiFeedbackSeValido(TextField field, Label feedbackLabel, String fieldType, String password) {
-        boolean isValid = false;
+    private void aggiornaFeedbackIndirizzo(TextField indirizzoField, Label feedbackLabel, String indirizzo) {
+        if (indirizzo.isEmpty()) {
+            feedbackLabel.setVisible(false);
+            feedbackLabel.setManaged(false);
+        } else {
+            feedbackLabel.setManaged(true);
+            feedbackLabel.setVisible(true);
 
-        switch (fieldType) {
-            case FIELD_USERNAME:
-                isValid = registrazioneService.isUsernameValid(field.getText().trim());
-                break;
-            case FIELD_EMAIL:
-                isValid = registrazioneService.isEmailValid(field.getText().trim());
-                break;
-            case FIELD_PASSWORD:
-                isValid = registrazioneService.isPasswordValid(field.getText().trim());
-                break;
-            case FIELD_CONFIRM_PASSWORD:
-                isValid = field.getText().trim().equals(password);
-                break;
-            default:
-                // Se il fieldType non è riconosciuto, logghiamo un warning e lo consideriamo non valido
-                LOGGER.log(Level.WARNING, "⚠ Warning: Tipo di campo non riconosciuto - {0}", fieldType);
-                isValid = false;
-                break;
+            if (registrazioneService.isIndirizzoValid(indirizzo)) {
+                indirizzoField.setStyle(BORDER_GREEN);
+                feedbackLabel.setText("✔ Indirizzo valido");
+                feedbackLabel.setStyle(TEXT_GREEN);
+            } else {
+                indirizzoField.setStyle(BORDER_RED);
+                feedbackLabel.setText("❌ L'indirizzo deve iniziare con 'Via' o 'Piazza'");
+                feedbackLabel.setStyle(TEXT_RED);
+            }
         }
+    }
 
-        if (isValid) {
+
+    private void aggiornaFeedbackPartitaIva(TextField partitaIvaField, Label feedbackLabel, String partitaIva) {
+        if (partitaIva.isEmpty()) {
+            partitaIvaField.setStyle(""); // Reset stile
             feedbackLabel.setText("");
             feedbackLabel.setVisible(false);
             feedbackLabel.setManaged(false);
         } else {
-            feedbackLabel.setVisible(true);
             feedbackLabel.setManaged(true);
+            feedbackLabel.setVisible(true);
+
+            if (registrazioneService.isPartitaIvaValid(partitaIva)) {
+                partitaIvaField.setStyle(BORDER_GREEN);
+                feedbackLabel.setText("✔ Partita IVA valida");
+                feedbackLabel.setStyle(TEXT_GREEN);
+            } else {
+                partitaIvaField.setStyle(BORDER_RED);
+                feedbackLabel.setText("❌ La Partita IVA deve contenere 11 cifre numeriche");
+                feedbackLabel.setStyle(TEXT_RED);
+            }
         }
     }
 
@@ -124,6 +128,29 @@ public class RegistratiClienteController {
             }
         }
     }
+
+    private void aggiornaFeedbackCap(TextField capField, Label feedbackLabel, String cap) {
+        if (cap.isEmpty()) {
+            capField.setStyle(""); // Reset stile
+            feedbackLabel.setText("");
+            feedbackLabel.setVisible(false);
+            feedbackLabel.setManaged(false);
+        } else {
+            feedbackLabel.setManaged(true);
+            feedbackLabel.setVisible(true);
+
+            if (registrazioneService.isCapValid(cap)) {
+                capField.setStyle(BORDER_GREEN);
+                feedbackLabel.setText("✔ CAP valido");
+                feedbackLabel.setStyle(TEXT_GREEN);
+            } else {
+                capField.setStyle(BORDER_RED);
+                feedbackLabel.setText("❌ Il CAP deve contenere esattamente 5 cifre numeriche");
+                feedbackLabel.setStyle(TEXT_RED);
+            }
+        }
+    }
+
 
     private void aggiornaFeedbackPassword(PasswordField passwordField, Label feedbackLabel, String password) {
         if (password.isEmpty()) {
@@ -177,6 +204,11 @@ public class RegistratiClienteController {
             aggiornaStatoRegistratiButton(view);
         });
 
+        view.getPartitaIvaField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackPartitaIva(view.getPartitaIvaField(), view.getPartitaIvaFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
         view.getEmailField().textProperty().addListener((obs, oldVal, newVal) -> {
             aggiornaFeedbackEmail(view.getEmailField(), view.getEmailFeedback(), newVal);
             aggiornaStatoRegistratiButton(view);
@@ -191,32 +223,17 @@ public class RegistratiClienteController {
             aggiornaFeedbackConfirmPassword(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), newVal, view.getPasswordField().getText());
             aggiornaStatoRegistratiButton(view);
         });
-
-        // Nascondere feedback quando il campo è valido e perde il focus
-        view.getUsernameField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), FIELD_USERNAME, "");
-            }
+        view.getIndirizzoField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackIndirizzo(view.getIndirizzoField(), view.getIndirizzoFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+        view.getCapField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackCap(view.getCapField(), view.getCapFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
         });
 
-        view.getEmailField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), FIELD_EMAIL, "");
-            }
-        });
-
-        view.getPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), FIELD_PASSWORD, "");
-            }
-        });
-
-        view.getConfirmPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), FIELD_CONFIRM_PASSWORD, view.getPasswordField().getText());
-            }
-        });
-
+        view.getCivicoField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
+        view.getCittaField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getNomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCognomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCodiceUnivocoField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
@@ -228,6 +245,12 @@ public class RegistratiClienteController {
             aggiornaStatoRegistratiButton(view);
         });
 
+        view.getPartitaIvaField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackPartitaIva(view.getPartitaIvaField(), view.getPartitaIvaFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+
+
         view.getEmailField().textProperty().addListener((obs, oldVal, newVal) -> {
             aggiornaFeedbackEmail(view.getEmailField(), view.getEmailFeedback(), newVal);
             aggiornaStatoRegistratiButton(view);
@@ -242,31 +265,17 @@ public class RegistratiClienteController {
             aggiornaFeedbackConfirmPassword(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), newVal, view.getPasswordField().getText());
             aggiornaStatoRegistratiButton(view);
         });
-
-        // Nascondere feedback quando il campo è valido e perde il focus
-        view.getUsernameField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getUsernameField(), view.getUsernameFeedback(), FIELD_USERNAME, "");
-            }
+        view.getIndirizzoField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackIndirizzo(view.getIndirizzoField(), view.getIndirizzoFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
+        });
+        view.getCapField().textProperty().addListener((obs, oldVal, newVal) -> {
+            aggiornaFeedbackCap(view.getCapField(), view.getCapFeedback(), newVal);
+            aggiornaStatoRegistratiButton(view);
         });
 
-        view.getEmailField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getEmailField(), view.getEmailFeedback(), FIELD_EMAIL, "");
-            }
-        });
-
-        view.getPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getPasswordField(), view.getPasswordFeedback(), FIELD_PASSWORD, "");
-            }
-        });
-
-        view.getConfirmPasswordField().focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (!Boolean.TRUE.equals(isFocused)) {
-                nascondiFeedbackSeValido(view.getConfirmPasswordField(), view.getConfirmPasswordFeedback(), FIELD_CONFIRM_PASSWORD, view.getPasswordField().getText());
-            }
-        });
+        view.getCivicoField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
+        view.getCittaField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getNomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCognomeField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
         view.getCodiceUnivocoField().textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
@@ -281,6 +290,11 @@ public class RegistratiClienteController {
         String password;
         String codiceUnivocoInserito;
         String email;
+        String partitaIva;
+        String indirizzo;
+        String civico;
+        String cap;
+        String citta;
 
         if (view instanceof RegistratiCliente1View) {
             RegistratiCliente1View v = (RegistratiCliente1View) view;
@@ -290,6 +304,11 @@ public class RegistratiClienteController {
             password = v.getPasswordField().getText().trim();
             codiceUnivocoInserito = v.getCodiceUnivocoField().getText().trim();
             email = v.getEmailField().getText().trim();
+            partitaIva = v.getPartitaIvaField().getText().trim();
+            indirizzo = v.getIndirizzoField().getText().trim();
+            civico = v.getCivicoField().getText().trim();
+            cap = v.getCapField().getText().trim();
+            citta = v.getCittaField().getText().trim();
         } else {
             RegistratiCliente2View v = (RegistratiCliente2View) view;
             username = v.getUsernameField().getText().trim();
@@ -298,6 +317,11 @@ public class RegistratiClienteController {
             password = v.getPasswordField().getText().trim();
             codiceUnivocoInserito = v.getCodiceUnivocoField().getText().trim();
             email = v.getEmailField().getText().trim();
+            partitaIva = v.getPartitaIvaField().getText().trim();
+            indirizzo = v.getIndirizzoField().getText().trim();
+            civico = v.getCivicoField().getText().trim();
+            cap = v.getCapField().getText().trim();
+            citta = v.getCittaField().getText().trim();
         }
 
         try {
@@ -309,7 +333,7 @@ public class RegistratiClienteController {
                 return;
             }
 
-            registrazioneService.registraCliente(username, nome, cognome, password, email);
+            registrazioneService.registraCliente(username, nome, cognome, password, email, partitaIva, indirizzo, civico, cap, citta);
             mostraMessaggioSuccesso("Cliente registrato con successo!");
 
             // Navigazione al login dopo registrazione
@@ -329,8 +353,13 @@ public class RegistratiClienteController {
                     !v.getEmailField().getText().trim().isEmpty() &&
                     !v.getNomeField().getText().trim().isEmpty() &&
                     !v.getCognomeField().getText().trim().isEmpty() &&
+                    !v.getPartitaIvaField().getText().trim().isEmpty() &&
                     !v.getPasswordField().getText().trim().isEmpty() &&
                     !v.getConfirmPasswordField().getText().trim().isEmpty() &&
+                    !v.getIndirizzoField().getText().trim().isEmpty() &&
+                    !v.getCivicoField().getText().trim().isEmpty() &&
+                    !v.getCapField().getText().trim().isEmpty() &&
+                    !v.getCittaField().getText().trim().isEmpty() &&
                     !v.getCodiceUnivocoField().getText().trim().isEmpty();
             v.getRegistratiButton().setDisable(!isFilled);
         } else if (view instanceof RegistratiCliente2View) {
@@ -339,8 +368,13 @@ public class RegistratiClienteController {
                     !v.getEmailField().getText().trim().isEmpty() &&
                     !v.getNomeField().getText().trim().isEmpty() &&
                     !v.getCognomeField().getText().trim().isEmpty() &&
+                    !v.getPartitaIvaField().getText().trim().isEmpty() &&
                     !v.getPasswordField().getText().trim().isEmpty() &&
                     !v.getConfirmPasswordField().getText().trim().isEmpty() &&
+                    !v.getIndirizzoField().getText().trim().isEmpty() &&
+                    !v.getCivicoField().getText().trim().isEmpty() &&
+                    !v.getCapField().getText().trim().isEmpty() &&
+                    !v.getCittaField().getText().trim().isEmpty() &&
                     !v.getCodiceUnivocoField().getText().trim().isEmpty();
             v.getRegistratiButton().setDisable(!isFilled);
         }

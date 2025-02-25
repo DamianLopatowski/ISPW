@@ -12,6 +12,7 @@ public class RegistratiCliente2View {
     private final TextField emailField;
     private final TextField nomeField;
     private final TextField cognomeField;
+    private final TextField partitaIvaField;
     private final PasswordField passwordField;
     private final PasswordField confirmPasswordField;
     private final TextField codiceUnivocoField;
@@ -19,9 +20,16 @@ public class RegistratiCliente2View {
     private final Button indietroButton;
     private final Button registratiButton;
     private final Label statusLabel;
+    private final Label partitaIvaFeedback;
     private final Label emailFeedback;
     private final Label passwordFeedback;
     private final Label confirmPasswordFeedback;
+    private final TextField indirizzoField;
+    private final Label indirizzoFeedback;
+    private final TextField civicoField;
+    private final TextField capField;
+    private final Label capFeedback;
+    private final TextField cittaField;
     private static final String TEXT_RED = "-fx-text-fill: red;";
 
 
@@ -31,7 +39,7 @@ public class RegistratiCliente2View {
         root = new VBox(15);
         root.setAlignment(Pos.CENTER);
 
-        statusLabel = new Label("Registrazione Cliente Online - Passo 1");
+        statusLabel = new Label("Registrazione Cliente - Passo 1");
 
         usernameFeedback = new Label();
         usernameFeedback.setStyle(TEXT_RED);
@@ -49,6 +57,28 @@ public class RegistratiCliente2View {
         nomeField = new TextField();
         cognomeField = new TextField();
 
+        partitaIvaField = new TextField();
+        partitaIvaFeedback = new Label();
+        partitaIvaFeedback.setStyle(TEXT_RED);
+        partitaIvaFeedback.setVisible(false);
+        partitaIvaFeedback.setManaged(false);
+
+        indirizzoField = new TextField();
+        indirizzoFeedback = new Label();
+        indirizzoFeedback.setStyle(TEXT_RED);
+        indirizzoFeedback.setVisible(false);
+        indirizzoFeedback.setManaged(false);
+
+        civicoField = new TextField();
+
+        capField = new TextField();
+        capFeedback = new Label();
+        capFeedback.setStyle(TEXT_RED);
+        capFeedback.setVisible(false);
+        capFeedback.setManaged(false);
+
+        cittaField = new TextField();
+
         passwordField = new PasswordField();
         passwordFeedback = new Label();
         passwordFeedback.setStyle(TEXT_RED);
@@ -62,7 +92,6 @@ public class RegistratiCliente2View {
         confirmPasswordFeedback.setManaged(false);
 
         codiceUnivocoField = new TextField();
-        codiceUnivocoField.setPromptText("Inserisci codice univoco");
 
         avantiButton = new Button("Avanti");
         indietroButton = new Button("Indietro");
@@ -102,10 +131,26 @@ public class RegistratiCliente2View {
                         statusLabel,
                         creaInput("Nome:", nomeField),
                         creaInput("Cognome:", cognomeField),
+                        creaInput("Partita Iva:", partitaIvaField),
+                        partitaIvaFeedback,
                         creaNavigazione()
                 );
                 break;
             case 3:
+                statusLabel.setText("Passo 3: Inserisci Indirizzo");
+                root.getChildren().addAll(
+                        statusLabel,
+                        creaInput("Indirizzo:", indirizzoField),
+                        indirizzoFeedback,
+                        creaInput("Civico:", civicoField),
+                        creaInput("CAP:", capField),
+                        capFeedback,
+                        creaInput("Città:", cittaField),
+                        creaNavigazione()
+                );
+                break;
+
+            case 4:
                 statusLabel.setText("Passo 3: Scegli una Password e inserisci il codice univoco");
                 root.getChildren().addAll(
                         statusLabel,
@@ -153,6 +198,12 @@ public class RegistratiCliente2View {
     public Label getUsernameFeedback() {
         return usernameFeedback;
     }
+    public TextField getPartitaIvaField() {
+        return partitaIvaField;
+    }
+    public Label getPartitaIvaFeedback() {
+        return partitaIvaFeedback;
+    }
     public TextField getEmailField() {
         return emailField;
     }
@@ -168,6 +219,25 @@ public class RegistratiCliente2View {
     public PasswordField getConfirmPasswordField() {
         return confirmPasswordField;
     }
+    public TextField getIndirizzoField() {
+        return indirizzoField;
+    }
+    public Label getIndirizzoFeedback() {
+        return indirizzoFeedback;
+    }
+    public TextField getCivicoField() {
+        return civicoField;
+    }
+    public TextField getCapField() {
+        return capField;
+    }
+    public Label getCapFeedback() {
+        return capFeedback;
+    }
+    public TextField getCittaField() {
+        return cittaField;
+    }
+
     public TextField getCodiceUnivocoField() {
         return codiceUnivocoField;
     }

@@ -14,12 +14,12 @@ public class Login1View {
 
     public Login1View() { // ✅ Aggiunto il costruttore
         root = new VBox(15);
-        statusLabel = new Label("Inserisci l'admin:");
+        statusLabel = new Label("Inserisci dati:");
         usernameField = new TextField();
         avantiButton = new Button("Avanti");
         passwordField = new PasswordField();
         passwordField.setPromptText("Inserisci la password");
-        loginButton = new Button("Login Offline");
+        loginButton = new Button("Login");
 
         passwordField.setVisible(false);
         loginButton.setVisible(false);

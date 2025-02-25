@@ -11,7 +11,10 @@ public class RegistrazioneService {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
-
+    private static final Pattern PARTITA_IVA_PATTERN = Pattern.compile("^\\d{11}$");
+    private static final Pattern INDIRIZZO_PATTERN = Pattern.compile("^(Via|Piazza|piazza|via)\\s+.+$");
+    private static final Pattern CIVICO_PATTERN = Pattern.compile("^[0-9A-Za-z]{1,10}$");
+    private static final Pattern CAP_PATTERN = Pattern.compile("^\\d{5}$");
     private final ClienteDAO clienteDAO;
     private final String codiceUnivoco;
     private int tentativiErrati = 0;
@@ -27,6 +30,9 @@ public class RegistrazioneService {
     public boolean isUsernameValid(String username) {
         return username.length() >= 8;
     }
+    public boolean isPartitaIvaValid(String partitaIva) {
+        return PARTITA_IVA_PATTERN.matcher(partitaIva).matches();
+    }
 
     public boolean isEmailValid(String email) {
         return EMAIL_PATTERN.matcher(email).matches();
@@ -34,6 +40,17 @@ public class RegistrazioneService {
 
     public boolean isPasswordValid(String password) {
         return PASSWORD_PATTERN.matcher(password).matches();
+    }
+    public boolean isIndirizzoValid(String indirizzo) {
+        return INDIRIZZO_PATTERN.matcher(indirizzo).matches();
+    }
+
+    public boolean isCivicoValid(String civico) {
+        return CIVICO_PATTERN.matcher(civico).matches();
+    }
+
+    public boolean isCapValid(String cap) {
+        return CAP_PATTERN.matcher(cap).matches();
     }
 
     public boolean isCodiceUnivocoValido(String codice) {
@@ -59,7 +76,7 @@ public class RegistrazioneService {
         tentativiErrati = 0;
     }
 
-    public void registraCliente(String username, String nome, String cognome, String password, String email) throws RegistrazioneException {
+    public void registraCliente(String username, String nome, String cognome, String password, String email, String partitaIva,String indirizzo, String civico, String cap, String citta) throws RegistrazioneException {
         if (!isUsernameValid(username)) {
             throw new RegistrazioneException("Lo username deve essere di almeno 8 caratteri.");
         }
@@ -72,6 +89,18 @@ public class RegistrazioneService {
         if (isBloccatoPerTroppiTentativi()) {
             throw new RegistrazioneException("Hai superato il numero massimo di tentativi per il codice univoco.");
         }
+        if (!isPartitaIvaValid(partitaIva)) {
+            throw new RegistrazioneException("La Partita IVA non è valida. Deve contenere 11 cifre.");
+        }
+        if (!isIndirizzoValid(indirizzo)) {
+            throw new RegistrazioneException("❌ L'indirizzo deve iniziare con 'Via' o 'Piazza'!");
+        }
+        if (!isCivicoValid(civico)) {
+            throw new RegistrazioneException("❌ Numero civico non valido!");
+        }
+        if (!isCapValid(cap)) {
+            throw new RegistrazioneException("❌ Il CAP deve essere di 5 cifre!");
+        }
 
         // Controllo se lo username o l'email esistono già
         if (clienteDAO.findByUsername(username) != null) {
@@ -81,7 +110,7 @@ public class RegistrazioneService {
             throw new RegistrazioneException("L'email è già registrata. Usa un'altra email.");
         }
 
-        Cliente nuovoCliente = new Cliente(username, nome, cognome, password, email);
+        Cliente nuovoCliente = new Cliente(username, nome, cognome, password, email, partitaIva, indirizzo, civico, cap, citta);
 
         try {
             clienteDAO.saveCliente(nuovoCliente);
