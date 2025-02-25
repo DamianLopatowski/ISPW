@@ -76,65 +76,58 @@ public class RegistrazioneService {
         tentativiErrati = 0;
     }
 
-    public void registraCliente(String username, String nome, String cognome, String password, String email,
-                                String partitaIva, String indirizzo, String civico, String cap, String citta)
-            throws RegistrazioneException {
-        if (!isUsernameValid(username)) {
-            throw new RegistrazioneException("Lo username deve essere di almeno 8 caratteri.");
+    public void registraCliente(Cliente cliente) throws RegistrazioneException {
+
+        LOGGER.log(Level.INFO, "📢 Avvio registrazione cliente: {0}", cliente.getUsername());
+
+        // ✅ Validazione dei dati di input
+        if (!isUsernameValid(cliente.getUsername())) {
+            throw new RegistrazioneException("❌ Lo username deve essere di almeno 8 caratteri.");
         }
-        if (!isEmailValid(email)) {
-            throw new RegistrazioneException("L'email non è valida.");
+        if (!isEmailValid(cliente.getEmail())) {
+            throw new RegistrazioneException("❌ L'email non è valida.");
         }
-        if (!isPasswordValid(password)) {
-            throw new RegistrazioneException("La password non rispetta i requisiti di sicurezza.");
+        if (!isPasswordValid(cliente.getPassword())) {
+            throw new RegistrazioneException("❌ La password non rispetta i requisiti di sicurezza.");
         }
         if (isBloccatoPerTroppiTentativi()) {
-            throw new RegistrazioneException("Hai superato il numero massimo di tentativi per il codice univoco.");
+            throw new RegistrazioneException("❌ Hai superato il numero massimo di tentativi per il codice univoco.");
         }
-        if (!isPartitaIvaValid(partitaIva)) {
-            throw new RegistrazioneException("La Partita IVA deve contenere 11 cifre.");
+        if (!isPartitaIvaValid(cliente.getPartitaIva())) {
+            throw new RegistrazioneException("❌ La Partita IVA deve contenere 11 cifre.");
         }
-        if (!isIndirizzoValid(indirizzo)) {
+        if (!isIndirizzoValid(cliente.getIndirizzo())) {
             throw new RegistrazioneException("❌ L'indirizzo deve iniziare con 'Via' o 'Piazza'!");
         }
-        if (!isCivicoValid(civico)) {
+        if (!isCivicoValid(cliente.getCivico())) {
             throw new RegistrazioneException("❌ Numero civico non valido!");
         }
-        if (!isCapValid(cap)) {
+        if (!isCapValid(cliente.getCap())) {
             throw new RegistrazioneException("❌ Il CAP deve essere di 5 cifre!");
         }
 
-        // Controllo se lo username o l'email esistono già
-        if (clienteDAO.findByUsername(username) != null) {
-            throw new RegistrazioneException("Lo username è già in uso. Scegli un altro username.");
+        // ✅ Controllo se lo username o l'email sono già registrati
+        if (clienteDAO.findByUsername(cliente.getUsername()) != null) {
+            throw new RegistrazioneException("❌ Lo username è già in uso. Scegli un altro username.");
         }
-        if (clienteDAO.findByEmail(email) != null) {
-            throw new RegistrazioneException("L'email è già registrata. Usa un'altra email.");
+        if (clienteDAO.findByEmail(cliente.getEmail()) != null) {
+            throw new RegistrazioneException("❌ L'email è già registrata. Usa un'altra email.");
         }
-
-        Cliente nuovoCliente = new Cliente.Builder()
-                .username(username)
-                .nome(nome)
-                .cognome(cognome)
-                .password(password)
-                .email(email)
-                .partitaIva(partitaIva)
-                .indirizzo(indirizzo)
-                .civico(civico)
-                .cap(cap)
-                .citta(citta)
-                .build();
 
         try {
-            clienteDAO.saveCliente(nuovoCliente);
-            LOGGER.log(Level.INFO, "✅ Cliente registrato con successo: {0}", username);
+            // ✅ Salvataggio nel database o in RAM
+            clienteDAO.saveCliente(cliente);
+            LOGGER.log(Level.INFO, "✅ Cliente registrato con successo: {0}", cliente.getUsername());
 
-            // 🔹 Invia email di conferma
-            EmailService.sendConfirmationEmail(email, username);
+            // ✅ Invio dell'email di conferma
+            EmailService.sendConfirmationEmail(cliente.getEmail(), cliente.getUsername());
+
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "❌ Errore durante la registrazione del cliente: {0}", e.getMessage());
             throw new RegistrazioneException("Errore durante la registrazione del cliente: " + e.getMessage());
         }
 
+        // ✅ Reset dei tentativi di inserimento del codice univoco
         resetTentativiErrati();
     }
 }

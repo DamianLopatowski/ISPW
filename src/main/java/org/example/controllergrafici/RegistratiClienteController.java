@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.example.dao.ClienteDAO;
+import org.example.model.Cliente;
 import org.example.service.RegistrazioneException;
 import org.example.service.RegistrazioneService;
 import org.example.service.NavigationService;
@@ -219,7 +220,21 @@ public class RegistratiClienteController {
                 return;
             }
 
-            registrazioneService.registraCliente(username, nome, cognome, password, email, partitaIva, indirizzo, civico, cap, citta);
+            Cliente cliente = new Cliente.Builder()
+                    .username(username)
+                    .nome(nome)
+                    .cognome(cognome)
+                    .password(password)
+                    .email(email)
+                    .partitaIva(partitaIva)
+                    .indirizzo(indirizzo)
+                    .civico(civico)
+                    .cap(cap)
+                    .citta(citta)
+                    .build();
+
+            registrazioneService.registraCliente(cliente);
+
             mostraMessaggioSuccesso("Cliente registrato con successo!");
 
             // Navigazione al login dopo registrazione
