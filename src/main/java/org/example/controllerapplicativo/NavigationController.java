@@ -52,24 +52,33 @@ public class NavigationController implements NavigationService {
     }
     @Override
     public Parent navigateToRegistrazioneCliente(boolean isInterfaccia1) {
+        // ✅ Acquisiamo la modalità online una volta SOLA e la passiamo
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
+
+        // ✅ Stampa di debug per verificare il valore corretto
+        LOGGER.info("🟢 Modalità selezionata: " + (isOnlineMode ? "ONLINE" : "OFFLINE") + " | Interfaccia: " + (isInterfaccia1 ? "1" : "2"));
+
+        // ✅ Creiamo il DAO con la modalità corretta
         ClienteDAOImpl clienteDAO = new ClienteDAOImpl(isOnlineMode);
 
-        // 🔹 Carichiamo il codice univoco dal file di configurazione
+        // ✅ Carichiamo il codice univoco dal file di configurazione
         String codiceUnivoco = caricaCodiceUnivoco();
 
+        // ✅ Creiamo il controller della registrazione con le scelte separate
         RegistratiClienteController registratiClienteController = new RegistratiClienteController(clienteDAO, this, codiceUnivoco, isInterfaccia1);
         Parent registrazioneView = registratiClienteController.getView();
 
         if (registrazioneView != null) {
             stage.setScene(new Scene(registrazioneView, 400, 300));
             stage.setTitle("Registrazione Cliente");
-            LOGGER.log(Level.INFO, "🔄 Navigazione alla registrazione cliente {0}", isInterfaccia1 ? "Offline" : "Online");
+            LOGGER.log(Level.INFO, "🔄 Navigazione alla registrazione cliente - Modalità: {0} | Interfaccia: {1}",
+                    new Object[]{isOnlineMode ? "Online" : "Offline", isInterfaccia1 ? "1" : "2"});
         } else {
             LOGGER.warning("❌ Errore: registrazioneView è NULL!");
         }
         return registrazioneView;
     }
+
 
     // 🔹 Metodo per caricare il codice univoco da config.properties
     private String caricaCodiceUnivoco() {

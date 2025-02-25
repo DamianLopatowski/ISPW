@@ -85,63 +85,56 @@ public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
     public Cliente findByEmail(String email) {
-        String emailPulita = email.trim().toLowerCase();
-
         if (isOnlineMode) {
-            LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE tramite email: {0}", emailPulita);
+            LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE tramite email: {0}", email);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement(
-                         "SELECT username, nome, cognome, password, email, partitaiva FROM usercliente WHERE LOWER(email) = ?"
-                 )) {
-                stmt.setString(1, emailPulita);
+                         "SELECT username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta " +
+                                 "FROM usercliente WHERE LOWER(email) = ?")) {
+                stmt.setString(1, email.toLowerCase());
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"), rs.getString("password"), rs.getString("email"), rs.getString("partitaiva"),
+                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"),
+                            rs.getString("password"), rs.getString("email"), rs.getString("partita_iva"),
                             rs.getString("indirizzo"), rs.getString("civico"), rs.getString("cap"), rs.getString("citta"));
                 }
             } catch (SQLException e) {
                 LOGGER.severe("❌ Errore nella ricerca del cliente per email: " + e.getMessage());
+                return null;
             }
         } else {
-            LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM tramite email: {0}", emailPulita);
+            LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM tramite email: {0}", email);
             for (Cliente cliente : clientiOffline.values()) {
-                if (cliente.getEmail().equalsIgnoreCase(emailPulita)) {
-                    LOGGER.log(Level.INFO, "✅ Cliente trovato in RAM: {0}", emailPulita);
+                if (cliente.getEmail().equalsIgnoreCase(email)) {
                     return cliente;
                 }
             }
-            LOGGER.log(Level.WARNING, "❌ Cliente NON trovato in RAM per email: {0}", emailPulita);
         }
         return null;
     }
 
     @Override
     public Cliente findByUsername(String username) {
-
-        if (isOnlineMode) {  // ✅ Controlliamo la modalità scelta all'inizio!
+        if (isOnlineMode) {
             LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE: {0}", username);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement(
-                         "SELECT username, nome, cognome, password, email FROM usercliente WHERE LOWER(username) = ?"
-                 )){
-                stmt.setString(1, username);
+                         "SELECT username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta " +
+                                 "FROM usercliente WHERE LOWER(username) = ?")) {
+                stmt.setString(1, username.toLowerCase());
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"), rs.getString("password"), rs.getString("email"), rs.getString("partitaiva"),
+                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"),
+                            rs.getString("password"), rs.getString("email"), rs.getString("partita_iva"),
                             rs.getString("indirizzo"), rs.getString("civico"), rs.getString("cap"), rs.getString("citta"));
                 }
             } catch (SQLException e) {
-                LOGGER.severe("❌ Errore nella ricerca del cliente: " + e.getMessage());
+                LOGGER.severe("❌ Errore nella ricerca del cliente per username: " + e.getMessage());
+                return null; // ✅ Ritorna null per evitare il fallimento della verifica
             }
         } else {
             LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM (OFFLINE): {0}", username);
-            Cliente cliente = clientiOffline.get(username);
-            if (cliente != null) {
-                LOGGER.log(Level.INFO, "✅ Cliente trovato in RAM: {0}", username);
-            } else {
-                LOGGER.log(Level.WARNING, "❌ Cliente NON trovato in RAM: {0}", username);
-            }
-            return cliente;
+            return clientiOffline.get(username);
         }
         return null;
     }

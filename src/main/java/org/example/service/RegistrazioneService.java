@@ -76,7 +76,9 @@ public class RegistrazioneService {
         tentativiErrati = 0;
     }
 
-    public void registraCliente(String username, String nome, String cognome, String password, String email, String partitaIva,String indirizzo, String civico, String cap, String citta) throws RegistrazioneException {
+    public void registraCliente(String username, String nome, String cognome, String password, String email,
+                                String partitaIva, String indirizzo, String civico, String cap, String citta)
+            throws RegistrazioneException {
         if (!isUsernameValid(username)) {
             throw new RegistrazioneException("Lo username deve essere di almeno 8 caratteri.");
         }
@@ -90,7 +92,7 @@ public class RegistrazioneService {
             throw new RegistrazioneException("Hai superato il numero massimo di tentativi per il codice univoco.");
         }
         if (!isPartitaIvaValid(partitaIva)) {
-            throw new RegistrazioneException("La Partita IVA non è valida. Deve contenere 11 cifre.");
+            throw new RegistrazioneException("La Partita IVA deve contenere 11 cifre.");
         }
         if (!isIndirizzoValid(indirizzo)) {
             throw new RegistrazioneException("❌ L'indirizzo deve iniziare con 'Via' o 'Piazza'!");
@@ -114,11 +116,14 @@ public class RegistrazioneService {
 
         try {
             clienteDAO.saveCliente(nuovoCliente);
+            LOGGER.log(Level.INFO, "✅ Cliente registrato con successo: {0}", username);
+
+            // 🔹 Invia email di conferma
+            EmailService.sendConfirmationEmail(email, username);
         } catch (Exception e) {
             throw new RegistrazioneException("Errore durante la registrazione del cliente: " + e.getMessage());
         }
 
-        LOGGER.log(Level.INFO, "Cliente registrato con successo: {0}", username);
         resetTentativiErrati();
     }
 }
