@@ -3,7 +3,6 @@ package org.example.controllergrafici;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.example.dao.ClienteDAO;
 import org.example.service.RegistrazioneException;
@@ -12,7 +11,8 @@ import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;
 import org.example.view.RegistratiCliente2View;
 
-import java.util.function.Function;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public class RegistratiClienteController {
@@ -21,7 +21,6 @@ public class RegistratiClienteController {
     private final RegistrazioneService registrazioneService;
     private final NavigationService navigationService;
     private static final String BORDER_GREEN = "-fx-border-color: green; -fx-border-width: 2px;";
-    private static final String TEXT_GREEN = "-fx-text-fill: green;";
     private static final String BORDER_RED = "-fx-border-color: red; -fx-border-width: 2px;";
     private static final String TEXT_RED = "-fx-text-fill: red;";
 
@@ -45,14 +44,15 @@ public class RegistratiClienteController {
     }
 
     private void aggiornaFeedbackCampo(TextField field, Label feedbackLabel, String valore,
-                                       Function<String, Boolean> validazione, String messaggioErrore) {
+                                       Predicate<String> validazione, String messaggioErrore)
+    {
         if (valore.isEmpty()) {
             field.setStyle(""); // Reset stile
             feedbackLabel.setText("");
             feedbackLabel.setVisible(false);
             feedbackLabel.setManaged(false);
         } else {
-            boolean isValid = validazione.apply(valore);
+            boolean isValid = validazione.test(valore);
 
             field.setStyle(isValid ? BORDER_GREEN : BORDER_RED);
             feedbackLabel.setText(isValid ? "" : "❌ " + messaggioErrore);
@@ -61,128 +61,110 @@ public class RegistratiClienteController {
             feedbackLabel.setManaged(!isValid);
         }
     }
+    private TextField getViewField(Object view, String methodName) {
+        try {
+            return (TextField) view.getClass().getMethod(methodName).invoke(view);
+        } catch (Exception e) {
+            LOGGER.warning("❌ Errore nell'accesso al campo: " + methodName);
+            return new TextField();
+        }
+    }
+
+    private Label getViewLabel(Object view, String methodName) {
+        try {
+            return (Label) view.getClass().getMethod(methodName).invoke(view);
+        } catch (Exception e) {
+            LOGGER.warning("❌ Errore nell'accesso al label: " + methodName);
+            return new Label();
+        }
+    }
+
 
     private void setupListeners(Object view) {
         if (!(view instanceof RegistratiCliente1View) && !(view instanceof RegistratiCliente2View)) {
             return;
         }
 
-        TextField usernameField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getUsernameField() :
-                ((RegistratiCliente2View) view).getUsernameField();
-        Label usernameFeedback = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getUsernameFeedback() :
-                ((RegistratiCliente2View) view).getUsernameFeedback();
+        // Inizializza i campi
+        TextField[] textFields = {
+                getViewField(view, "getUsernameField"),
+                getViewField(view, "getEmailField"),
+                getViewField(view, "getPartitaIvaField"),
+                getViewField(view, "getIndirizzoField"),
+                getViewField(view, "getCapField"),
+                getViewField(view, "getCivicoField"),
+                getViewField(view, "getCittaField"),
+                getViewField(view, "getPasswordField"),
+                getViewField(view, "getConfirmPasswordField"),
+                getViewField(view, "getNomeField"),
+                getViewField(view, "getCognomeField"),
+                getViewField(view, "getCodiceUnivocoField")
+        };
 
-        TextField emailField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getEmailField() :
-                ((RegistratiCliente2View) view).getEmailField();
-        Label emailFeedback = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getEmailFeedback() :
-                ((RegistratiCliente2View) view).getEmailFeedback();
+        Label[] feedbackLabels = {
+                getViewLabel(view, "getUsernameFeedback"),
+                getViewLabel(view, "getEmailFeedback"),
+                getViewLabel(view, "getPartitaIvaFeedback"),
+                getViewLabel(view, "getIndirizzoFeedback"),
+                getViewLabel(view, "getCapFeedback"),
+                null, // Il civico non ha feedback
+                null, // La città non ha feedback
+                getViewLabel(view, "getPasswordFeedback"),
+                getViewLabel(view, "getConfirmPasswordFeedback"),
+                null, // Nome non ha feedback
+                null, // Cognome non ha feedback
+                null  // Codice Univoco non ha feedback
+        };
 
-        TextField partitaIvaField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getPartitaIvaField() :
-                ((RegistratiCliente2View) view).getPartitaIvaField();
-        Label partitaIvaFeedback = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getPartitaIvaFeedback() :
-                ((RegistratiCliente2View) view).getPartitaIvaFeedback();
+        List<Predicate<String>> validators = List.of(
+                registrazioneService::isUsernameValid,
+                registrazioneService::isEmailValid,
+                registrazioneService::isPartitaIvaValid,
+                registrazioneService::isIndirizzoValid,
+                registrazioneService::isCapValid,
+                registrazioneService::isCivicoValid,
+                str -> !str.trim().isEmpty(), // Città obbligatoria
+                registrazioneService::isPasswordValid,
+                password -> password.equals(getViewField(view, "getPasswordField").getText()), // Conferma password
+                str -> !str.trim().isEmpty(), // Nome obbligatorio
+                str -> !str.trim().isEmpty(), // Cognome obbligatorio
+                str -> !str.trim().isEmpty()  // Codice Univoco obbligatorio
+        );
 
-        TextField indirizzoField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getIndirizzoField() :
-                ((RegistratiCliente2View) view).getIndirizzoField();
-        Label indirizzoFeedback = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getIndirizzoFeedback() :
-                ((RegistratiCliente2View) view).getIndirizzoFeedback();
 
-        TextField capField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getCapField() :
-                ((RegistratiCliente2View) view).getCapField();
-        Label capFeedback = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getCapFeedback() :
-                ((RegistratiCliente2View) view).getCapFeedback();
+        String[] errorMessages = {
+                "Lo username deve avere almeno 8 caratteri",
+                "L'email non è valida",
+                "La Partita IVA deve contenere 11 cifre numeriche",
+                "L'indirizzo deve iniziare con 'Via' o 'Piazza'",
+                "Il CAP deve contenere esattamente 5 cifre numeriche",
+                "Numero civico non valido!",
+                "Il campo Città è obbligatorio",
+                "La password non rispetta i requisiti",
+                "Le password non corrispondono",
+                "Il campo Nome è obbligatorio",
+                "Il campo Cognome è obbligatorio",
+                "Il Codice Univoco è obbligatorio"
+        };
 
-        TextField civicoField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getCivicoField() :
-                ((RegistratiCliente2View) view).getCivicoField();
-        TextField cittaField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getCittaField() :
-                ((RegistratiCliente2View) view).getCittaField();
-
-        PasswordField passwordField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getPasswordField() :
-                ((RegistratiCliente2View) view).getPasswordField();
-        Label passwordFeedback = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getPasswordFeedback() :
-                ((RegistratiCliente2View) view).getPasswordFeedback();
-
-        PasswordField confirmPasswordField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getConfirmPasswordField() :
-                ((RegistratiCliente2View) view).getConfirmPasswordField();
-        Label confirmPasswordFeedback = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getConfirmPasswordFeedback() :
-                ((RegistratiCliente2View) view).getConfirmPasswordFeedback();
-
-        TextField nomeField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getNomeField() :
-                ((RegistratiCliente2View) view).getNomeField();
-        TextField cognomeField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getCognomeField() :
-                ((RegistratiCliente2View) view).getCognomeField();
-        TextField codiceUnivocoField = (view instanceof RegistratiCliente1View) ?
-                ((RegistratiCliente1View) view).getCodiceUnivocoField() :
-                ((RegistratiCliente2View) view).getCodiceUnivocoField();
-
-        // Listener generico per i campi di testo con validazione
-        usernameField.textProperty().addListener((obs, oldVal, newVal) -> {
-            aggiornaFeedbackCampo(usernameField, usernameFeedback, newVal,
-                    registrazioneService::isUsernameValid, "Lo username deve avere almeno 8 caratteri");
-            aggiornaStatoRegistratiButton(view);
-        });
-
-        emailField.textProperty().addListener((obs, oldVal, newVal) -> {
-                aggiornaFeedbackCampo(emailField, emailFeedback, newVal,
-                        registrazioneService::isEmailValid, "L'email non è valida");
-            aggiornaStatoRegistratiButton(view);
-    });
-
-        partitaIvaField.textProperty().addListener((obs, oldVal, newVal) -> {
-                aggiornaFeedbackCampo(partitaIvaField, partitaIvaFeedback, newVal,
-                        registrazioneService::isPartitaIvaValid, "La Partita IVA deve contenere 11 cifre numeriche");
-            aggiornaStatoRegistratiButton(view);
-        });
-
-        indirizzoField.textProperty().addListener((obs, oldVal, newVal) -> {
-                aggiornaFeedbackCampo(indirizzoField, indirizzoFeedback, newVal,
-                        registrazioneService::isIndirizzoValid, "L'indirizzo deve iniziare con 'Via' o 'Piazza'");
-            aggiornaStatoRegistratiButton(view);
-        });
-
-        capField.textProperty().addListener((obs, oldVal, newVal) -> {
-                aggiornaFeedbackCampo(capField, capFeedback, newVal,
-                        registrazioneService::isCapValid, "Il CAP deve contenere esattamente 5 cifre numeriche");
-            aggiornaStatoRegistratiButton(view);
-        });
-
-        passwordField.textProperty().addListener((obs, oldVal, newVal) -> {
-                aggiornaFeedbackCampo(passwordField, passwordFeedback, newVal,
-                        registrazioneService::isPasswordValid, "La password non rispetta i requisiti");
-            aggiornaStatoRegistratiButton(view);
-        });
-
-        confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
-                aggiornaFeedbackCampo(confirmPasswordField, confirmPasswordFeedback, newVal,
-                        password -> password.equals(passwordField.getText()), "Le password non corrispondono");
-            aggiornaStatoRegistratiButton(view);
-        });
-
-        // Listener per aggiornare lo stato del pulsante "Registrati"
-        nomeField.textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        cognomeField.textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        codiceUnivocoField.textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        civicoField.textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
-        cittaField.textProperty().addListener((obs, oldVal, newVal) -> aggiornaStatoRegistratiButton(view));
+        // Applica i listener generici
+        for (int i = 0; i < textFields.length; i++) {
+            final int index = i;
+            textFields[i].textProperty().addListener((obs, oldVal, newVal) -> {
+                if (feedbackLabels[index] != null) {
+                    aggiornaFeedbackCampo(
+                            textFields[index],
+                            feedbackLabels[index],
+                            newVal,
+                            validators.get(index),  // ✅ Usa .get(index) per accedere alla lista
+                            errorMessages[index]
+                    );
+                }
+                aggiornaStatoRegistratiButton(view);
+            });
+        }
     }
+
 
 
     private void registraCliente(Object view) {

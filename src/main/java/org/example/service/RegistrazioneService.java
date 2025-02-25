@@ -112,7 +112,18 @@ public class RegistrazioneService {
             throw new RegistrazioneException("L'email è già registrata. Usa un'altra email.");
         }
 
-        Cliente nuovoCliente = new Cliente(username, nome, cognome, password, email, partitaIva, indirizzo, civico, cap, citta);
+        Cliente nuovoCliente = new Cliente.Builder()
+                .username(username)
+                .nome(nome)
+                .cognome(cognome)
+                .password(password)
+                .email(email)
+                .partitaIva(partitaIva)
+                .indirizzo(indirizzo)
+                .civico(civico)
+                .cap(cap)
+                .citta(citta)
+                .build();
 
         try {
             clienteDAO.saveCliente(nuovoCliente);

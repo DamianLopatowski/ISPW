@@ -56,7 +56,8 @@ public class NavigationController implements NavigationService {
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
 
         // ✅ Stampa di debug per verificare il valore corretto
-        LOGGER.info("🟢 Modalità selezionata: " + (isOnlineMode ? "ONLINE" : "OFFLINE") + " | Interfaccia: " + (isInterfaccia1 ? "1" : "2"));
+        LOGGER.log(Level.INFO, "🟢 Modalità selezionata: {0} | Interfaccia: {1}",
+                new Object[]{isOnlineMode ? "ONLINE" : "OFFLINE", isInterfaccia1 ? "1" : "2"});
 
         // ✅ Creiamo il DAO con la modalità corretta
         ClienteDAOImpl clienteDAO = new ClienteDAOImpl(isOnlineMode);

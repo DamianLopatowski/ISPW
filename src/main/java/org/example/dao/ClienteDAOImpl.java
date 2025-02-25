@@ -38,23 +38,20 @@ public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
     public void saveCliente(Cliente cliente) {
-        String emailPulita = cliente.getEmail().trim().toLowerCase();
-        String usernameOriginale = cliente.getUsername().trim();
-        String passwordOriginale = cliente.getPassword().trim();
-        String partitaIvaPulita = cliente.getPartitaIva().trim();
-
         if (isOnlineMode) {
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                 PreparedStatement stmt = conn.prepareStatement("INSERT INTO usercliente (username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "INSERT INTO usercliente (username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta) " +
+                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-                LOGGER.log(Level.INFO, "🔄 Tentativo di salvataggio cliente nel DATABASE: {0}", usernameOriginale);
+                LOGGER.log(Level.INFO, "🔄 Tentativo di salvataggio cliente nel DATABASE: {0}", cliente.getUsername());
 
-                stmt.setString(1, usernameOriginale);
+                stmt.setString(1, cliente.getUsername());
                 stmt.setString(2, cliente.getNome());
                 stmt.setString(3, cliente.getCognome());
-                stmt.setString(4, passwordOriginale);
-                stmt.setString(5, emailPulita);
-                stmt.setString(6, partitaIvaPulita);
+                stmt.setString(4, cliente.getPassword());
+                stmt.setString(5, cliente.getEmail());
+                stmt.setString(6, cliente.getPartitaIva());
                 stmt.setString(7, cliente.getIndirizzo());
                 stmt.setString(8, cliente.getCivico());
                 stmt.setString(9, cliente.getCap());
@@ -72,12 +69,12 @@ public class ClienteDAOImpl implements ClienteDAO {
                 LOGGER.severe("❌ Errore SQL nella registrazione del cliente: " + e.getMessage());
             }
         } else {
-            LOGGER.log(Level.INFO, "🔄 Salvataggio cliente in RAM (OFFLINE): {0}", usernameOriginale);
+            LOGGER.log(Level.INFO, "🔄 Salvataggio cliente in RAM (OFFLINE): {0}", cliente.getUsername());
 
-            if (clientiOffline.containsKey(usernameOriginale)) {
+            if (clientiOffline.containsKey(cliente.getUsername())) {
                 LOGGER.warning("❌ Cliente già esistente in RAM!");
             } else {
-                clientiOffline.put(usernameOriginale, cliente);
+                clientiOffline.put(cliente.getUsername(), cliente);
                 LOGGER.info("✅ Cliente registrato in RAM.");
             }
         }
@@ -94,13 +91,21 @@ public class ClienteDAOImpl implements ClienteDAO {
                 stmt.setString(1, email.toLowerCase());
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"),
-                            rs.getString("password"), rs.getString("email"), rs.getString("partita_iva"),
-                            rs.getString("indirizzo"), rs.getString("civico"), rs.getString("cap"), rs.getString("citta"));
+                    return new Cliente.Builder()
+                            .username(rs.getString("username"))
+                            .nome(rs.getString("nome"))
+                            .cognome(rs.getString("cognome"))
+                            .password(rs.getString("password"))
+                            .email(rs.getString("email"))
+                            .partitaIva(rs.getString("partita_iva"))
+                            .indirizzo(rs.getString("indirizzo"))
+                            .civico(rs.getString("civico"))
+                            .cap(rs.getString("cap"))
+                            .citta(rs.getString("citta"))
+                            .build();
                 }
             } catch (SQLException e) {
                 LOGGER.severe("❌ Errore nella ricerca del cliente per email: " + e.getMessage());
-                return null;
             }
         } else {
             LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM tramite email: {0}", email);
@@ -113,6 +118,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         return null;
     }
 
+
     @Override
     public Cliente findByUsername(String username) {
         if (isOnlineMode) {
@@ -124,13 +130,21 @@ public class ClienteDAOImpl implements ClienteDAO {
                 stmt.setString(1, username.toLowerCase());
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    return new Cliente(rs.getString("username"), rs.getString("nome"), rs.getString("cognome"),
-                            rs.getString("password"), rs.getString("email"), rs.getString("partita_iva"),
-                            rs.getString("indirizzo"), rs.getString("civico"), rs.getString("cap"), rs.getString("citta"));
+                    return new Cliente.Builder()
+                            .username(rs.getString("username"))
+                            .nome(rs.getString("nome"))
+                            .cognome(rs.getString("cognome"))
+                            .password(rs.getString("password"))
+                            .email(rs.getString("email"))
+                            .partitaIva(rs.getString("partita_iva"))
+                            .indirizzo(rs.getString("indirizzo"))
+                            .civico(rs.getString("civico"))
+                            .cap(rs.getString("cap"))
+                            .citta(rs.getString("citta"))
+                            .build();
                 }
             } catch (SQLException e) {
                 LOGGER.severe("❌ Errore nella ricerca del cliente per username: " + e.getMessage());
-                return null; // ✅ Ritorna null per evitare il fallimento della verifica
             }
         } else {
             LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM (OFFLINE): {0}", username);
