@@ -123,8 +123,8 @@ public class RegistrazioneService {
             EmailService.sendConfirmationEmail(cliente.getEmail(), cliente.getUsername());
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "❌ Errore durante la registrazione del cliente: {0}", e.getMessage());
-            throw new RegistrazioneException("Errore durante la registrazione del cliente: " + e.getMessage());
+            throw new RegistrazioneException("❌ Errore durante la registrazione del cliente " + cliente.getUsername() +
+                    ": " + e.getMessage());
         }
 
         // ✅ Reset dei tentativi di inserimento del codice univoco
