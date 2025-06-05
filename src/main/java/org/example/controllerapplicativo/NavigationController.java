@@ -3,10 +3,7 @@ package org.example.controllerapplicativo;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.controllergrafici.GestioneController;
-import org.example.controllergrafici.RegistratiClienteController;
-import org.example.controllergrafici.LoginController;
-import org.example.controllergrafici.ViewController;
+import org.example.controllergrafici.*;
 import org.example.dao.ClienteDAOImpl;
 import org.example.dao.GestoreDAOImpl;
 import org.example.service.NavigationService;
@@ -139,9 +136,12 @@ public class NavigationController implements NavigationService {
     @Override
     public void navigateToNegozio() {
         LOGGER.info("🔄 Navigazione all'interfaccia del negozio...");
-        Parent negozioView = new NegozioView().getRoot();
-        if (negozioView != null) {
-            stage.setScene(new Scene(negozioView, 600, 400));
+        boolean isOnline = SessionController.getIsOnlineModeStatic();
+        NegozioController controller = new NegozioController(stage, isOnline);
+        Parent root = controller.getRootView();
+
+        if (root != null) {
+            stage.setScene(new Scene(root, 900, 600));
             stage.setTitle("Negozio");
             stage.show();
             LOGGER.info("✅ Navigazione al negozio completata.");
@@ -149,4 +149,8 @@ public class NavigationController implements NavigationService {
             LOGGER.warning("❌ Errore: NegozioView è NULL!");
         }
     }
+
+
+
+
 }
