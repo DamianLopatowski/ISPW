@@ -14,6 +14,8 @@ public class NegozioView2 {
     private final TextField quantitaField;
     private final Button aggiungiButton;
     private final VBox carrelloBox;
+    private final Button inviaOrdineButton = new Button("Invia Ordine");
+    private final Button logoutButton = new Button("Logout");
 
     public NegozioView2() {
         root = new BorderPane();
@@ -41,7 +43,7 @@ public class NegozioView2 {
         carrelloBox.setPadding(new Insets(10));
         carrelloBox.setPrefWidth(250);
         carrelloBox.setStyle("-fx-background-color: #f0f0f0;");
-        carrelloBox.getChildren().add(new Label("🛒 Carrello"));
+        carrelloBox.getChildren().addAll(new Label("🛒 Carrello"), inviaOrdineButton, logoutButton);
 
         // ✅ Layout
         root.setLeft(listaProdotti);
@@ -57,4 +59,6 @@ public class NegozioView2 {
     public TextField getQuantitaField() { return quantitaField; }
     public Button getAggiungiButton() { return aggiungiButton; }
     public VBox getCarrelloBox() { return carrelloBox; }
+    public Button getInviaOrdineButton() { return inviaOrdineButton; }
+    public Button getLogoutButton() { return logoutButton; }
 }

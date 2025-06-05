@@ -143,7 +143,7 @@ public class NavigationController implements NavigationService {
         LOGGER.log(Level.INFO, "🛒 Modalità: {0} | Interfaccia: {1}",
                 new Object[]{isOnlineMode ? "ONLINE" : "OFFLINE", isInterfaccia1 ? "1" : "2"});
 
-        NegozioController controller = new NegozioController(isOnlineMode, isInterfaccia1);
+        NegozioController controller = new NegozioController(isOnlineMode, isInterfaccia1, this);
         Parent root = controller.getRootView();
 
         if (root != null) {

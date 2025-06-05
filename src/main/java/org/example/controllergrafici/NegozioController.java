@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import org.example.dao.ProdottoDAOImpl;
 import org.example.model.Prodotto;
+import org.example.service.NavigationService;
 import org.example.view.NegozioView1;
 import org.example.view.NegozioView2;
 
@@ -20,25 +21,36 @@ public class NegozioController {
     private final Object view;
     private final ProdottoDAOImpl prodottoDAO;
     private final Map<Prodotto, Integer> carrello = new HashMap<>();
+    private final NavigationService navigationService;
 
-    public NegozioController(boolean isOnlineMode, boolean isInterfaccia1) {
+    public NegozioController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new NegozioView1() : new NegozioView2();
         this.prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
+        this.navigationService = navigationService;
 
         aggiornaListaProdotti();
 
-        Button inviaOrdine = new Button("Invia Ordine");
-        inviaOrdine.setOnAction(e -> {
-            for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
-                prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
-                logger.info("🛒 Ordinato: " + entry.getKey().getNome() + " x" + entry.getValue());
-            }
-            carrello.clear();
-            aggiornaCarrello();
-            aggiornaListaProdotti();
-        });
+        if (view instanceof NegozioView1) {
+            NegozioView1 v1 = (NegozioView1) view;
+            v1.getInviaOrdineButton().setOnAction(e -> inviaOrdine());
+            v1.getLogoutButton().setOnAction(e -> navigationService.navigateToMainView());
+        }
 
-        getCarrelloBox().getChildren().add(inviaOrdine);
+        if (view instanceof NegozioView2) {
+            NegozioView2 v2 = (NegozioView2) view;
+            v2.getInviaOrdineButton().setOnAction(e -> inviaOrdine());
+            v2.getLogoutButton().setOnAction(e -> navigationService.navigateToMainView());
+        }
+    }
+
+    private void inviaOrdine() {
+        for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
+            prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
+            logger.info("🛒 Ordinato: " + entry.getKey().getNome() + " x" + entry.getValue());
+        }
+        carrello.clear();
+        aggiornaCarrello();
+        aggiornaListaProdotti();
     }
 
     private void aggiornaListaProdotti() {
@@ -90,7 +102,6 @@ public class NegozioController {
                 lista.getItems().add(nomeVisualizzato);
             }
 
-            // seleziona automaticamente il primo prodotto
             if (!lista.getItems().isEmpty()) {
                 lista.getSelectionModel().selectFirst();
                 aggiornaDettagliProdotto(lista.getSelectionModel().getSelectedItem(), prodottiMap, v2);
