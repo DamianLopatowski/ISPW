@@ -1,29 +1,42 @@
 package org.example.view;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.geometry.Insets;
 
 public class NegozioView {
     private final BorderPane root;
-    private final VBox listaProdotti;
+    private final ScrollPane scrollPaneProdotti;
+    private final FlowPane flowPaneProdotti;
     private final VBox carrelloBox;
 
     public NegozioView() {
         root = new BorderPane();
-        listaProdotti = new VBox(10);
-        carrelloBox = new VBox(10);
 
-        listaProdotti.setPadding(new Insets(10));
+        // FlowPane responsivo
+        flowPaneProdotti = new FlowPane();
+        flowPaneProdotti.setHgap(20);
+        flowPaneProdotti.setVgap(20);
+        flowPaneProdotti.setPadding(new Insets(10));
+        flowPaneProdotti.setPrefWrapLength(0); // si adatta automaticamente
+
+        scrollPaneProdotti = new ScrollPane(flowPaneProdotti);
+        scrollPaneProdotti.setFitToWidth(true);
+        scrollPaneProdotti.setStyle("-fx-background: white;");
+        scrollPaneProdotti.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPaneProdotti.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        carrelloBox = new VBox(10);
         carrelloBox.setPadding(new Insets(10));
+        carrelloBox.setPrefWidth(250);
         carrelloBox.setStyle("-fx-background-color: #f0f0f0;");
         carrelloBox.getChildren().add(new Label("🛒 Carrello"));
 
-        root.setLeft(listaProdotti);
+        root.setCenter(scrollPaneProdotti);
         root.setRight(carrelloBox);
     }
 
     public BorderPane getRoot() { return root; }
-    public VBox getListaProdotti() { return listaProdotti; }
+    public FlowPane getFlowPaneProdotti() { return flowPaneProdotti; }
     public VBox getCarrelloBox() { return carrelloBox; }
 }

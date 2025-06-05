@@ -2,7 +2,8 @@ package org.example.dao;
 
 import org.example.model.Prodotto;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -14,15 +15,15 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     public ProdottoDAOImpl(boolean isOnlineMode) {
         this.isOnlineMode = isOnlineMode;
         if (isOnlineMode) {
-            try {
-                Properties props = new Properties();
-                props.load(new FileInputStream("config.properties"));
+            Properties props = new Properties();
+            try (FileInputStream fis = new FileInputStream("config.properties")) {
+                props.load(fis);
                 connection = DriverManager.getConnection(
                         props.getProperty("db.url"),
                         props.getProperty("db.username"),
                         props.getProperty("db.password")
                 );
-            } catch (Exception e) {
+            } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -32,21 +33,22 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     public List<Prodotto> getAllProdotti() {
         if (isOnlineMode) {
             List<Prodotto> lista = new ArrayList<>();
+            String query = "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti";
             try (Statement stmt = connection.createStatement();
-                 ResultSet rs = stmt.executeQuery("SELECT * FROM prodotti")) {
+                 ResultSet rs = stmt.executeQuery(query)) {
                 while (rs.next()) {
-                    lista.add(new Prodotto(
-                            rs.getInt("id"),
-                            rs.getString("nome"),
-                            rs.getInt("quantita"),
-                            rs.getString("scaffale"),
-                            rs.getString("codiceAbarre"),
-                            rs.getInt("soglia"),
-                            rs.getDouble("prezzoAcquisto"),
-                            rs.getDouble("prezzoVendita"),
-                            rs.getString("categoria"),
-                            rs.getBytes("immagine")
-                    ));
+                    lista.add(new Prodotto.Builder()
+                            .id(rs.getInt("id"))
+                            .nome(rs.getString("nome"))
+                            .quantita(rs.getInt("quantita"))
+                            .scaffale(rs.getString("scaffale"))
+                            .codiceAbarre(rs.getString("codiceAbarre"))
+                            .soglia(rs.getInt("soglia"))
+                            .prezzoAcquisto(rs.getDouble("prezzoAcquisto"))
+                            .prezzoVendita(rs.getDouble("prezzoVendita"))
+                            .categoria(rs.getString("categoria"))
+                            .immagine(rs.getBytes("immagine"))
+                            .build());
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

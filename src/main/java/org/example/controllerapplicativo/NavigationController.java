@@ -137,7 +137,8 @@ public class NavigationController implements NavigationService {
     public void navigateToNegozio() {
         LOGGER.info("🔄 Navigazione all'interfaccia del negozio...");
         boolean isOnline = SessionController.getIsOnlineModeStatic();
-        NegozioController controller = new NegozioController(stage, isOnline);
+
+        NegozioController controller = new NegozioController(isOnline);
         Parent root = controller.getRootView();
 
         if (root != null) {
@@ -149,6 +150,7 @@ public class NavigationController implements NavigationService {
             LOGGER.warning("❌ Errore: NegozioView è NULL!");
         }
     }
+
 
 
 
