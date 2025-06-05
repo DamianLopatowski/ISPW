@@ -18,6 +18,7 @@ import org.example.view.NegozioView2;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class NegozioController {
@@ -59,35 +60,34 @@ public class NegozioController {
     }
 
     private void inviaOrdine() {
-        boolean isOnline = prodottoDAO instanceof ProdottoDAOImpl && ((ProdottoDAOImpl) prodottoDAO).isOnline();
+        boolean isOnline = prodottoDAO.isOnline(); // ✅ Warning S1905 risolto
 
-        // 🔁 Riduzione quantità per ciascun prodotto ordinato
         for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
             Prodotto prodotto = entry.getKey();
             int quantita = entry.getValue();
 
-            prodottoDAO.riduciQuantita(prodotto.getId(), quantita); // ✅ gestisce online e offline
-            logger.info("🛒 Ordinato: " + prodotto.getNome() + " x" + quantita);
+            prodottoDAO.riduciQuantita(prodotto.getId(), quantita);
+
+            // ✅ Warning S2629 risolto
+            logger.log(Level.INFO, "🛒 Ordinato: {0} x{1}", new Object[]{prodotto.getNome(), quantita});
         }
 
-        // 💾 Salva ordine (solo online, simulazione)
         if (isOnline) {
             ordineService.salvaOrdineOnline(cliente, carrello);
         }
 
-        // ✉️ Invia email di riepilogo ordine
         EmailService.sendOrderSummaryEmail(
                 cliente.getEmail(),
                 cliente.getNome(),
-                new HashMap<>(carrello) // passa una copia per evitare problemi dopo lo svuotamento
+                new HashMap<>(carrello)
         );
 
-        // 🧹 Svuota carrello e aggiorna interfaccia
         SessionController.svuotaCarrello();
-        carrello.clear(); // ridondante, ma sicuro
+        carrello.clear();
         aggiornaCarrello();
         aggiornaListaProdotti();
     }
+
 
 
     public void handleConfermaOrdine() {
