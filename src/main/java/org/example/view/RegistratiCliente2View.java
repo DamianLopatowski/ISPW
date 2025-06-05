@@ -106,13 +106,13 @@ public class RegistratiCliente2View {
     }
 
     private void mostraStep(int newStep) {
-        if (newStep < 1 || newStep > 3) return;
+        if (newStep < 1 || newStep > 4) return;
 
         root.getChildren().clear();
         step = newStep;
 
         indietroButton.setDisable(step == 1);
-        avantiButton.setDisable(step == 3);
+        avantiButton.setDisable(false); // consenti l'attivazione dinamica
 
         switch (step) {
             case 1:
@@ -149,9 +149,8 @@ public class RegistratiCliente2View {
                         creaNavigazione()
                 );
                 break;
-
             case 4:
-                statusLabel.setText("Passo 3: Scegli una Password e inserisci il codice univoco");
+                statusLabel.setText("Passo 4: Scegli una Password e inserisci il codice univoco");
                 root.getChildren().addAll(
                         statusLabel,
                         creaInput("Password:", passwordField),

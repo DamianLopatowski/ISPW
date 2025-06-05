@@ -157,9 +157,13 @@ public class RegistratiClienteController {
                             textFields[index],
                             feedbackLabels[index],
                             newVal,
-                            validators.get(index),  // ✅ Usa .get(index) per accedere alla lista
+                            validators.get(index),
                             errorMessages[index]
                     );
+                } else {
+                    // Anche se non ha una label, va comunque verificata la validità (per attivare il pulsante)
+                    boolean isValid = validators.get(index).test(newVal);
+                    textFields[index].setStyle(isValid ? BORDER_GREEN : BORDER_RED);
                 }
                 aggiornaStatoRegistratiButton(view);
             });
