@@ -158,23 +158,25 @@ public class ClienteDAOImpl implements ClienteDAO {
         loadDatabaseConfig();
 
         if (isOnlineMode) {
-            try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
-                String sql = "UPDATE usercliente SET nome = ?, cognome = ?, username = ?, password = ? WHERE username = ?";
-                PreparedStatement stmt = conn.prepareStatement(sql);
+            String sql = "UPDATE usercliente SET nome = ?, cognome = ?, username = ?, password = ? WHERE username = ?";
+            try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
                 stmt.setString(1, cliente.getNome());
                 stmt.setString(2, cliente.getCognome());
                 stmt.setString(3, cliente.getUsername());
                 stmt.setString(4, cliente.getPassword());
-                stmt.setString(5, vecchioUsername); // ← usa lo username precedente come riferimento
+                stmt.setString(5, vecchioUsername);
+
                 int rows = stmt.executeUpdate();
-                LOGGER.info("✅ Cliente aggiornato nel database. Righe modificate: " + rows);
+                LOGGER.log(Level.INFO, "✅ Cliente aggiornato nel database. Righe modificate: {0}", rows);
                 return rows > 0;
             } catch (SQLException e) {
                 LOGGER.severe("❌ Errore durante l'update del cliente: " + e.getMessage());
                 return false;
             }
         } else {
-            LOGGER.info("🔄 Aggiornamento cliente in RAM (OFFLINE): " + cliente.getUsername());
+            LOGGER.log(Level.INFO, "🔄 Aggiornamento cliente in RAM (OFFLINE): {0}", cliente.getUsername());
             clientiOffline.put(cliente.getUsername(), cliente);
             return true;
         }

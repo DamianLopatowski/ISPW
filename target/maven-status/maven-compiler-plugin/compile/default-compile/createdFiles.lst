@@ -22,6 +22,7 @@ org\example\dao\GestoreDAO.class
 org\example\controllergrafici\ViewController.class
 org\example\model\Cliente$Builder.class
 org\example\controllergrafici\GestioneController.class
+org\example\controllergrafici\ProfiloController$ProfiloInput.class
 org\example\view\View.class
 org\example\dao\ClienteDAO.class
 org\example\view\Login1View.class

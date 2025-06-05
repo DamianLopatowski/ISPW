@@ -164,7 +164,7 @@ public class NavigationController implements NavigationService {
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
         boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
 
-        ProfiloController controller = new ProfiloController(isOnlineMode, isInterfaccia1, this);
+        ProfiloController controller = new ProfiloController(isInterfaccia1, this);
         Parent root = controller.getRootView();
 
         if (root != null) {

@@ -14,8 +14,6 @@ import javafx.scene.control.TextField;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.example.controllerapplicativo.SessionController; // ✅ IMPORT NECESSARIO
-
 public class LoginController {
     private final Object view; // Può essere Login1View o Login2View
     private final NavigationService navigationService;

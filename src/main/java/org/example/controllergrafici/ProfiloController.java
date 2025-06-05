@@ -15,7 +15,7 @@ public class ProfiloController {
     private final Object view;
     private final NavigationService navigationService;
 
-    public ProfiloController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
+    public ProfiloController(boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new ProfiloView1() : new ProfiloView2();
         this.navigationService = navigationService;
 
@@ -33,7 +33,7 @@ public class ProfiloController {
     }
 
     private void riempiCampi(Object v) {
-        Cliente cliente = navigationService.getClienteLoggato(); // usa cliente aggiornato
+        Cliente cliente = navigationService.getClienteLoggato();
 
         if (v instanceof ProfiloView1) {
             ProfiloView1 pv = (ProfiloView1) v;
@@ -49,49 +49,28 @@ public class ProfiloController {
     }
 
     private void salvaDati(Object v) {
-        Cliente cliente = navigationService.getClienteLoggato(); // cliente aggiornato
+        Cliente cliente = navigationService.getClienteLoggato();
+        ProfiloInput input = estraiDatiProfilo(v);
 
-        String nome, cognome, username, oldPwd, newPwd, confPwd;
-
-        if (v instanceof ProfiloView1) {
-            ProfiloView1 pv = (ProfiloView1) v;
-            nome = pv.getNomeField().getText().trim();
-            cognome = pv.getCognomeField().getText().trim();
-            username = pv.getUsernameField().getText().trim();
-            oldPwd = pv.getOldPasswordField().getText();
-            newPwd = pv.getNewPasswordField().getText();
-            confPwd = pv.getConfirmPasswordField().getText();
-        } else {
-            ProfiloView2 pv = (ProfiloView2) v;
-            nome = pv.getNomeField().getText().trim();
-            cognome = pv.getCognomeField().getText().trim();
-            username = pv.getUsernameField().getText().trim();
-            oldPwd = pv.getOldPasswordField().getText();
-            newPwd = pv.getNewPasswordField().getText();
-            confPwd = pv.getConfirmPasswordField().getText();
-        }
-
-        // Verifica se l’utente vuole aggiornare la password
-        boolean vuoleCambiarePassword = !oldPwd.isEmpty() || !newPwd.isEmpty() || !confPwd.isEmpty();
+        boolean vuoleCambiarePassword = input.vuoleCambiarePassword();
 
         if (vuoleCambiarePassword) {
-            if (!oldPwd.equals(cliente.getPassword())) {
+            if (!input.oldPwd.equals(cliente.getPassword())) {
                 showAlert("❌ Password attuale errata");
                 return;
             }
 
-            if (!newPwd.equals(confPwd)) {
+            if (!input.newPwd.equals(input.confPwd)) {
                 showAlert("❌ Le nuove password non coincidono");
                 return;
             }
         }
 
-        // Costruzione nuovo oggetto cliente con eventuali modifiche
         Cliente nuovoCliente = new Cliente.Builder()
-                .username(username.isEmpty() ? cliente.getUsername() : username)
-                .nome(nome.isEmpty() ? cliente.getNome() : nome)
-                .cognome(cognome.isEmpty() ? cliente.getCognome() : cognome)
-                .password(vuoleCambiarePassword && !newPwd.isEmpty() ? newPwd : cliente.getPassword())
+                .username(input.username.isEmpty() ? cliente.getUsername() : input.username)
+                .nome(input.nome.isEmpty() ? cliente.getNome() : input.nome)
+                .cognome(input.cognome.isEmpty() ? cliente.getCognome() : input.cognome)
+                .password(vuoleCambiarePassword && !input.newPwd.isEmpty() ? input.newPwd : cliente.getPassword())
                 .email(cliente.getEmail())
                 .partitaIva(cliente.getPartitaIva())
                 .indirizzo(cliente.getIndirizzo())
@@ -107,11 +86,46 @@ public class ProfiloController {
             Cliente clienteRicaricato = dao.findByUsername(nuovoCliente.getUsername());
             if (clienteRicaricato != null) {
                 SessionController.setClienteLoggato(clienteRicaricato);
-                navigationService.setClienteLoggato(clienteRicaricato); // AGGIUNTA NECESSARIA
+                navigationService.setClienteLoggato(clienteRicaricato);
             }
             showAlert("✅ Profilo aggiornato con successo");
         } else {
             showAlert("❌ Errore durante il salvataggio");
+        }
+    }
+
+    private ProfiloInput estraiDatiProfilo(Object v) {
+        ProfiloInput input = new ProfiloInput();
+        if (v instanceof ProfiloView1) {
+            ProfiloView1 pv = (ProfiloView1) v;
+            input.nome = pv.getNomeField().getText().trim();
+            input.cognome = pv.getCognomeField().getText().trim();
+            input.username = pv.getUsernameField().getText().trim();
+            input.oldPwd = pv.getOldPasswordField().getText();
+            input.newPwd = pv.getNewPasswordField().getText();
+            input.confPwd = pv.getConfirmPasswordField().getText();
+        } else if (v instanceof ProfiloView2) {
+            ProfiloView2 pv = (ProfiloView2) v;
+            input.nome = pv.getNomeField().getText().trim();
+            input.cognome = pv.getCognomeField().getText().trim();
+            input.username = pv.getUsernameField().getText().trim();
+            input.oldPwd = pv.getOldPasswordField().getText();
+            input.newPwd = pv.getNewPasswordField().getText();
+            input.confPwd = pv.getConfirmPasswordField().getText();
+        }
+        return input;
+    }
+
+    private static class ProfiloInput {
+        String nome;
+        String cognome;
+        String username;
+        String oldPwd;
+        String newPwd;
+        String confPwd;
+
+        boolean vuoleCambiarePassword() {
+            return !oldPwd.isEmpty() || !newPwd.isEmpty() || !confPwd.isEmpty();
         }
     }
 
@@ -120,7 +134,10 @@ public class ProfiloController {
     }
 
     public Parent getRootView() {
-        if (view instanceof ProfiloView1) return ((ProfiloView1) view).getRoot();
-        else return ((ProfiloView2) view).getRoot();
+        if (view instanceof ProfiloView1) {
+            return ((ProfiloView1) view).getRoot();
+        } else {
+            return ((ProfiloView2) view).getRoot();
+        }
     }
 }
