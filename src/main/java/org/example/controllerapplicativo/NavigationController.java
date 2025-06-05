@@ -136,9 +136,14 @@ public class NavigationController implements NavigationService {
     @Override
     public void navigateToNegozio() {
         LOGGER.info("🔄 Navigazione all'interfaccia del negozio...");
-        boolean isOnline = SessionController.getIsOnlineModeStatic();
 
-        NegozioController controller = new NegozioController(isOnline);
+        boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
+        boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static(); // Usa la stessa logica già usata altrove
+
+        LOGGER.log(Level.INFO, "🛒 Modalità: {0} | Interfaccia: {1}",
+                new Object[]{isOnlineMode ? "ONLINE" : "OFFLINE", isInterfaccia1 ? "1" : "2"});
+
+        NegozioController controller = new NegozioController(isOnlineMode, isInterfaccia1);
         Parent root = controller.getRootView();
 
         if (root != null) {
@@ -150,6 +155,7 @@ public class NavigationController implements NavigationService {
             LOGGER.warning("❌ Errore: NegozioView è NULL!");
         }
     }
+
 
 
 

@@ -24,9 +24,10 @@ public class SessionController {
     private final ApplicationContext context;
     private final NavigationService navigationService;
     private boolean isOnlineMode;
-    private boolean isInterfaccia1;
-    protected static boolean isOnlineModeStatic = true;   // ✅ Salviamo lo stato globale
+    private static boolean isInterfaccia1;
+    protected static boolean isOnlineModeStatic = true;
 
+    // ✅ Costruttore aggiornato
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
@@ -43,19 +44,33 @@ public class SessionController {
         initializeView();
     }
 
+    // ✅ Set static per la modalità online
     public static void setIsOnlineModeStatic(boolean mode) {
         isOnlineModeStatic = mode;
     }
 
+    // ✅ Set static per l'interfaccia scelta
+    public static void setIsInterfaccia1(boolean value) {
+        isInterfaccia1 = value;
+    }
 
+    // ✅ Get static sicuro per l'interfaccia scelta
+    public static boolean getIsInterfaccia1Static() {
+        return isInterfaccia1;
+    }
 
+    // ✅ Get static per online/offline
+    public static boolean getIsOnlineModeStatic() {
+        return isOnlineModeStatic;
+    }
+
+    // ⚙️ Inizializzazione schermata di selezione interfaccia
     private void initializeView() {
         View view = context.getMainView();
 
         if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
             LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
         }
-
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
@@ -76,6 +91,7 @@ public class SessionController {
         stage.show();
     }
 
+    // ⚙️ Navigazione alla gestione prodotti dopo login
     private void navigateToGestione() {
         LOGGER.info("🔄 Navigazione a GestioneProdotti...");
         Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
@@ -88,6 +104,7 @@ public class SessionController {
         }
     }
 
+    // ⚙️ Login
     private void startLogin() {
         LOGGER.info("🔑 Avvio della schermata di login...");
 
@@ -114,8 +131,7 @@ public class SessionController {
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            // ✅ CREAZIONE LOGIN1VIEW E ASSOCIAZIONE A LOGINCONTROLLER
-            Login1View loginView = new Login1View();// Senza parametri, solo UI
+            Login1View loginView = new Login1View();
             new LoginController(loginView, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
@@ -149,9 +165,4 @@ public class SessionController {
             LOGGER.warning("❌ Errore: loginRoot è NULL!");
         }
     }
-
-    public static boolean getIsOnlineModeStatic() {
-        return isOnlineModeStatic;
-    }
-
 }

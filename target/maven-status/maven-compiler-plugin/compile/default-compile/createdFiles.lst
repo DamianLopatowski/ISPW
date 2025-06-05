@@ -30,6 +30,7 @@ org\example\service\EmailService.class
 org\example\view\Gestione2View.class
 org\example\dao\GestoreDAOImpl.class
 org\example\ApplicationContext.class
+org\example\view\NegozioView2.class
 org\example\controllergrafici\NegozioController.class
 org\example\dao\ProdottoDAOImpl.class
 org\example\dao\ProdottoDAO.class

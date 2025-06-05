@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import org.example.dao.ProdottoDAOImpl;
 import org.example.model.Prodotto;
 import org.example.view.NegozioView;
+import org.example.view.NegozioView2;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -16,13 +17,13 @@ import java.util.logging.Logger;
 
 public class NegozioController {
     private static final Logger logger = Logger.getLogger(NegozioController.class.getName());
-    private final NegozioView view;
+    private final Object view;
     private final ProdottoDAOImpl prodottoDAO;
     private final Map<Prodotto, Integer> carrello = new HashMap<>();
 
-    public NegozioController(boolean isOnlineMode) {
-        view = new NegozioView();
-        prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
+    public NegozioController(boolean isOnlineMode, boolean isInterfaccia1) {
+        this.view = isInterfaccia1 ? new NegozioView() : new NegozioView2();
+        this.prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
 
         aggiornaListaProdotti();
 
@@ -37,55 +38,113 @@ public class NegozioController {
             aggiornaListaProdotti();
         });
 
-        view.getCarrelloBox().getChildren().add(inviaOrdine);
+        getCarrelloBox().getChildren().add(inviaOrdine);
     }
 
     private void aggiornaListaProdotti() {
-        FlowPane contenitore = view.getFlowPaneProdotti();
-        contenitore.getChildren().clear();
+        if (view instanceof NegozioView) {
+            NegozioView v1 = (NegozioView) view;
+            FlowPane contenitore = v1.getFlowPaneProdotti();
+            contenitore.getChildren().clear();
 
-        for (Prodotto p : prodottoDAO.getAllProdotti()) {
-            VBox boxProdotto = new VBox(5);
-            boxProdotto.setPadding(new Insets(10));
-            boxProdotto.setStyle("-fx-border-color: lightgray; -fx-background-color: white;");
-            boxProdotto.setPrefWidth(200); // larghezza fissa, ma può adattarsi
+            for (Prodotto p : prodottoDAO.getAllProdotti()) {
+                VBox boxProdotto = new VBox(5);
+                boxProdotto.setPadding(new Insets(10));
+                boxProdotto.setStyle("-fx-border-color: lightgray; -fx-background-color: white;");
+                boxProdotto.setPrefWidth(200);
 
-            ImageView imgView = new ImageView();
-            if (p.getImmagine() != null) {
-                Image img = new Image(new ByteArrayInputStream(p.getImmagine()));
-                imgView.setImage(img);
-                imgView.setFitHeight(80);
-                imgView.setPreserveRatio(true);
+                ImageView imgView = new ImageView();
+                if (p.getImmagine() != null) {
+                    Image img = new Image(new ByteArrayInputStream(p.getImmagine()));
+                    imgView.setImage(img);
+                    imgView.setFitHeight(80);
+                    imgView.setPreserveRatio(true);
+                }
+
+                Label nome = new Label(p.getNome());
+                Label prezzo = new Label("€" + p.getPrezzoVendita());
+                Label disponibilita = new Label("Disponibili: " + p.getQuantita());
+
+                Spinner<Integer> spinner = new Spinner<>(1, p.getQuantita(), 1);
+                Button aggiungi = new Button("Aggiungi");
+
+                aggiungi.setOnAction(e -> {
+                    int quantita = spinner.getValue();
+                    carrello.put(p, carrello.getOrDefault(p, 0) + quantita);
+                    aggiornaCarrello();
+                });
+
+                boxProdotto.getChildren().addAll(imgView, nome, prezzo, disponibilita, spinner, aggiungi);
+                contenitore.getChildren().add(boxProdotto);
             }
 
-            Label nome = new Label(p.getNome());
-            Label prezzo = new Label("€" + p.getPrezzoVendita());
-            Label disponibilita = new Label("Disponibili: " + p.getQuantita());
+        } else if (view instanceof NegozioView2) {
+            NegozioView2 v2 = (NegozioView2) view;
+            ListView<String> lista = v2.getListaProdotti();
+            lista.getItems().clear();
+            Map<String, Prodotto> prodottiMap = new HashMap<>();
 
-            Spinner<Integer> spinner = new Spinner<>(1, p.getQuantita(), 1);
-            Button aggiungi = new Button("Aggiungi");
+            for (Prodotto p : prodottoDAO.getAllProdotti()) {
+                String nomeVisualizzato = p.getNome() + " - €" + p.getPrezzoVendita();
+                prodottiMap.put(nomeVisualizzato, p);
+                lista.getItems().add(nomeVisualizzato);
+            }
 
-            aggiungi.setOnAction(e -> {
-                int quantita = spinner.getValue();
-                carrello.put(p, carrello.getOrDefault(p, 0) + quantita);
-                aggiornaCarrello();
+            lista.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                Prodotto selezionato = prodottiMap.get(newVal);
+                if (selezionato == null) return;
+
+                // Mostra immagine
+                if (selezionato.getImmagine() != null) {
+                    Image img = new Image(new ByteArrayInputStream(selezionato.getImmagine()));
+                    v2.getImageView().setImage(img);
+                } else {
+                    v2.getImageView().setImage(null);
+                }
+
+                // Mostra disponibilità
+                v2.getDisponibilitaLabel().setText("Disponibili: " + selezionato.getQuantita());
+
+                // Salva azione bottone "Aggiungi"
+                v2.getAggiungiButton().setOnAction(e -> {
+                    try {
+                        int q = Integer.parseInt(v2.getQuantitàField().getText().trim());
+                        if (q > 0 && q <= selezionato.getQuantita()) {
+                            carrello.put(selezionato, carrello.getOrDefault(selezionato, 0) + q);
+                            aggiornaCarrello();
+                        } else {
+                            showAlert("Quantità non valida");
+                        }
+                    } catch (NumberFormatException ex) {
+                        showAlert("Inserisci un numero valido");
+                    }
+                });
             });
-
-            boxProdotto.getChildren().addAll(imgView, nome, prezzo, disponibilita, spinner, aggiungi);
-            contenitore.getChildren().add(boxProdotto);
         }
     }
 
-
     private void aggiornaCarrello() {
-        VBox box = view.getCarrelloBox();
+        VBox box = getCarrelloBox();
         box.getChildren().removeIf(n -> n instanceof Label && !((Label) n).getText().equals("🛒 Carrello"));
         for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
             box.getChildren().add(new Label(entry.getKey().getNome() + " x" + entry.getValue()));
         }
     }
 
+    private VBox getCarrelloBox() {
+        if (view instanceof NegozioView) return ((NegozioView) view).getCarrelloBox();
+        else if (view instanceof NegozioView2) return ((NegozioView2) view).getCarrelloBox();
+        return new VBox();
+    }
+
+    private void showAlert(String msg) {
+        Alert a = new Alert(Alert.AlertType.WARNING, msg, ButtonType.OK);
+        a.showAndWait();
+    }
+
     public Parent getRootView() {
-        return view.getRoot();
+        if (view instanceof NegozioView) return ((NegozioView) view).getRoot();
+        else if (view instanceof NegozioView2) return ((NegozioView2) view).getRoot();
+        return null;
     }
 }
