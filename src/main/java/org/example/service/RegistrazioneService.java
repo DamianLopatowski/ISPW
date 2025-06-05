@@ -13,7 +13,6 @@ public class RegistrazioneService {
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
     private static final Pattern PARTITA_IVA_PATTERN = Pattern.compile("^\\d{11}$");
     private static final Pattern INDIRIZZO_PATTERN = Pattern.compile("^(?i)(Via|Piazza)\\s+[A-Za-zÀ-ÿ'\\s]{1,50}(?:\\s\\d{1,5}[A-Za-z]?)?$");
-
     private static final Pattern CIVICO_PATTERN = Pattern.compile("^[0-9A-Za-z]{1,10}$");
     private static final Pattern CAP_PATTERN = Pattern.compile("^\\d{5}$");
     private final ClienteDAO clienteDAO;
