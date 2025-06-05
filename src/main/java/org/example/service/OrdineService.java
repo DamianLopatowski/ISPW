@@ -7,7 +7,6 @@ import org.example.model.Cliente;
 import org.example.model.Prodotto;
 
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OrdineService {
@@ -35,9 +34,15 @@ public class OrdineService {
             double subtotale = prodotto.getPrezzoVendita() * q;
             totale += subtotale;
 
-            LOGGER.info("- " + prodotto.getNome() + " x" + q + " → €" + String.format("%.2f", subtotale));
+            if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+                LOGGER.log(java.util.logging.Level.INFO, "- {0} x{1} → €{2}",
+                        new Object[]{prodotto.getNome(), q, String.format("%.2f", subtotale)});
+            }
         }
 
-        LOGGER.info("Totale: €" + String.format("%.2f", totale));
+        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+            LOGGER.log(java.util.logging.Level.INFO, "Totale: €{0}",
+                    new Object[]{String.format("%.2f", totale)});
+        }
     }
 }
