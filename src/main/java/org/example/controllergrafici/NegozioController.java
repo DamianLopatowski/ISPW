@@ -6,9 +6,13 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ProdottoDAOImpl;
+import org.example.model.Cliente;
 import org.example.model.Prodotto;
+import org.example.service.EmailService;
 import org.example.service.NavigationService;
+import org.example.service.OrdineService;
 import org.example.view.NegozioView1;
 import org.example.view.NegozioView2;
 
@@ -20,37 +24,132 @@ public class NegozioController {
     private static final Logger logger = Logger.getLogger(NegozioController.class.getName());
     private final Object view;
     private final ProdottoDAOImpl prodottoDAO;
-    private final Map<Prodotto, Integer> carrello = new HashMap<>();
+    private final NavigationService navigationService;
+    private final OrdineService ordineService;
+    private final Cliente cliente;
+    private final Map<Prodotto, Integer> carrello;
 
     public NegozioController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new NegozioView1() : new NegozioView2();
         this.prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
+        this.navigationService = navigationService;
+        this.ordineService = new OrdineService();
+        this.cliente = navigationService.getClienteLoggato();
+        this.carrello = SessionController.getCarrello();
 
         aggiornaListaProdotti();
+        aggiornaCarrello(); // mostra il carrello se già pieno
 
         if (view instanceof NegozioView1) {
             NegozioView1 v1 = (NegozioView1) view;
-            v1.getInviaOrdineButton().setOnAction(e -> inviaOrdine());
-            v1.getLogoutButton().setOnAction(e -> navigationService.navigateToMainView());
+            v1.getInviaOrdineButton().setOnAction(e -> handleConfermaOrdine());
+            v1.getLogoutButton().setOnAction(e -> {
+                SessionController.svuotaCarrello(); // 🔁 Svuota il carrello
+                navigationService.navigateToMainView();
+            });
             v1.getProfiloButton().setOnAction(e -> navigationService.navigateToProfilo());
         }
 
         if (view instanceof NegozioView2) {
             NegozioView2 v2 = (NegozioView2) view;
-            v2.getInviaOrdineButton().setOnAction(e -> inviaOrdine());
+            v2.getInviaOrdineButton().setOnAction(e -> handleConfermaOrdine());
             v2.getLogoutButton().setOnAction(e -> navigationService.navigateToMainView());
             v2.getProfiloButton().setOnAction(e -> navigationService.navigateToProfilo());
         }
     }
 
     private void inviaOrdine() {
+        boolean isOnline = prodottoDAO instanceof ProdottoDAOImpl && ((ProdottoDAOImpl) prodottoDAO).isOnline();
+
+        // 🔁 Riduzione quantità per ciascun prodotto ordinato
         for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
-            prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
-            logger.info("🛒 Ordinato: " + entry.getKey().getNome() + " x" + entry.getValue());
+            Prodotto prodotto = entry.getKey();
+            int quantita = entry.getValue();
+
+            prodottoDAO.riduciQuantita(prodotto.getId(), quantita); // ✅ gestisce online e offline
+            logger.info("🛒 Ordinato: " + prodotto.getNome() + " x" + quantita);
         }
-        carrello.clear();
+
+        // 💾 Salva ordine (solo online, simulazione)
+        if (isOnline) {
+            ordineService.salvaOrdineOnline(cliente, carrello);
+        }
+
+        // ✉️ Invia email di riepilogo ordine
+        EmailService.sendOrderSummaryEmail(
+                cliente.getEmail(),
+                cliente.getNome(),
+                new HashMap<>(carrello) // passa una copia per evitare problemi dopo lo svuotamento
+        );
+
+        // 🧹 Svuota carrello e aggiorna interfaccia
+        SessionController.svuotaCarrello();
+        carrello.clear(); // ridondante, ma sicuro
         aggiornaCarrello();
         aggiornaListaProdotti();
+    }
+
+
+    public void handleConfermaOrdine() {
+        if (cliente == null) {
+            logger.warning("❌ Cliente non presente! Ordine annullato.");
+            showAlert("Errore: cliente non loggato.");
+            return;
+        }
+
+        if (carrello.isEmpty()) {
+            showAlert("Il carrello è vuoto. Aggiungi almeno un prodotto per procedere.");
+            return;
+        }
+
+        // 🔽 Costruzione messaggio con riepilogo ordine
+        StringBuilder msgBuilder = new StringBuilder();
+        msgBuilder.append("Dati di spedizione:\n")
+                .append("Nome: ").append(cliente.getNome()).append("\n")
+                .append("Cognome: ").append(cliente.getCognome()).append("\n")
+                .append("Indirizzo: ").append(cliente.getIndirizzo()).append(", ").append(cliente.getCivico()).append("\n")
+                .append("CAP: ").append(cliente.getCap()).append(" - ").append(cliente.getCitta()).append("\n\n");
+
+        msgBuilder.append("Riepilogo ordine:\n");
+
+        double totale = 0.0;
+        for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
+            Prodotto prodotto = entry.getKey();
+            int quantita = entry.getValue();
+            double prezzoTotale = prodotto.getPrezzoVendita() * quantita;
+            totale += prezzoTotale;
+            msgBuilder.append("- ")
+                    .append(prodotto.getNome())
+                    .append(" x").append(quantita)
+                    .append(" → €").append(String.format("%.2f", prezzoTotale)).append("\n");
+        }
+
+        msgBuilder.append("Totale: €").append(String.format("%.2f", totale));
+        String msg = msgBuilder.toString();
+
+        // 🔽 Pulsanti dell'Alert
+        ButtonType annulla = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType modifica = new ButtonType("Modifica Spedizione");
+        ButtonType conferma = new ButtonType("Conferma Ordine");
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, msg, annulla, modifica, conferma);
+        alert.setTitle("Conferma Ordine");
+        alert.setHeaderText("Vuoi procedere con l’ordine?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent()) {
+            if (result.get() == annulla) {
+                // ordine annullato, non fare nulla
+            } else if (result.get() == modifica) {
+                boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
+                navigationService.navigateToProfilo(isInterfaccia1);
+            } else if (result.get() == conferma) {
+                ordineService.procediOrdine();
+                inviaOrdine();
+                showAlert("✅ Ordine inviato con successo!");
+            }
+        }
     }
 
     private void aggiornaListaProdotti() {
@@ -142,21 +241,27 @@ public class NegozioController {
     }
 
     private void aggiornaCarrello() {
-        VBox box = getCarrelloBox();
-        box.getChildren().removeIf(n -> n instanceof Label && !((Label) n).getText().equals("🛒 Carrello"));
+        VBox righeBox;
+
+        if (view instanceof NegozioView1) {
+            NegozioView1 v1 = (NegozioView1) view;
+            righeBox = v1.getRigheCarrelloBox();
+        } else if (view instanceof NegozioView2) {
+            NegozioView2 v2 = (NegozioView2) view;
+            righeBox = v2.getRigheCarrelloBox();
+        } else {
+            return;
+        }
+
+        righeBox.getChildren().clear();
+
         for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
-            box.getChildren().add(new Label(entry.getKey().getNome() + " x" + entry.getValue()));
+            righeBox.getChildren().add(new Label(entry.getKey().getNome() + " x" + entry.getValue()));
         }
     }
 
-    private VBox getCarrelloBox() {
-        if (view instanceof NegozioView1) return ((NegozioView1) view).getCarrelloBox();
-        else if (view instanceof NegozioView2) return ((NegozioView2) view).getCarrelloBox();
-        return new VBox();
-    }
-
     private void showAlert(String msg) {
-        Alert a = new Alert(Alert.AlertType.WARNING, msg, ButtonType.OK);
+        Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
         a.showAndWait();
     }
 

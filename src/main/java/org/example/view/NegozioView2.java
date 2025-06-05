@@ -13,7 +13,10 @@ public class NegozioView2 {
     private final Label disponibilitaLabel;
     private final TextField quantitaField;
     private final Button aggiungiButton;
+
     private final VBox carrelloBox;
+    private final VBox righeCarrelloBox; // ✅ VBox per righe dinamiche del carrello
+
     private final Button inviaOrdineButton = new Button("Invia Ordine");
     private final Button logoutButton = new Button("Logout");
     private final Button profiloButton = new Button("Modifica Profilo");
@@ -44,7 +47,16 @@ public class NegozioView2 {
         carrelloBox.setPadding(new Insets(10));
         carrelloBox.setPrefWidth(250);
         carrelloBox.setStyle("-fx-background-color: #f0f0f0;");
-        carrelloBox.getChildren().addAll(new Label("🛒 Carrello"), inviaOrdineButton, logoutButton, profiloButton);
+
+        Label titoloCarrello = new Label("🛒 Carrello");
+        righeCarrelloBox = new VBox(5); // ✅ contiene solo righe dinamiche
+        carrelloBox.getChildren().addAll(
+                titoloCarrello,
+                righeCarrelloBox,
+                inviaOrdineButton,
+                logoutButton,
+                profiloButton
+        );
 
         // ✅ Layout
         root.setLeft(listaProdotti);
@@ -60,9 +72,10 @@ public class NegozioView2 {
     public TextField getQuantitaField() { return quantitaField; }
     public Button getAggiungiButton() { return aggiungiButton; }
     public VBox getCarrelloBox() { return carrelloBox; }
+
+    public VBox getRigheCarrelloBox() { return righeCarrelloBox; } // ✅ Getter aggiunto
+
     public Button getInviaOrdineButton() { return inviaOrdineButton; }
     public Button getLogoutButton() { return logoutButton; }
-    public Button getProfiloButton() {
-        return profiloButton;
-    }
+    public Button getProfiloButton() { return profiloButton; }
 }

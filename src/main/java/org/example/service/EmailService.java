@@ -1,10 +1,13 @@
 package org.example.service;
 
+import org.example.model.Prodotto;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,4 +71,52 @@ public class EmailService {
             LOGGER.log(Level.SEVERE, "❌ Errore nell'invio dell'email", e);
         }
     }
+
+    public static void sendOrderSummaryEmail(String recipientEmail, String nomeCliente, Map<Prodotto, Integer> carrello) {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
+
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(emailSender, emailPassword);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(emailSender));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject("Riepilogo del tuo ordine");
+
+            StringBuilder content = new StringBuilder();
+            content.append("Ciao ").append(nomeCliente).append(",\n\n")
+                    .append("Ecco il riepilogo del tuo ordine:\n\n");
+
+            double totale = 0.0;
+            for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
+                Prodotto p = entry.getKey();
+                int q = entry.getValue();
+                double subtotale = p.getPrezzoVendita() * q;
+                totale += subtotale;
+                content.append("- ").append(p.getNome())
+                        .append(" x").append(q)
+                        .append(" → €").append(String.format("%.2f", subtotale)).append("\n");
+            }
+
+            content.append("\nTotale ordine: €").append(String.format("%.2f", totale));
+            content.append("\n\nGrazie per il tuo acquisto!");
+
+            message.setText(content.toString());
+
+            Transport.send(message);
+            LOGGER.log(Level.INFO, "✅ Email riepilogo ordine inviata a {0}", recipientEmail);
+        } catch (MessagingException e) {
+            LOGGER.log(Level.SEVERE, "❌ Errore nell'invio dell'email di ordine", e);
+        }
+    }
+
 }

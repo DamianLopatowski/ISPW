@@ -1,5 +1,6 @@
 package org.example.controllergrafici;
 
+import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -85,6 +86,7 @@ public class LoginController {
 
             // ✅ IMPOSTA IL CLIENTE LOGGATO NELLA SESSIONE
             navigationService.setClienteLoggato(cliente);
+            SessionController.setClienteLoggato(cliente); // ✅ AGGIUNGI QUESTA RIGA
             navigationService.navigateToNegozio();
         } else {
             LOGGER.warning("❌ Credenziali errate o utente inesistente!");

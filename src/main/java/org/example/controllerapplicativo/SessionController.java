@@ -4,12 +4,16 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.example.ApplicationContext;
 import org.example.controllergrafici.LoginController;
 import org.example.controllergrafici.ViewController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.model.Cliente;
+import org.example.model.Prodotto;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
 import org.example.view.Login2View;
@@ -30,6 +34,7 @@ public class SessionController {
     private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
     private static final String INTERFACCIA_2_LABEL = "Interfaccia 2";
     private static Cliente clienteLoggato;
+    private static final Map<Prodotto, Integer> carrello = new HashMap<>();
 
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
@@ -166,5 +171,13 @@ public class SessionController {
 
     public static void setClienteLoggato(Cliente cliente) {
         clienteLoggato = cliente;
+    }
+
+    public static Map<Prodotto, Integer> getCarrello() {
+        return carrello;
+    }
+
+    public static void svuotaCarrello() {
+        carrello.clear();
     }
 }

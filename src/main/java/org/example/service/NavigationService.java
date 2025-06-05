@@ -11,6 +11,7 @@ public interface NavigationService {
     Parent navigateToRegistrazioneCliente(boolean isInterfaccia1);
     void setInterfaccia1(boolean isInterfaccia1);
     void navigateToProfilo();
+    void navigateToProfilo(boolean isInterfaccia1);
     void setClienteLoggato(Cliente cliente);
     Cliente getClienteLoggato();
 

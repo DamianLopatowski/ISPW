@@ -26,6 +26,7 @@ org\example\controllergrafici\ProfiloController$ProfiloInput.class
 org\example\view\View.class
 org\example\dao\ClienteDAO.class
 org\example\view\Login1View.class
+org\example\service\EmailService$2.class
 org\example\controllerapplicativo\SessionController.class
 org\example\service\RegistrazioneException.class
 org\example\model\Cliente.class
@@ -39,3 +40,4 @@ org\example\controllergrafici\NegozioController.class
 org\example\dao\ProdottoDAOImpl.class
 org\example\dao\ProdottoDAO.class
 org\example\service\EmailService$1.class
+org\example\service\OrdineService.class

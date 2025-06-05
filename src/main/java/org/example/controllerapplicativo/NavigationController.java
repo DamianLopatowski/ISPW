@@ -177,6 +177,24 @@ public class NavigationController implements NavigationService {
     }
 
     @Override
+    public void navigateToProfilo(boolean isInterfaccia1) {
+        LOGGER.info("🧭 Navigazione al profilo utente (con parametro)...");
+
+        ProfiloController controller = new ProfiloController(isInterfaccia1, this);
+        Parent root = controller.getRootView();
+
+        if (root != null) {
+            stage.setScene(new Scene(root, 600, 400));
+            stage.setTitle("Profilo Utente");
+            stage.show();
+            LOGGER.info("✅ Profilo utente caricato correttamente.");
+        } else {
+            LOGGER.warning("❌ Errore: ProfiloView è NULL!");
+        }
+    }
+
+
+    @Override
     public void setClienteLoggato(Cliente cliente) {
         this.clienteLoggato = cliente;
     }

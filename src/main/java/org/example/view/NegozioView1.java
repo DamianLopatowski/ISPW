@@ -9,10 +9,10 @@ public class NegozioView1 {
     private final ScrollPane scrollPaneProdotti;
     private final FlowPane flowPaneProdotti;
     private final VBox carrelloBox;
+    private final VBox righeCarrelloBox; // ✅ Nuova VBox per le righe del carrello
     private final Button inviaOrdineButton = new Button("Invia Ordine");
     private final Button logoutButton = new Button("Logout");
     private final Button profiloButton = new Button("Modifica Profilo");
-
 
     public NegozioView1() {
         root = new BorderPane();
@@ -30,22 +30,51 @@ public class NegozioView1 {
         scrollPaneProdotti.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPaneProdotti.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
+        // Carrello layout
         carrelloBox = new VBox(10);
         carrelloBox.setPadding(new Insets(10));
         carrelloBox.setPrefWidth(250);
         carrelloBox.setStyle("-fx-background-color: #f0f0f0;");
-        carrelloBox.getChildren().addAll(new Label("🛒 Carrello"), inviaOrdineButton, logoutButton, profiloButton);
+
+        Label titoloCarrello = new Label("🛒 Carrello");
+        righeCarrelloBox = new VBox(5); // ✅ Contenitore solo per righe dinamiche
+
+        carrelloBox.getChildren().addAll(
+                titoloCarrello,
+                righeCarrelloBox, // ✅ Viene aggiornato dinamicamente dal controller
+                inviaOrdineButton,
+                logoutButton,
+                profiloButton
+        );
 
         root.setCenter(scrollPaneProdotti);
         root.setRight(carrelloBox);
-
     }
 
-    public BorderPane getRoot() { return root; }
-    public FlowPane getFlowPaneProdotti() { return flowPaneProdotti; }
-    public VBox getCarrelloBox() { return carrelloBox; }
-    public Button getInviaOrdineButton() { return inviaOrdineButton; }
-    public Button getLogoutButton() { return logoutButton; }
+    public BorderPane getRoot() {
+        return root;
+    }
+
+    public FlowPane getFlowPaneProdotti() {
+        return flowPaneProdotti;
+    }
+
+    public VBox getCarrelloBox() {
+        return carrelloBox;
+    }
+
+    public VBox getRigheCarrelloBox() { // ✅ Getter per la VBox dinamica
+        return righeCarrelloBox;
+    }
+
+    public Button getInviaOrdineButton() {
+        return inviaOrdineButton;
+    }
+
+    public Button getLogoutButton() {
+        return logoutButton;
+    }
+
     public Button getProfiloButton() {
         return profiloButton;
     }

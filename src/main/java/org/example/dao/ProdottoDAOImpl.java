@@ -100,4 +100,9 @@ public class ProdottoDAOImpl implements ProdottoDAO {
             }
         }
     }
+
+    public boolean isOnline() {
+        return isOnlineMode;
+    }
+
 }
