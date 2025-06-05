@@ -26,6 +26,9 @@ public class SessionController {
     private final boolean isOnlineMode;
     private static boolean isInterfaccia1;
     protected static boolean isOnlineModeStatic = true;
+    private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
+    private static final String INTERFACCIA_2_LABEL = "Interfaccia 2";
+
 
     // ✅ Costruttore
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
@@ -46,10 +49,6 @@ public class SessionController {
         isOnlineModeStatic = mode;
     }
 
-    public static void setIsInterfaccia1(boolean value) {
-        isInterfaccia1 = value;
-    }
-
     public static boolean getIsInterfaccia1Static() {
         return isInterfaccia1;
     }
@@ -66,18 +65,17 @@ public class SessionController {
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
-                setIsInterfaccia1(true);
-                SessionController.setIsInterfaccia1Static(true); // <--- AGGIUNTO
+                SessionController.setIsInterfaccia1Static(true);
             } else if (view.getInterfaccia2Option().isSelected()) {
-                setIsInterfaccia1(false);
-                SessionController.setIsInterfaccia1Static(false); // <--- AGGIUNTO
+                SessionController.setIsInterfaccia1Static(false);
             } else {
                 LOGGER.warning("❌ Nessuna interfaccia selezionata.");
                 return;
             }
 
-            LOGGER.info("🔄 Avvio login (" + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2") + ") - " +
-                    (isOnlineMode ? "ONLINE" : "OFFLINE"));
+            LOGGER.info(String.format("🔄 Avvio login (%s) - %s",
+                    isInterfaccia1 ? INTERFACCIA_1_LABEL : INTERFACCIA_2_LABEL,
+                    isOnlineMode ? "ONLINE" : "OFFLINE"));
             startLogin();
         });
 
