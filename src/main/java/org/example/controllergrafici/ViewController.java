@@ -29,7 +29,7 @@ public class ViewController {
         }
 
         boolean isInterfaccia1 = view.getInterfaccia1Option().isSelected();
-        SessionController.setIsInterfaccia1Static(isInterfaccia1); // ✅ SALVA LA SCELTA
+        navigationService.setInterfaccia1(isInterfaccia1);// ✅ SALVA LA SCELTA
         navigationService.navigateToLogin(isInterfaccia1, isCliente);
     }
 
@@ -41,7 +41,7 @@ public class ViewController {
         }
 
         boolean isInterfaccia1 = view.getInterfaccia1Option().isSelected();
-        SessionController.setIsInterfaccia1Static(isInterfaccia1); // ✅ SALVA LA SCELTA
+        navigationService.setInterfaccia1(isInterfaccia1); // ✅ SALVA LA SCELTA
         navigationService.navigateToRegistrazioneCliente(isInterfaccia1);
     }
 }

@@ -156,9 +156,9 @@ public class NavigationController implements NavigationService {
         }
     }
 
-
-
-
-
+    @Override
+    public void setInterfaccia1(boolean isInterfaccia1) {
+        SessionController.setIsInterfaccia1Static(isInterfaccia1);
+    }
 
 }
