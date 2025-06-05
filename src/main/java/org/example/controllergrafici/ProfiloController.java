@@ -3,6 +3,8 @@ package org.example.controllergrafici;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.example.dao.ClienteDAO;
+import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
 import org.example.service.NavigationService;
 import org.example.controllerapplicativo.SessionController;
@@ -12,12 +14,10 @@ import org.example.view.ProfiloView2;
 public class ProfiloController {
     private final Object view;
     private final NavigationService navigationService;
-    private final Cliente cliente;
 
     public ProfiloController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new ProfiloView1() : new ProfiloView2();
         this.navigationService = navigationService;
-        this.cliente = SessionController.getClienteLoggato();
 
         if (view instanceof ProfiloView1) {
             ProfiloView1 v1 = (ProfiloView1) view;
@@ -33,6 +33,8 @@ public class ProfiloController {
     }
 
     private void riempiCampi(Object v) {
+        Cliente cliente = navigationService.getClienteLoggato(); // usa cliente aggiornato
+
         if (v instanceof ProfiloView1) {
             ProfiloView1 pv = (ProfiloView1) v;
             pv.getNomeField().setText(cliente.getNome());
@@ -47,6 +49,8 @@ public class ProfiloController {
     }
 
     private void salvaDati(Object v) {
+        Cliente cliente = navigationService.getClienteLoggato(); // cliente aggiornato
+
         String nome, cognome, username, oldPwd, newPwd, confPwd;
 
         if (v instanceof ProfiloView1) {
@@ -67,22 +71,27 @@ public class ProfiloController {
             confPwd = pv.getConfirmPasswordField().getText();
         }
 
-        if (!oldPwd.equals(cliente.getPassword())) {
-            showAlert("❌ Password attuale errata");
-            return;
+        // Verifica se l’utente vuole aggiornare la password
+        boolean vuoleCambiarePassword = !oldPwd.isEmpty() || !newPwd.isEmpty() || !confPwd.isEmpty();
+
+        if (vuoleCambiarePassword) {
+            if (!oldPwd.equals(cliente.getPassword())) {
+                showAlert("❌ Password attuale errata");
+                return;
+            }
+
+            if (!newPwd.equals(confPwd)) {
+                showAlert("❌ Le nuove password non coincidono");
+                return;
+            }
         }
 
-        if (!newPwd.equals(confPwd)) {
-            showAlert("❌ Le nuove password non coincidono");
-            return;
-        }
-
-        // Ricostruisce l'oggetto Cliente con Builder
+        // Costruzione nuovo oggetto cliente con eventuali modifiche
         Cliente nuovoCliente = new Cliente.Builder()
-                .username(username)
-                .nome(nome)
-                .cognome(cognome)
-                .password(newPwd.isEmpty() ? cliente.getPassword() : newPwd)
+                .username(username.isEmpty() ? cliente.getUsername() : username)
+                .nome(nome.isEmpty() ? cliente.getNome() : nome)
+                .cognome(cognome.isEmpty() ? cliente.getCognome() : cognome)
+                .password(vuoleCambiarePassword && !newPwd.isEmpty() ? newPwd : cliente.getPassword())
                 .email(cliente.getEmail())
                 .partitaIva(cliente.getPartitaIva())
                 .indirizzo(cliente.getIndirizzo())
@@ -91,10 +100,19 @@ public class ProfiloController {
                 .citta(cliente.getCitta())
                 .build();
 
-        SessionController.setClienteLoggato(nuovoCliente);
+        ClienteDAO dao = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
+        boolean successo = dao.update(nuovoCliente, cliente.getUsername());
 
-        // (Opzionale) salva anche nel DB se online
-        showAlert("✅ Profilo aggiornato con successo");
+        if (successo) {
+            Cliente clienteRicaricato = dao.findByUsername(nuovoCliente.getUsername());
+            if (clienteRicaricato != null) {
+                SessionController.setClienteLoggato(clienteRicaricato);
+                navigationService.setClienteLoggato(clienteRicaricato); // AGGIUNTA NECESSARIA
+            }
+            showAlert("✅ Profilo aggiornato con successo");
+        } else {
+            showAlert("❌ Errore durante il salvataggio");
+        }
     }
 
     private void showAlert(String msg) {

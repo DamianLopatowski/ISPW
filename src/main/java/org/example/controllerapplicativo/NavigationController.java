@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import org.example.controllergrafici.*;
 import org.example.dao.ClienteDAOImpl;
 import org.example.dao.GestoreDAOImpl;
+import org.example.model.Cliente;
 import org.example.service.NavigationService;
 import org.example.view.*;
 
@@ -19,6 +20,7 @@ public class NavigationController implements NavigationService {
     private static final Logger LOGGER = Logger.getLogger(NavigationController.class.getName());
     private final Stage stage;
     private static final String CONFIG_FILE_PATH = "config.properties";
+    private Cliente clienteLoggato;
 
     public NavigationController(Stage stage) {
         this.stage = stage;
@@ -173,6 +175,16 @@ public class NavigationController implements NavigationService {
         } else {
             LOGGER.warning("❌ Errore: ProfiloView è NULL!");
         }
+    }
+
+    @Override
+    public void setClienteLoggato(Cliente cliente) {
+        this.clienteLoggato = cliente;
+    }
+
+    @Override
+    public Cliente getClienteLoggato() {
+        return clienteLoggato;
     }
 
 

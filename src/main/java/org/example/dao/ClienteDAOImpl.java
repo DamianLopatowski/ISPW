@@ -1,14 +1,15 @@
 package org.example.dao;
 
 import org.example.model.Cliente;
+
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClienteDAOImpl implements ClienteDAO {
     private static final Logger LOGGER = Logger.getLogger(ClienteDAOImpl.class.getName());
@@ -118,7 +119,6 @@ public class ClienteDAOImpl implements ClienteDAO {
         return null;
     }
 
-
     @Override
     public Cliente findByUsername(String username) {
         if (isOnlineMode) {
@@ -151,5 +151,32 @@ public class ClienteDAOImpl implements ClienteDAO {
             return clientiOffline.get(username);
         }
         return null;
+    }
+
+    @Override
+    public boolean update(Cliente cliente, String vecchioUsername) {
+        loadDatabaseConfig();
+
+        if (isOnlineMode) {
+            try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
+                String sql = "UPDATE usercliente SET nome = ?, cognome = ?, username = ?, password = ? WHERE username = ?";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, cliente.getNome());
+                stmt.setString(2, cliente.getCognome());
+                stmt.setString(3, cliente.getUsername());
+                stmt.setString(4, cliente.getPassword());
+                stmt.setString(5, vecchioUsername); // ← usa lo username precedente come riferimento
+                int rows = stmt.executeUpdate();
+                LOGGER.info("✅ Cliente aggiornato nel database. Righe modificate: " + rows);
+                return rows > 0;
+            } catch (SQLException e) {
+                LOGGER.severe("❌ Errore durante l'update del cliente: " + e.getMessage());
+                return false;
+            }
+        } else {
+            LOGGER.info("🔄 Aggiornamento cliente in RAM (OFFLINE): " + cliente.getUsername());
+            clientiOffline.put(cliente.getUsername(), cliente);
+            return true;
+        }
     }
 }

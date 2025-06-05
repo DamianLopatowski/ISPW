@@ -86,8 +86,7 @@ public class LoginController {
             statusLabel.setText("✅ Accesso effettuato!");
 
             // ✅ IMPOSTA IL CLIENTE LOGGATO NELLA SESSIONE
-            SessionController.setClienteLoggato(cliente);
-
+            navigationService.setClienteLoggato(cliente);
             navigationService.navigateToNegozio();
         } else {
             LOGGER.warning("❌ Credenziali errate o utente inesistente!");

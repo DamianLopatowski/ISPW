@@ -55,6 +55,7 @@ public class SessionController {
         return isOnlineModeStatic;
     }
 
+
     private void initializeView() {
         View view = context.getMainView();
 

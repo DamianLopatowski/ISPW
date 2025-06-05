@@ -1,6 +1,7 @@
 package org.example.service;
 
 import javafx.scene.Parent;
+import org.example.model.Cliente;
 
 public interface NavigationService {
     void navigateToNegozio();
@@ -10,6 +11,8 @@ public interface NavigationService {
     Parent navigateToRegistrazioneCliente(boolean isInterfaccia1);
     void setInterfaccia1(boolean isInterfaccia1);
     void navigateToProfilo();
+    void setClienteLoggato(Cliente cliente);
+    Cliente getClienteLoggato();
 
 
 
