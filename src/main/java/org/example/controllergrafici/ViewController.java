@@ -1,6 +1,5 @@
 package org.example.controllergrafici;
 
-import org.example.controllerapplicativo.SessionController;
 import org.example.service.NavigationService;
 import org.example.view.View;
 import java.util.logging.Logger;

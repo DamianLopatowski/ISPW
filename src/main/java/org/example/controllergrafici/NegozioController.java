@@ -96,9 +96,9 @@ public class NegozioController {
                 aggiornaDettagliProdotto(lista.getSelectionModel().getSelectedItem(), prodottiMap, v2);
             }
 
-            lista.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-                aggiornaDettagliProdotto(newVal, prodottiMap, v2);
-            });
+            lista.getSelectionModel().selectedItemProperty().addListener(
+                    (obs, oldVal, newVal) -> aggiornaDettagliProdotto(newVal, prodottiMap, v2)
+            );
         }
     }
 
@@ -117,7 +117,7 @@ public class NegozioController {
 
         v2.getAggiungiButton().setOnAction(e -> {
             try {
-                int q = Integer.parseInt(v2.getQuantitàField().getText().trim());
+                int q = Integer.parseInt(v2.getQuantitaField().getText().trim());
                 if (q > 0 && q <= selezionato.getQuantita()) {
                     carrello.put(selezionato, carrello.getOrDefault(selezionato, 0) + q);
                     aggiornaCarrello();

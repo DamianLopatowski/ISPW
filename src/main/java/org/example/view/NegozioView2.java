@@ -11,7 +11,7 @@ public class NegozioView2 {
     private final VBox dettagliBox;
     private final ImageView imageView;
     private final Label disponibilitaLabel;
-    private final TextField quantitàField;
+    private final TextField quantitaField;
     private final Button aggiungiButton;
     private final VBox carrelloBox;
 
@@ -30,11 +30,11 @@ public class NegozioView2 {
         imageView.setPreserveRatio(true);
 
         disponibilitaLabel = new Label("Disponibilità: ");
-        quantitàField = new TextField();
-        quantitàField.setPromptText("Quantità");
+        quantitaField = new TextField();
+        quantitaField.setPromptText("Quantità");
         aggiungiButton = new Button("Aggiungi al carrello");
 
-        dettagliBox.getChildren().addAll(imageView, disponibilitaLabel, quantitàField, aggiungiButton);
+        dettagliBox.getChildren().addAll(imageView, disponibilitaLabel, quantitaField, aggiungiButton);
 
         // ✅ Box carrello
         carrelloBox = new VBox(10);
@@ -54,7 +54,7 @@ public class NegozioView2 {
     public VBox getDettagliBox() { return dettagliBox; }
     public ImageView getImageView() { return imageView; }
     public Label getDisponibilitaLabel() { return disponibilitaLabel; }
-    public TextField getQuantitàField() { return quantitàField; }
+    public TextField getQuantitaField() { return quantitaField; }
     public Button getAggiungiButton() { return aggiungiButton; }
     public VBox getCarrelloBox() { return carrelloBox; }
 }

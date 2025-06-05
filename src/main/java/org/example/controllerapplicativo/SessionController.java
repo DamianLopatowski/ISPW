@@ -29,22 +29,18 @@ public class SessionController {
     private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
     private static final String INTERFACCIA_2_LABEL = "Interfaccia 2";
 
-
-    // ✅ Costruttore
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
         this.navigationService = navigationService;
-        setIsOnlineModeStatic(isOnlineMode); // imposta variabile statica coerente
+        setIsOnlineModeStatic(isOnlineMode);
 
-        View mainView = new View(); // UI iniziale
-        new ViewController(mainView, navigationService); // collega eventi view → navigazione
-
-        this.context = new ApplicationContext(stage, mainView); // contesto dell'app
+        View mainView = new View();
+        new ViewController(mainView, navigationService);
+        this.context = new ApplicationContext(stage, mainView);
         initializeView();
     }
 
-    // ✅ Getter/setter statici
     public static void setIsOnlineModeStatic(boolean mode) {
         isOnlineModeStatic = mode;
     }
@@ -57,11 +53,10 @@ public class SessionController {
         return isOnlineModeStatic;
     }
 
-    // ✅ Schermata iniziale: selezione interfaccia e avvio login
     private void initializeView() {
         View view = context.getMainView();
 
-        LOGGER.info("✅ Modalità al riavvio: " + (isOnlineMode ? "ONLINE" : "OFFLINE"));
+        LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
@@ -84,7 +79,6 @@ public class SessionController {
         stage.show();
     }
 
-    // ✅ Avvia schermata login (diversa per interfaccia scelta)
     private void startLogin() {
         LOGGER.info("🔐 Avvio schermata login...");
 
@@ -104,14 +98,14 @@ public class SessionController {
         PasswordField passwordField;
 
         if (isInterfaccia1) {
-            Login1View loginView = new Login1View();  // Interfaccia 1 → Login1
+            Login1View loginView = new Login1View();
             new LoginController(loginView, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            Login2View loginView = new Login2View();  // Interfaccia 2 → Login2
+            Login2View loginView = new Login2View();
             new LoginController(loginView, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
@@ -124,7 +118,7 @@ public class SessionController {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
 
-                LOGGER.info("🔑 Tentativo di login con username: " + username);
+                LOGGER.info(String.format("🔑 Tentativo di login con username: %s", username));
                 boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
                 if (loginSuccess) {
@@ -140,20 +134,19 @@ public class SessionController {
 
         if (loginRoot != null) {
             stage.setScene(new Scene(new VBox(loginRoot), 400, 300));
-            stage.setTitle("Login - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
+            stage.setTitle(String.format("Login - %s", isInterfaccia1 ? INTERFACCIA_1_LABEL : INTERFACCIA_2_LABEL));
         } else {
             LOGGER.warning("❌ Root login nullo.");
         }
     }
 
-    // ✅ Dopo login, naviga al negozio con la vista corretta
     private void navigateToGestione() {
         LOGGER.info("🔁 Navigazione all'interfaccia del negozio...");
         Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
 
         if (gestioneView != null) {
             stage.setScene(new Scene(gestioneView, 800, 600));
-            stage.setTitle("Negozio - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
+            stage.setTitle(String.format("Negozio - %s", isInterfaccia1 ? INTERFACCIA_1_LABEL : INTERFACCIA_2_LABEL));
         } else {
             LOGGER.warning("❌ gestioneView null!");
         }
@@ -162,5 +155,4 @@ public class SessionController {
     public static void setIsInterfaccia1Static(boolean value) {
         isInterfaccia1 = value;
     }
-
 }
