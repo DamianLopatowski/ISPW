@@ -23,66 +23,61 @@ public class SessionController {
     private final Stage stage;
     private final ApplicationContext context;
     private final NavigationService navigationService;
-    private boolean isOnlineMode;
+    private final boolean isOnlineMode;
     private static boolean isInterfaccia1;
     protected static boolean isOnlineModeStatic = true;
 
-    // ✅ Costruttore aggiornato
+    // ✅ Costruttore
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
         this.isOnlineMode = isOnlineMode;
         this.navigationService = navigationService;
+        setIsOnlineModeStatic(isOnlineMode); // imposta variabile statica coerente
 
-        // Creazione dell'istanza di View
-        View mainView = new View();
+        View mainView = new View(); // UI iniziale
+        new ViewController(mainView, navigationService); // collega eventi view → navigazione
 
-        // Creazione del ViewController e assegnazione del servizio di navigazione
-        new ViewController(mainView, navigationService);
-
-        // Creazione del contesto con la View aggiornata
-        this.context = new ApplicationContext(stage, mainView);
+        this.context = new ApplicationContext(stage, mainView); // contesto dell'app
         initializeView();
     }
 
-    // ✅ Set static per la modalità online
+    // ✅ Getter/setter statici
     public static void setIsOnlineModeStatic(boolean mode) {
         isOnlineModeStatic = mode;
     }
 
-    // ✅ Set static per l'interfaccia scelta
     public static void setIsInterfaccia1(boolean value) {
         isInterfaccia1 = value;
     }
 
-    // ✅ Get static sicuro per l'interfaccia scelta
     public static boolean getIsInterfaccia1Static() {
         return isInterfaccia1;
     }
 
-    // ✅ Get static per online/offline
     public static boolean getIsOnlineModeStatic() {
         return isOnlineModeStatic;
     }
 
-    // ⚙️ Inizializzazione schermata di selezione interfaccia
+    // ✅ Schermata iniziale: selezione interfaccia e avvio login
     private void initializeView() {
         View view = context.getMainView();
 
-        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
-            LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
-        }
+        LOGGER.info("✅ Modalità al riavvio: " + (isOnlineMode ? "ONLINE" : "OFFLINE"));
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
-                isInterfaccia1 = true;
+                setIsInterfaccia1(true);
+                SessionController.setIsInterfaccia1Static(true); // <--- AGGIUNTO
             } else if (view.getInterfaccia2Option().isSelected()) {
-                isInterfaccia1 = false;
+                setIsInterfaccia1(false);
+                SessionController.setIsInterfaccia1Static(false); // <--- AGGIUNTO
             } else {
                 LOGGER.warning("❌ Nessuna interfaccia selezionata.");
                 return;
             }
 
-            LOGGER.info("🔄 Avvio login per " + (isOnlineMode ? "modalità ONLINE" : "modalità OFFLINE"));
+            LOGGER.info("🔄 Avvio login (" + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2") + ") - " +
+                    (isOnlineMode ? "ONLINE" : "OFFLINE"));
             startLogin();
         });
 
@@ -91,31 +86,18 @@ public class SessionController {
         stage.show();
     }
 
-    // ⚙️ Navigazione alla gestione prodotti dopo login
-    private void navigateToGestione() {
-        LOGGER.info("🔄 Navigazione a GestioneProdotti...");
-        Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
-        if (gestioneView != null) {
-            LOGGER.info("✅ Cambio scena a GestioneProdotti...");
-            stage.setScene(new Scene(gestioneView, 600, 400));
-            stage.setTitle("Gestione Prodotti - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
-        } else {
-            LOGGER.warning("❌ Errore: gestioneView è NULL!");
-        }
-    }
-
-    // ⚙️ Login
+    // ✅ Avvia schermata login (diversa per interfaccia scelta)
     private void startLogin() {
-        LOGGER.info("🔑 Avvio della schermata di login...");
+        LOGGER.info("🔐 Avvio schermata login...");
 
         GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
         AuthController authController = new AuthController(gestoreDAO);
 
-        if (!isOnlineMode) {
-            LOGGER.info("🟢 Modalità offline, nessuna ricarica credenziali.");
-        } else {
-            LOGGER.info("🔄 Modalità online, ricarico le credenziali online...");
+        if (isOnlineMode) {
             gestoreDAO.refreshOnlineCredentials();
+            LOGGER.info("🌐 Credenziali ricaricate dal database.");
+        } else {
+            LOGGER.info("🟢 Modalità offline: credenziali locali.");
         }
 
         Parent loginRoot;
@@ -124,14 +106,14 @@ public class SessionController {
         PasswordField passwordField;
 
         if (isInterfaccia1) {
-            Login2View loginView = new Login2View();
+            Login1View loginView = new Login1View();  // Interfaccia 1 → Login1
             new LoginController(loginView, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
         } else {
-            Login1View loginView = new Login1View();
+            Login2View loginView = new Login2View();  // Interfaccia 2 → Login2
             new LoginController(loginView, navigationService, isOnlineMode);
             loginRoot = loginView.getRoot();
             loginButton = loginView.getLoginButton();
@@ -143,26 +125,44 @@ public class SessionController {
             loginButton.setOnAction(event -> {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
-                LOGGER.info(String.format("🔑 Tentativo di login con username: %s", username));
+
+                LOGGER.info("🔑 Tentativo di login con username: " + username);
                 boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
                 if (loginSuccess) {
                     LOGGER.info("✅ Login riuscito!");
                     navigateToGestione();
                 } else {
-                    LOGGER.warning("❌ Credenziali errate.");
+                    LOGGER.warning("❌ Login fallito: credenziali errate.");
                 }
             });
         } else {
-            LOGGER.warning("⚠️ Bottone di login è NULL! Verifica la creazione della View.");
+            LOGGER.warning("⚠️ Bottone login nullo.");
         }
 
         if (loginRoot != null) {
             stage.setScene(new Scene(new VBox(loginRoot), 400, 300));
             stage.setTitle("Login - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
-            LOGGER.info("✅ Scena aggiornata con la schermata di login.");
         } else {
-            LOGGER.warning("❌ Errore: loginRoot è NULL!");
+            LOGGER.warning("❌ Root login nullo.");
         }
     }
+
+    // ✅ Dopo login, naviga al negozio con la vista corretta
+    private void navigateToGestione() {
+        LOGGER.info("🔁 Navigazione all'interfaccia del negozio...");
+        Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
+
+        if (gestioneView != null) {
+            stage.setScene(new Scene(gestioneView, 800, 600));
+            stage.setTitle("Negozio - " + (isInterfaccia1 ? "Interfaccia 1" : "Interfaccia 2"));
+        } else {
+            LOGGER.warning("❌ gestioneView null!");
+        }
+    }
+
+    public static void setIsInterfaccia1Static(boolean value) {
+        isInterfaccia1 = value;
+    }
+
 }

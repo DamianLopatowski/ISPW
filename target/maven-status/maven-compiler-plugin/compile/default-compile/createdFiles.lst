@@ -10,6 +10,7 @@ org\example\model\Gestore.class
 org\example\service\NavigationService.class
 org\example\view\RegistratiCliente1View.class
 org\example\exception\GestoreInitializationException.class
+org\example\view\NegozioView1.class
 org\example\model\Prodotto$Builder.class
 org\example\controllerapplicativo\AuthController.class
 org\example\MainApp.class
@@ -24,7 +25,6 @@ org\example\view\Login1View.class
 org\example\controllerapplicativo\SessionController.class
 org\example\service\RegistrazioneException.class
 org\example\model\Cliente.class
-org\example\view\NegozioView.class
 org\example\dao\ClienteDAOImpl.class
 org\example\service\EmailService.class
 org\example\view\Gestione2View.class

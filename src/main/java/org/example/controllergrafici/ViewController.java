@@ -1,5 +1,6 @@
 package org.example.controllergrafici;
 
+import org.example.controllerapplicativo.SessionController;
 import org.example.service.NavigationService;
 import org.example.view.View;
 import java.util.logging.Logger;
@@ -26,9 +27,12 @@ public class ViewController {
             LOGGER.warning("❌ ERRORE: NavigationService è NULL! Assicurati di impostarlo prima di usare la navigazione.");
             return;
         }
+
         boolean isInterfaccia1 = view.getInterfaccia1Option().isSelected();
+        SessionController.setIsInterfaccia1Static(isInterfaccia1); // ✅ SALVA LA SCELTA
         navigationService.navigateToLogin(isInterfaccia1, isCliente);
     }
+
 
     private void navigateToRegistrazioneCliente() {
         if (navigationService == null) {
@@ -37,6 +41,7 @@ public class ViewController {
         }
 
         boolean isInterfaccia1 = view.getInterfaccia1Option().isSelected();
+        SessionController.setIsInterfaccia1Static(isInterfaccia1); // ✅ SALVA LA SCELTA
         navigationService.navigateToRegistrazioneCliente(isInterfaccia1);
     }
 }

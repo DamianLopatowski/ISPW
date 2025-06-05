@@ -4,13 +4,13 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-public class NegozioView {
+public class NegozioView1 {
     private final BorderPane root;
     private final ScrollPane scrollPaneProdotti;
     private final FlowPane flowPaneProdotti;
     private final VBox carrelloBox;
 
-    public NegozioView() {
+    public NegozioView1() {
         root = new BorderPane();
 
         // FlowPane responsivo
