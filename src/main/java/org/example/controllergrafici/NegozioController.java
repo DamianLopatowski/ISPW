@@ -21,12 +21,10 @@ public class NegozioController {
     private final Object view;
     private final ProdottoDAOImpl prodottoDAO;
     private final Map<Prodotto, Integer> carrello = new HashMap<>();
-    private final NavigationService navigationService;
 
     public NegozioController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new NegozioView1() : new NegozioView2();
         this.prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
-        this.navigationService = navigationService;
 
         aggiornaListaProdotti();
 
