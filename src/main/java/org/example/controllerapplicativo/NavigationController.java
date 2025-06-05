@@ -161,7 +161,6 @@ public class NavigationController implements NavigationService {
     @Override
     public void navigateToProfilo() {
         LOGGER.info("👤 Navigazione al profilo utente...");
-        boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
         boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
 
         ProfiloController controller = new ProfiloController(isInterfaccia1, this);
