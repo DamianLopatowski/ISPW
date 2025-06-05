@@ -14,6 +14,8 @@ import javafx.scene.control.TextField;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.example.controllerapplicativo.SessionController; // ✅ IMPORT NECESSARIO
+
 public class LoginController {
     private final Object view; // Può essere Login1View o Login2View
     private final NavigationService navigationService;
@@ -82,6 +84,10 @@ public class LoginController {
         if (cliente != null && cliente.getPassword().equals(password)) {
             LOGGER.info("✅ Login riuscito!");
             statusLabel.setText("✅ Accesso effettuato!");
+
+            // ✅ IMPOSTA IL CLIENTE LOGGATO NELLA SESSIONE
+            SessionController.setClienteLoggato(cliente);
+
             navigationService.navigateToNegozio();
         } else {
             LOGGER.warning("❌ Credenziali errate o utente inesistente!");

@@ -4,10 +4,13 @@ org\example\view\Gestione1View.class
 org\example\service\RegistrazioneService.class
 org\example\controllergrafici\LoginController.class
 org\example\controllerapplicativo\NavigationController.class
+org\example\controllergrafici\ProfiloController.class
+org\example\view\ProfiloView1.class
 org\example\view\RegistratiCliente2View.class
 org\example\controllergrafici\RegistratiClienteController.class
 org\example\model\Gestore.class
 org\example\service\NavigationService.class
+org\example\view\ProfiloView2.class
 org\example\view\RegistratiCliente1View.class
 org\example\exception\GestoreInitializationException.class
 org\example\view\NegozioView1.class

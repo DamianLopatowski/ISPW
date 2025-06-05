@@ -9,6 +9,7 @@ import org.example.ApplicationContext;
 import org.example.controllergrafici.LoginController;
 import org.example.controllergrafici.ViewController;
 import org.example.dao.GestoreDAOImpl;
+import org.example.model.Cliente;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
 import org.example.view.Login2View;
@@ -28,6 +29,7 @@ public class SessionController {
     protected static boolean isOnlineModeStatic = true;
     private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
     private static final String INTERFACCIA_2_LABEL = "Interfaccia 2";
+    private static Cliente clienteLoggato;
 
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
@@ -156,5 +158,12 @@ public class SessionController {
 
     public static void setIsInterfaccia1Static(boolean value) {
         isInterfaccia1 = value;
+    }
+    public static Cliente getClienteLoggato() {
+        return clienteLoggato;
+    }
+
+    public static void setClienteLoggato(Cliente cliente) {
+        clienteLoggato = cliente;
     }
 }

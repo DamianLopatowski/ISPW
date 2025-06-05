@@ -9,6 +9,8 @@ public interface NavigationService {
     void navigateToLogin(boolean isInterfaccia1, boolean isCliente);
     Parent navigateToRegistrazioneCliente(boolean isInterfaccia1);
     void setInterfaccia1(boolean isInterfaccia1);
+    void navigateToProfilo();
+
 
 
 }

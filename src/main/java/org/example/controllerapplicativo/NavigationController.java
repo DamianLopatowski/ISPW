@@ -157,6 +157,26 @@ public class NavigationController implements NavigationService {
     }
 
     @Override
+    public void navigateToProfilo() {
+        LOGGER.info("👤 Navigazione al profilo utente...");
+        boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
+        boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
+
+        ProfiloController controller = new ProfiloController(isOnlineMode, isInterfaccia1, this);
+        Parent root = controller.getRootView();
+
+        if (root != null) {
+            stage.setScene(new Scene(root, 600, 400));
+            stage.setTitle("Profilo Utente");
+            stage.show();
+            LOGGER.info("✅ Profilo utente caricato correttamente.");
+        } else {
+            LOGGER.warning("❌ Errore: ProfiloView è NULL!");
+        }
+    }
+
+
+    @Override
     public void setInterfaccia1(boolean isInterfaccia1) {
         SessionController.setIsInterfaccia1Static(isInterfaccia1);
     }

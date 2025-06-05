@@ -8,6 +8,7 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\NegozioView2.ja
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\RegistratiCliente2View.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\ClienteDAO.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\DatabaseConfigurationException.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\ProfiloController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativo\NavigationController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\Gestione1View.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\ClienteDAOImpl.java
@@ -19,6 +20,7 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\ProdottoDAOImpl.
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Cliente.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\GestoreDAO.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\Login1View.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\ProfiloView2.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\RegistratiClienteController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\EmailService.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\NavigationService.java
@@ -29,6 +31,7 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\Lo
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\NegozioController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\RegistratiCliente1View.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\NegozioView1.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\ProfiloView1.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\RegistrazioneService.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\MainApp.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\Gestione2View.java

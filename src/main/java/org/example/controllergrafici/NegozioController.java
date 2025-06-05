@@ -32,12 +32,14 @@ public class NegozioController {
             NegozioView1 v1 = (NegozioView1) view;
             v1.getInviaOrdineButton().setOnAction(e -> inviaOrdine());
             v1.getLogoutButton().setOnAction(e -> navigationService.navigateToMainView());
+            v1.getProfiloButton().setOnAction(e -> navigationService.navigateToProfilo());
         }
 
         if (view instanceof NegozioView2) {
             NegozioView2 v2 = (NegozioView2) view;
             v2.getInviaOrdineButton().setOnAction(e -> inviaOrdine());
             v2.getLogoutButton().setOnAction(e -> navigationService.navigateToMainView());
+            v2.getProfiloButton().setOnAction(e -> navigationService.navigateToProfilo());
         }
     }
 
