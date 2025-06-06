@@ -37,7 +37,7 @@ public class NegozioController {
         this.view = isInterfaccia1 ? new NegozioView1() : new NegozioView2();
         this.prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
         this.navigationService = navigationService;
-        this.ordineService = new OrdineService();
+        this.ordineService = new OrdineService(navigationService);
         this.cliente = navigationService.getClienteLoggato();
         this.carrello = SessionController.getCarrello();
 
@@ -76,7 +76,7 @@ public class NegozioController {
         }
 
         if (isOnline) {
-            ordineService.salvaOrdineOnline(cliente, carrello);
+            ordineService.salvaOrdineOnline(carrello, isOnline);
         }
 
         EmailService.sendOrderSummaryEmail(

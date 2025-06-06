@@ -196,26 +196,4 @@ public class SessionController {
         carrello.remove(prodotto);
     }
 
-
-    public static void salvaOrdineCorrente() {
-        if (clienteLoggato == null || carrello.isEmpty()) {
-            LOGGER.warning("⚠️ Nessun cliente loggato o carrello vuoto.");
-            return;
-        }
-
-        // Calcolo totale ordine
-        double totale = carrello.entrySet().stream()
-                .mapToDouble(e -> e.getKey().getPrezzoVendita() * e.getValue())
-                .sum();
-
-        // Creazione istanza servizio ordini
-        OrdineService ordineService = new OrdineService();
-
-        // Salvataggio ordine
-        ordineService.salvaOrdineOnline(clienteLoggato, new HashMap<>(carrello));
-
-        LOGGER.info("📦 Ordine salvato con successo.");
-        svuotaCarrello();
-    }
-
 }

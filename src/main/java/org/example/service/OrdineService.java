@@ -1,14 +1,13 @@
+// OrdineService.java
 package org.example.service;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAOImpl;
 import org.example.model.Cliente;
 import org.example.model.Ordine;
 import org.example.model.Prodotto;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -16,9 +15,14 @@ import java.util.logging.Logger;
 public class OrdineService {
 
     private static final Logger LOGGER = Logger.getLogger(OrdineService.class.getName());
+    private final NavigationService navigationService;
+
+    public OrdineService(NavigationService navigationService) {
+        this.navigationService = navigationService;
+    }
 
     public void procediOrdine() {
-        Cliente cliente = SessionController.getClienteLoggato();
+        Cliente cliente = navigationService.getClienteLoggato();
         if (cliente == null) {
             LOGGER.severe("❌ Errore: cliente nullo in OrdineService!");
             return;
@@ -28,7 +32,13 @@ public class OrdineService {
         new Alert(Alert.AlertType.INFORMATION, "✅ Ordine inviato correttamente!", ButtonType.OK).showAndWait();
     }
 
-    public void salvaOrdineOnline(Cliente cliente, Map<Prodotto, Integer> carrello) {
+    public void salvaOrdineOnline(Map<Prodotto, Integer> carrello, boolean isOnline) {
+        Cliente cliente = navigationService.getClienteLoggato();
+        if (cliente == null) {
+            LOGGER.warning("⚠️ Nessun cliente loggato.");
+            return;
+        }
+
         LOGGER.info("📦 Dettaglio ordine per: " + cliente.getNome() + " " + cliente.getCognome());
         double totale = 0.0;
 
@@ -38,22 +48,13 @@ public class OrdineService {
             double subtotale = prodotto.getPrezzoVendita() * q;
             totale += subtotale;
 
-            if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
-                LOGGER.log(java.util.logging.Level.INFO, "- {0} x{1} → €{2}",
-                        new Object[]{prodotto.getNome(), q, String.format("%.2f", subtotale)});
-            }
+            LOGGER.info(String.format("- %s x%d → €%.2f", prodotto.getNome(), q, subtotale));
         }
 
-        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
-            LOGGER.log(java.util.logging.Level.INFO, "Totale: €{0}",
-                    new Object[]{String.format("%.2f", totale)});
-        }
+        LOGGER.info(String.format("Totale: €%.2f", totale));
 
-        // ✅ Crea l'oggetto Ordine
         Ordine ordine = new Ordine(cliente, new HashMap<>(carrello), totale);
 
-        // ✅ Recupera modalità e salva ordine correttamente
-        boolean isOnline = SessionController.getIsOnlineModeStatic();
         new OrdineDAOImpl(isOnline).salvaOrdine(ordine);
     }
 }
