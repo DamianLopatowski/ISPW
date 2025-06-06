@@ -2,6 +2,7 @@ package org.example.dao;
 
 import org.example.model.Ordine;
 import org.example.model.Prodotto;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
@@ -38,34 +39,42 @@ public class OrdineDAOImpl {
 
     public void salvaOrdine(Ordine ordine) {
         if (isOnlineMode) {
-            try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
-                String ordineSQL = "INSERT INTO ordini (cliente_username, data, totale) VALUES (?, ?, ?)";
-                PreparedStatement stmt = connection.prepareStatement(ordineSQL, Statement.RETURN_GENERATED_KEYS);
+            try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                 PreparedStatement stmt = connection.prepareStatement(
+                         "INSERT INTO ordini (cliente_username, data, totale) VALUES (?, ?, ?)",
+                         Statement.RETURN_GENERATED_KEYS)) {
+
                 stmt.setString(1, ordine.getCliente().getUsername());
                 stmt.setTimestamp(2, Timestamp.valueOf(ordine.getData()));
                 stmt.setDouble(3, ordine.getTotale());
                 stmt.executeUpdate();
 
-                ResultSet generatedKeys = stmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int ordineId = generatedKeys.getInt(1);
-                    ordine.setId(ordineId);
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int ordineId = generatedKeys.getInt(1);
+                        ordine.setId(ordineId);
 
-                    String prodottiSQL = "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)";
-                    PreparedStatement psProdotti = connection.prepareStatement(prodottiSQL);
+                        try (PreparedStatement psProdotti = connection.prepareStatement(
+                                "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
 
-                    for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
-                        psProdotti.setInt(1, ordineId);
-                        psProdotti.setInt(2, entry.getKey().getId());
-                        psProdotti.setInt(3, entry.getValue());
-                        psProdotti.addBatch();
+                            for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
+                                psProdotti.setInt(1, ordineId); // invariant
+                                psProdotti.setInt(2, entry.getKey().getId());
+                                psProdotti.setInt(3, entry.getValue());
+                                psProdotti.addBatch();
+                            }
+
+                            psProdotti.executeBatch();
+                        }
+
+                        LOGGER.info("✅ Ordine salvato con successo nel database.");
                     }
-
-                    psProdotti.executeBatch();
-                    LOGGER.info("✅ Ordine salvato con successo nel database.");
                 }
+
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "❌ Errore nel salvataggio dell'ordine: " + e.getMessage(), e);
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, String.format("❌ Errore nel salvataggio dell'ordine: %s", e.getMessage()), e);
+                }
             }
         } else {
             ordiniOffline.add(ordine);
