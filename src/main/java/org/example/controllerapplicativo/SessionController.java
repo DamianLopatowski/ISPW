@@ -4,10 +4,14 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import org.example.ApplicationContext;
 import org.example.controllergrafici.LoginController;
 import org.example.controllergrafici.ViewController;
@@ -15,12 +19,10 @@ import org.example.dao.GestoreDAOImpl;
 import org.example.model.Cliente;
 import org.example.model.Prodotto;
 import org.example.service.NavigationService;
+import org.example.service.OrdineService;
 import org.example.view.Login1View;
 import org.example.view.Login2View;
 import org.example.view.View;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.Scene;
 
 public class SessionController {
     private static final Logger LOGGER = Logger.getLogger(SessionController.class.getName());
@@ -59,7 +61,6 @@ public class SessionController {
     public static boolean getIsOnlineModeStatic() {
         return isOnlineModeStatic;
     }
-
 
     private void initializeView() {
         View view = context.getMainView();
@@ -155,7 +156,8 @@ public class SessionController {
         Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
 
         if (gestioneView != null) {
-            stage.setScene(new Scene(gestioneView, 800, 600));
+            stage.setScene(new Scene(gestioneView, 1100, 700));
+            stage.setResizable(true);
             stage.setTitle(String.format("Negozio - %s", isInterfaccia1 ? INTERFACCIA_1_LABEL : INTERFACCIA_2_LABEL));
         } else {
             LOGGER.warning("❌ gestioneView null!");
@@ -165,6 +167,7 @@ public class SessionController {
     public static void setIsInterfaccia1Static(boolean value) {
         isInterfaccia1 = value;
     }
+
     public static Cliente getClienteLoggato() {
         return clienteLoggato;
     }
@@ -180,4 +183,39 @@ public class SessionController {
     public static void svuotaCarrello() {
         carrello.clear();
     }
+
+    public static void aggiungiAlCarrello(Prodotto prodotto) {
+        carrello.put(prodotto, carrello.getOrDefault(prodotto, 0) + 1);
+    }
+
+    public static void rimuoviUnitaDalCarrello(Prodotto prodotto) {
+        carrello.computeIfPresent(prodotto, (k, v) -> (v > 1) ? v - 1 : null);
+    }
+
+    public static void rimuoviDalCarrello(Prodotto prodotto) {
+        carrello.remove(prodotto);
+    }
+
+
+    public static void salvaOrdineCorrente() {
+        if (clienteLoggato == null || carrello.isEmpty()) {
+            LOGGER.warning("⚠️ Nessun cliente loggato o carrello vuoto.");
+            return;
+        }
+
+        // Calcolo totale ordine
+        double totale = carrello.entrySet().stream()
+                .mapToDouble(e -> e.getKey().getPrezzoVendita() * e.getValue())
+                .sum();
+
+        // Creazione istanza servizio ordini
+        OrdineService ordineService = new OrdineService();
+
+        // Salvataggio ordine
+        ordineService.salvaOrdineOnline(clienteLoggato, new HashMap<>(carrello));
+
+        LOGGER.info("📦 Ordine salvato con successo.");
+        svuotaCarrello();
+    }
+
 }

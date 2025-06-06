@@ -1,6 +1,7 @@
 package org.example.controllergrafici;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -29,6 +30,8 @@ public class NegozioController {
     private final OrdineService ordineService;
     private final Cliente cliente;
     private final Map<Prodotto, Integer> carrello;
+    private VBox carrelloBox;
+    private Label totaleLabel;
 
     public NegozioController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new NegozioView1() : new NegozioView2();
@@ -212,6 +215,12 @@ public class NegozioController {
         }
     }
 
+    private void inizializzaCarrelloGrafico(VBox carrelloBox, Label totaleLabel) {
+        this.carrelloBox = carrelloBox;
+        this.totaleLabel = totaleLabel;
+        aggiornaCarrello(); // chiamata iniziale
+    }
+
     private void aggiornaDettagliProdotto(String nome, Map<String, Prodotto> prodottiMap, NegozioView2 v2) {
         Prodotto selezionato = prodottiMap.get(nome);
         if (selezionato == null) return;
@@ -242,23 +251,84 @@ public class NegozioController {
 
     private void aggiornaCarrello() {
         VBox righeBox;
+        Label totaleLabel;
 
         if (view instanceof NegozioView1) {
             NegozioView1 v1 = (NegozioView1) view;
             righeBox = v1.getRigheCarrelloBox();
+            totaleLabel = v1.getTotaleLabel();
         } else if (view instanceof NegozioView2) {
             NegozioView2 v2 = (NegozioView2) view;
             righeBox = v2.getRigheCarrelloBox();
+            totaleLabel = v2.getTotaleLabel();
         } else {
             return;
         }
 
         righeBox.getChildren().clear();
+        double totale = 0.0;
 
         for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
-            righeBox.getChildren().add(new Label(entry.getKey().getNome() + " x" + entry.getValue()));
+            Prodotto prodotto = entry.getKey();
+            int quantita = entry.getValue();
+            double prezzoUnitario = prodotto.getPrezzoVendita();
+            double subtotale = prezzoUnitario * quantita;
+            totale += subtotale;
+
+            // ✅ Etichette info prodotto
+            Label nome = new Label(prodotto.getNome());
+            nome.setWrapText(true);
+            nome.setMaxWidth(130);
+            nome.setStyle("-fx-font-weight: bold;");
+
+            Label prezzo = new Label("Prezzo: €" + String.format("%.2f", prezzoUnitario));
+            Label qta = new Label("Quantità: x" + quantita);
+            Label subtot = new Label("Subtotale: €" + String.format("%.2f", subtotale));
+
+            VBox infoRiga = new VBox(2, nome, prezzo, qta, subtot);
+            infoRiga.setPadding(new Insets(5, 5, 2, 5));
+            infoRiga.setStyle("-fx-alignment: CENTER_LEFT;");
+
+            // ✅ Pulsanti gestione quantità
+            Button plus = new Button("➕");
+            Button minus = new Button("➖");
+            Button remove = new Button("❌");
+
+            plus.setOnAction(e -> {
+                SessionController.aggiungiAlCarrello(prodotto);
+                aggiornaCarrello();
+            });
+
+            minus.setOnAction(e -> {
+                SessionController.rimuoviUnitaDalCarrello(prodotto);
+                aggiornaCarrello();
+            });
+
+            remove.setOnAction(e -> {
+                SessionController.rimuoviDalCarrello(prodotto);
+                aggiornaCarrello();
+            });
+
+            // ✅ Contenitore bottoni allineati a destra
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+
+            HBox bottoniRiga = new HBox(10, spacer, plus, minus, remove);
+            bottoniRiga.setPadding(new Insets(0, 5, 10, 5));
+            bottoniRiga.setAlignment(Pos.CENTER_RIGHT);
+
+            // ✅ Blocco completo del prodotto (info + bottoni)
+            VBox bloccoProdotto = new VBox(2, infoRiga, bottoniRiga);
+            bloccoProdotto.setStyle("-fx-border-color: #ddd; -fx-border-width: 0 0 1 0;");
+            bloccoProdotto.setPadding(new Insets(3, 0, 3, 0));
+
+            righeBox.getChildren().add(bloccoProdotto);
         }
+
+        totaleLabel.setText("Totale: €" + String.format("%.2f", totale));
     }
+
+
 
     private void showAlert(String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);

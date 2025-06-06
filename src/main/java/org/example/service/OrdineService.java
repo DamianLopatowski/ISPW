@@ -3,9 +3,13 @@ package org.example.service;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.example.controllerapplicativo.SessionController;
+import org.example.dao.OrdineDAOImpl;
 import org.example.model.Cliente;
+import org.example.model.Ordine;
 import org.example.model.Prodotto;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -44,5 +48,12 @@ public class OrdineService {
             LOGGER.log(java.util.logging.Level.INFO, "Totale: €{0}",
                     new Object[]{String.format("%.2f", totale)});
         }
+
+        // ✅ Crea l'oggetto Ordine
+        Ordine ordine = new Ordine(cliente, new HashMap<>(carrello), totale);
+
+        // ✅ Recupera modalità e salva ordine correttamente
+        boolean isOnline = SessionController.getIsOnlineModeStatic();
+        new OrdineDAOImpl(isOnline).salvaOrdine(ordine);
     }
 }
