@@ -10,6 +10,7 @@ import org.example.model.Prodotto;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OrdineService {
@@ -39,7 +40,10 @@ public class OrdineService {
             return;
         }
 
-        LOGGER.info("📦 Dettaglio ordine per: " + cliente.getNome() + " " + cliente.getCognome());
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("📦 Dettaglio ordine per: " + cliente.getNome() + " " + cliente.getCognome());
+        }
+
         double totale = 0.0;
 
         for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
@@ -48,10 +52,14 @@ public class OrdineService {
             double subtotale = prodotto.getPrezzoVendita() * q;
             totale += subtotale;
 
-            LOGGER.info(String.format("- %s x%d → €%.2f", prodotto.getNome(), q, subtotale));
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info(String.format("- %s x%d → €%.2f", prodotto.getNome(), q, subtotale));
+            }
         }
 
-        LOGGER.info(String.format("Totale: €%.2f", totale));
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format("Totale: €%.2f", totale));
+        }
 
         Ordine ordine = new Ordine(cliente, new HashMap<>(carrello), totale);
 

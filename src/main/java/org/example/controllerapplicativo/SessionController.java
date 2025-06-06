@@ -19,7 +19,6 @@ import org.example.dao.GestoreDAOImpl;
 import org.example.model.Cliente;
 import org.example.model.Prodotto;
 import org.example.service.NavigationService;
-import org.example.service.OrdineService;
 import org.example.view.Login1View;
 import org.example.view.Login2View;
 import org.example.view.View;

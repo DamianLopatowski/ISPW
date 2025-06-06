@@ -30,8 +30,6 @@ public class NegozioController {
     private final OrdineService ordineService;
     private final Cliente cliente;
     private final Map<Prodotto, Integer> carrello;
-    private VBox carrelloBox;
-    private Label totaleLabel;
 
     public NegozioController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new NegozioView1() : new NegozioView2();
@@ -213,12 +211,6 @@ public class NegozioController {
                     (obs, oldVal, newVal) -> aggiornaDettagliProdotto(newVal, prodottiMap, v2)
             );
         }
-    }
-
-    private void inizializzaCarrelloGrafico(VBox carrelloBox, Label totaleLabel) {
-        this.carrelloBox = carrelloBox;
-        this.totaleLabel = totaleLabel;
-        aggiornaCarrello(); // chiamata iniziale
     }
 
     private void aggiornaDettagliProdotto(String nome, Map<String, Prodotto> prodottiMap, NegozioView2 v2) {

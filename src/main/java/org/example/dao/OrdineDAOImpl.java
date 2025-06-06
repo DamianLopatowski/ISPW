@@ -1,13 +1,10 @@
 package org.example.dao;
 
-import org.example.model.Cliente;
 import org.example.model.Ordine;
 import org.example.model.Prodotto;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
