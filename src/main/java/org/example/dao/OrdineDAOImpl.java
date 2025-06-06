@@ -57,8 +57,9 @@ public class OrdineDAOImpl {
                         try (PreparedStatement psProdotti = connection.prepareStatement(
                                 "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
 
+                            // Spostiamo fuori dal ciclo l'inserimento dell'ID dell'ordine
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
-                                psProdotti.setInt(1, ordineId); // invariant
+                                psProdotti.setInt(1, ordineId); // loop-invariant
                                 psProdotti.setInt(2, entry.getKey().getId());
                                 psProdotti.setInt(3, entry.getValue());
                                 psProdotti.addBatch();
@@ -80,9 +81,5 @@ public class OrdineDAOImpl {
             ordiniOffline.add(ordine);
             LOGGER.info("🟢 Ordine salvato in modalità offline in memoria.");
         }
-    }
-
-    public List<Ordine> getOrdiniOffline() {
-        return ordiniOffline;
     }
 }
