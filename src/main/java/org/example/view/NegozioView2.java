@@ -21,6 +21,8 @@ public class NegozioView2 {
     private final Button inviaOrdineButton = new Button("Invia Ordine");
     private final Button logoutButton = new Button("Logout");
     private final Button profiloButton = new Button("Modifica Profilo");
+    private final Button visualizzaPagamentiButton = new Button("💰 Pagamenti & Ordini");
+
 
     public NegozioView2() {
         root = new BorderPane();
@@ -69,7 +71,8 @@ public class NegozioView2 {
                 totaleLabel,
                 inviaOrdineButton,
                 logoutButton,
-                profiloButton
+                profiloButton,
+                visualizzaPagamentiButton
         );
 
         // ✅ ScrollPane per mantenere leggibilità in caso di overflow
@@ -103,4 +106,7 @@ public class NegozioView2 {
     public Button getInviaOrdineButton() { return inviaOrdineButton; }
     public Button getLogoutButton() { return logoutButton; }
     public Button getProfiloButton() { return profiloButton; }
+    public Button getVisualizzaPagamentiButton() {
+        return visualizzaPagamentiButton;
+    }
 }

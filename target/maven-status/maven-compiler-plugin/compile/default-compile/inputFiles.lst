@@ -1,6 +1,8 @@
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\ApplicationContext.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Gestore.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\PagamentiView.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\OrdineDAO.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\OrdineTableRow.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativo\SessionController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\GestioneController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\RegistrazioneException.java
@@ -12,7 +14,9 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\DatabaseCo
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\ProfiloController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativo\NavigationController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\Gestione1View.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\PagamentoDAO.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Ordine.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Pagamento.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\ClienteDAOImpl.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\GestoreInitializationException.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Prodotto.java
@@ -21,6 +25,7 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\GestoreDAOImpl.j
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\ProdottoDAOImpl.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Cliente.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\GestoreDAO.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\PagamentiController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\Login1View.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\ProfiloView2.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\RegistratiClienteController.java
@@ -29,6 +34,7 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\NavigationSe
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\View.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\ProdottoDAO.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\ViewController.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\PagamentoService.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\OrdineService.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\OrdineDAOImpl.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\LoginController.java
@@ -37,5 +43,6 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\RegistratiClien
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\NegozioView1.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\ProfiloView1.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\RegistrazioneService.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\PagamentoDAOImpl.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\MainApp.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\Gestione2View.java

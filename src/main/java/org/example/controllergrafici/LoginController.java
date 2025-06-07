@@ -1,5 +1,6 @@
 package org.example.controllergrafici;
 
+import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -48,9 +49,7 @@ public class LoginController {
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
             loginButton = loginView.getLoginButton();
-            statusLabel = new Label("Login");
-
-            // Non serve "Avanti" per Login2View, si inserisce tutto subito
+            statusLabel = new Label("Login"); // puoi collegarla a loginView se necessario
         }
 
         loginButton.setOnAction(event -> performLogin());
@@ -83,8 +82,12 @@ public class LoginController {
             LOGGER.info("✅ Login riuscito!");
             statusLabel.setText("✅ Accesso effettuato!");
 
-            // ✅ IMPOSTA IL CLIENTE LOGGATO NELLA SESSIONE
-            navigationService.setClienteLoggato(cliente); // ✅ BASTA QUESTO
+            // ✅ Imposta il cliente loggato nel navigationService
+            navigationService.setClienteLoggato(cliente);
+
+            // ✅ Imposta anche il cliente nella sessione statica
+            SessionController.setClienteLoggato(cliente); // NECESSARIO per Pagamenti
+
             navigationService.navigateToNegozio();
         } else {
             LOGGER.warning("❌ Credenziali errate o utente inesistente!");

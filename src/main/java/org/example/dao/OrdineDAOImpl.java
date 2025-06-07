@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.model.Cliente;
 import org.example.model.Ordine;
 import org.example.model.Prodotto;
 
@@ -10,7 +11,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OrdineDAOImpl {
+public class OrdineDAOImpl implements OrdineDAO {
     private static final Logger LOGGER = Logger.getLogger(OrdineDAOImpl.class.getName());
     private static final List<Ordine> ordiniOffline = new ArrayList<>();
 
@@ -57,7 +58,6 @@ public class OrdineDAOImpl {
                         try (PreparedStatement psProdotti = connection.prepareStatement(
                                 "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
 
-                            // Imposta l'invariante fuori dal ciclo
                             psProdotti.setInt(1, ordineId);
 
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
@@ -82,5 +82,83 @@ public class OrdineDAOImpl {
             ordiniOffline.add(ordine);
             LOGGER.info("🟢 Ordine salvato in modalità offline in memoria.");
         }
+    }
+
+    @Override
+    public List<Ordine> getOrdiniPerCliente(String username) {
+        List<Ordine> ordini = new ArrayList<>();
+
+        if (!isOnlineMode) {
+            for (Ordine o : ordiniOffline) {
+                if (o.getCliente() != null && o.getCliente().getUsername().equalsIgnoreCase(username)) {
+                    ordini.add(o);
+                }
+            }
+            return ordini;
+        }
+
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT id, data, totale FROM ordini WHERE cliente_username = ?")) {
+
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int ordineId = rs.getInt("id");
+
+                Ordine ordine = new Ordine();
+                ordine.setId(ordineId);
+                ordine.setData(rs.getTimestamp("data").toLocalDateTime());
+                ordine.setTotale(rs.getDouble("totale"));
+
+                // imposta cliente
+                Cliente cliente = new Cliente.Builder().username(username).build();
+                ordine.setCliente(cliente);
+
+                // carica prodotti
+                Map<Prodotto, Integer> prodotti = new HashMap<>();
+                try (PreparedStatement psProdotti = conn.prepareStatement(
+                        "SELECT prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id = ?")) {
+                    psProdotti.setInt(1, ordineId);
+                    ResultSet rsProd = psProdotti.executeQuery();
+
+                    while (rsProd.next()) {
+                        int prodottoId = rsProd.getInt("prodotto_id");
+                        int quantita = rsProd.getInt("quantita");
+
+                        try (PreparedStatement psDettagli = conn.prepareStatement(
+                                "SELECT * FROM prodotti WHERE id = ?")) {
+                            psDettagli.setInt(1, prodottoId);
+                            ResultSet rsDett = psDettagli.executeQuery();
+                            if (rsDett.next()) {
+                                Prodotto prodotto = new Prodotto.Builder()
+                                        .id(rsDett.getInt("id"))
+                                        .nome(rsDett.getString("nome"))
+                                        .quantita(rsDett.getInt("quantita"))
+                                        .scaffale(rsDett.getString("scaffale"))
+                                        .codiceAbarre(rsDett.getString("codiceAbarre"))
+                                        .soglia(rsDett.getInt("soglia"))
+                                        .prezzoAcquisto(rsDett.getDouble("prezzoAcquisto"))
+                                        .prezzoVendita(rsDett.getDouble("prezzoVendita"))
+                                        .categoria(rsDett.getString("categoria"))
+                                        .immagine(rsDett.getBytes("immagine"))
+                                        .build();
+
+                                prodotti.put(prodotto, quantita);
+                            }
+                        }
+                    }
+                }
+
+                ordine.setProdotti(prodotti);
+                ordini.add(ordine);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Errore durante getOrdiniPerCliente", e);
+        }
+
+        return ordini;
     }
 }

@@ -14,6 +14,7 @@ public class NegozioView1 {
     private final Button inviaOrdineButton = new Button("Invia Ordine");
     private final Button logoutButton = new Button("Logout");
     private final Button profiloButton = new Button("Modifica Profilo");
+    private final Button visualizzaPagamentiButton = new Button("💰 Pagamenti & Ordini");
 
     public NegozioView1() {
         root = new BorderPane();
@@ -58,7 +59,8 @@ public class NegozioView1 {
                 totaleLabel,
                 inviaOrdineButton,
                 logoutButton,
-                profiloButton
+                profiloButton,
+                visualizzaPagamentiButton
         );
 
         // ✅ ScrollPane esterno al carrello
@@ -106,5 +108,8 @@ public class NegozioView1 {
 
     public Button getProfiloButton() {
         return profiloButton;
+    }
+    public Button getVisualizzaPagamentiButton() {
+        return visualizzaPagamentiButton;
     }
 }

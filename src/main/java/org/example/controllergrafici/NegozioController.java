@@ -3,17 +3,22 @@ package org.example.controllergrafici;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import org.example.controllerapplicativo.SessionController;
+import org.example.dao.OrdineDAOImpl;
+import org.example.dao.PagamentoDAOImpl;
 import org.example.dao.ProdottoDAOImpl;
 import org.example.model.Cliente;
 import org.example.model.Prodotto;
 import org.example.service.EmailService;
 import org.example.service.NavigationService;
 import org.example.service.OrdineService;
+import org.example.service.PagamentoService;
 import org.example.view.NegozioView1;
 import org.example.view.NegozioView2;
 
@@ -46,10 +51,20 @@ public class NegozioController {
             NegozioView1 v1 = (NegozioView1) view;
             v1.getInviaOrdineButton().setOnAction(e -> handleConfermaOrdine());
             v1.getLogoutButton().setOnAction(e -> {
-                SessionController.svuotaCarrello(); // 🔁 Svuota il carrello
+                SessionController.svuotaCarrello();
                 navigationService.navigateToMainView();
             });
             v1.getProfiloButton().setOnAction(e -> navigationService.navigateToProfilo());
+            v1.getVisualizzaPagamentiButton().setOnAction(e -> {
+                boolean isOnline = prodottoDAO.isOnline();
+                PagamentoDAOImpl pagamentoDAO = new PagamentoDAOImpl(isOnline);
+                OrdineDAOImpl ordineDAO = new OrdineDAOImpl(isOnline);
+                PagamentiController controller = new PagamentiController(pagamentoDAO, ordineDAO, navigationService);
+                Parent root = controller.getRoot();
+                Stage stage = (Stage) v1.getRoot().getScene().getWindow();
+                stage.setScene(new Scene(root, 600, 500));
+                stage.setTitle("Storico Pagamenti");
+            });
         }
 
         if (view instanceof NegozioView2) {
@@ -57,6 +72,16 @@ public class NegozioController {
             v2.getInviaOrdineButton().setOnAction(e -> handleConfermaOrdine());
             v2.getLogoutButton().setOnAction(e -> navigationService.navigateToMainView());
             v2.getProfiloButton().setOnAction(e -> navigationService.navigateToProfilo());
+            v2.getVisualizzaPagamentiButton().setOnAction(e -> {
+                boolean isOnline = prodottoDAO.isOnline();
+                PagamentoDAOImpl pagamentoDAO = new PagamentoDAOImpl(isOnline);
+                OrdineDAOImpl ordineDAO = new OrdineDAOImpl(isOnline);
+                PagamentiController controller = new PagamentiController(pagamentoDAO, ordineDAO, navigationService);
+                Parent root = controller.getRoot();
+                Stage stage = (Stage) v2.getRoot().getScene().getWindow();
+                stage.setScene(new Scene(root, 600, 500));
+                stage.setTitle("Storico Pagamenti");
+            });
         }
     }
 
