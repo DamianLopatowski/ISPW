@@ -1,6 +1,5 @@
 package org.example.controllergrafici;
 
-import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;

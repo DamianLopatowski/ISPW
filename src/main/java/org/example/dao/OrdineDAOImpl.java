@@ -128,7 +128,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                         int quantita = rsProd.getInt("quantita");
 
                         try (PreparedStatement psDettagli = conn.prepareStatement(
-                                "SELECT * FROM prodotti WHERE id = ?")) {
+                                "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
                             psDettagli.setInt(1, prodottoId);
                             ResultSet rsDett = psDettagli.executeQuery();
                             if (rsDett.next()) {

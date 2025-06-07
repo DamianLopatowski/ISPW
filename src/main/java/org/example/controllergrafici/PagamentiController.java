@@ -1,10 +1,8 @@
 package org.example.controllergrafici;
 
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
-import javafx.stage.Stage;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAO;
 import org.example.dao.PagamentoDAO;
@@ -17,12 +15,15 @@ import org.example.view.OrdineTableRow;
 import org.example.view.PagamentiView;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class PagamentiController {
     private final PagamentiView view;
     private final PagamentoService pagamentoService;
     private final OrdineDAO ordineDAO;
     private final NavigationService navigationService;
+    private static final Logger LOGGER = Logger.getLogger(PagamentiController.class.getName());
+
 
     public PagamentiController(PagamentoDAO pagamentoDAO, OrdineDAO ordineDAO, NavigationService navigationService) {
         this.view = new PagamentiView();
@@ -37,7 +38,7 @@ public class PagamentiController {
     private void caricaDatiUtenteLoggato() {
         Cliente cliente = SessionController.getClienteLoggato();
         if (cliente == null) {
-            System.err.println("❌ Nessun cliente loggato. Impossibile caricare i dati dei pagamenti.");
+            LOGGER.warning("❌ Nessun cliente loggato. Impossibile caricare i dati dei pagamenti.");
             return;
         }
 
