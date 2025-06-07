@@ -1,15 +1,18 @@
 package org.example.controllergrafici;
 
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAO;
 import org.example.dao.PagamentoDAO;
 import org.example.model.Cliente;
 import org.example.model.Ordine;
 import org.example.model.Pagamento;
-import org.example.service.NavigationService;
 import org.example.service.PagamentoService;
+import org.example.service.NavigationService;
 import org.example.view.OrdineTableRow;
 import org.example.view.PagamentiView;
 
@@ -28,7 +31,7 @@ public class PagamentiController {
         this.navigationService = navigationService;
 
         caricaDatiUtenteLoggato();
-        inizializzaAzioni();
+        configuraBottoneIndietro();
     }
 
     private void caricaDatiUtenteLoggato() {
@@ -48,13 +51,6 @@ public class PagamentiController {
 
         aggiornaEtichette(totaleOrdini, totalePagato, daPagare);
         popolaTabellaOrdini(ordini);
-    }
-
-    private void inizializzaAzioni() {
-        view.getTornaAlNegozioButton().setOnAction(e -> {
-            System.out.println("🔙 Torno al negozio...");
-            navigationService.navigateToNegozio();  // Gestisce già NegozioView vs NegozioView2
-        });
     }
 
     private double calcolaTotaleOrdini(List<Ordine> ordini) {
@@ -78,6 +74,12 @@ public class PagamentiController {
             tabella.getItems().add(new OrdineTableRow(ordine));
         }
     }
+
+    private void configuraBottoneIndietro() {
+        Button indietroButton = view.getTornaAlNegozioButton();
+        indietroButton.setOnAction(e -> navigationService.navigateToNegozio());
+    }
+
 
     public Parent getRoot() {
         return view.getRoot();
