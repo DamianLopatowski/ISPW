@@ -85,9 +85,6 @@ public class LoginController {
             // ✅ Imposta il cliente loggato nel navigationService
             navigationService.setClienteLoggato(cliente);
 
-            // ✅ Imposta anche il cliente nella sessione statica
-            SessionController.setClienteLoggato(cliente); // NECESSARIO per Pagamenti
-
             navigationService.navigateToNegozio();
         } else {
             LOGGER.warning("❌ Credenziali errate o utente inesistente!");

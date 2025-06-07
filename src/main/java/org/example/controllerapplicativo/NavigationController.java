@@ -197,6 +197,8 @@ public class NavigationController implements NavigationService {
     @Override
     public void setClienteLoggato(Cliente cliente) {
         this.clienteLoggato = cliente;
+
+        SessionController.setClienteLoggato(cliente);
     }
 
     @Override
