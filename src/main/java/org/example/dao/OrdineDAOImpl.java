@@ -59,8 +59,9 @@ public class OrdineDAOImpl implements OrdineDAO {
                         try (PreparedStatement psProdotti = connection.prepareStatement(
                                 "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
 
+                            psProdotti.setInt(1, ordineId); // loop-invariant
+
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
-                                psProdotti.setInt(1, ordineId);
                                 psProdotti.setInt(2, entry.getKey().getId());
                                 psProdotti.setInt(3, entry.getValue());
                                 psProdotti.addBatch();
@@ -83,7 +84,9 @@ public class OrdineDAOImpl implements OrdineDAO {
             }
 
             ordiniOffline.add(ordine);
-            LOGGER.log(Level.INFO, "Ordine salvato in modalità offline per cliente: {0}", ordine.getCliente().getUsername());
+
+            LOGGER.log(Level.INFO,
+                    String.format("Ordine salvato in modalit\u00E0 offline per cliente: %s", ordine.getCliente().getUsername()));
         }
     }
 
