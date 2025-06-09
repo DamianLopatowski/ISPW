@@ -111,54 +111,93 @@ public class OrdineDAOImpl implements OrdineDAO {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
-            try (PreparedStatement psDettagli = conn.prepareStatement(
-                    "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
+            Map<Integer, Ordine> ordiniMappa = new HashMap<>();
+            Set<Integer> tuttiProdottoId = new HashSet<>();
 
-                while (rs.next()) {
-                    int ordineId = rs.getInt("id");
-
-                    Ordine ordine = new Ordine();
-                    ordine.setId(ordineId);
-                    ordine.setData(rs.getTimestamp("data").toLocalDateTime());
-                    ordine.setTotale(rs.getDouble("totale"));
-                    ordine.setCliente(new Cliente.Builder().username(username).build());
-
-                    Map<Prodotto, Integer> prodotti = new HashMap<>();
-                    try (PreparedStatement psProdotti = conn.prepareStatement(
-                            "SELECT prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id = ?")) {
-                        psProdotti.setInt(1, ordineId);
-                        ResultSet rsProd = psProdotti.executeQuery();
-
-                        while (rsProd.next()) {
-                            int prodottoId = rsProd.getInt("prodotto_id");
-                            int quantita = rsProd.getInt("quantita");
-
-                            psDettagli.setInt(1, prodottoId);
-                            ResultSet rsDett = psDettagli.executeQuery();
-
-                            if (rsDett.next()) {
-                                Prodotto prodotto = new Prodotto.Builder()
-                                        .id(rsDett.getInt("id"))
-                                        .nome(rsDett.getString("nome"))
-                                        .quantita(rsDett.getInt("quantita"))
-                                        .scaffale(rsDett.getString("scaffale"))
-                                        .codiceAbarre(rsDett.getString("codiceAbarre"))
-                                        .soglia(rsDett.getInt("soglia"))
-                                        .prezzoAcquisto(rsDett.getDouble("prezzoAcquisto"))
-                                        .prezzoVendita(rsDett.getDouble("prezzoVendita"))
-                                        .categoria(rsDett.getString("categoria"))
-                                        .immagine(rsDett.getBytes("immagine"))
-                                        .build();
-                                prodotti.put(prodotto, quantita);
-                            }
-                        }
-                    }
-
-                    ordine.setProdotti(prodotti);
-                    ordini.add(ordine);
-                }
+            while (rs.next()) {
+                int ordineId = rs.getInt("id");
+                Ordine ordine = new Ordine();
+                ordine.setId(ordineId);
+                ordine.setData(rs.getTimestamp("data").toLocalDateTime());
+                ordine.setTotale(rs.getDouble("totale"));
+                ordine.setCliente(new Cliente.Builder().username(username).build());
+                ordiniMappa.put(ordineId, ordine);
             }
 
+            if (ordiniMappa.isEmpty()) return ordini;
+
+            // Recupera relazioni ordine-prodotti
+            try (PreparedStatement psProdotti = conn.prepareStatement(
+                    "SELECT ordine_id, prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id IN (" +
+                            String.join(",", Collections.nCopies(ordiniMappa.size(), "?")) + ")")) {
+
+                int index = 1;
+                for (Integer ordineId : ordiniMappa.keySet()) {
+                    psProdotti.setInt(index++, ordineId);
+                }
+
+                ResultSet rsProdotti = psProdotti.executeQuery();
+                Map<Integer, Map<Integer, Integer>> mappaOrdineProdotti = new HashMap<>();
+
+                while (rsProdotti.next()) {
+                    int ordineId = rsProdotti.getInt("ordine_id");
+                    int prodottoId = rsProdotti.getInt("prodotto_id");
+                    int quantita = rsProdotti.getInt("quantita");
+
+                    tuttiProdottoId.add(prodottoId);
+                    mappaOrdineProdotti
+                            .computeIfAbsent(ordineId, k -> new HashMap<>())
+                            .put(prodottoId, quantita);
+                }
+
+                if (tuttiProdottoId.isEmpty()) return new ArrayList<>(ordiniMappa.values());
+
+                // Recupera tutti i prodotti in un'unica query
+                try (PreparedStatement psDettagli = conn.prepareStatement(
+                        "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine " +
+                                "FROM prodotti WHERE id IN (" +
+                                String.join(",", Collections.nCopies(tuttiProdottoId.size(), "?")) + ")")) {
+
+                    index = 1;
+                    for (Integer prodottoId : tuttiProdottoId) {
+                        psDettagli.setInt(index++, prodottoId);
+                    }
+
+                    ResultSet rsDettagli = psDettagli.executeQuery();
+                    Map<Integer, Prodotto> mappaProdotti = new HashMap<>();
+
+                    while (rsDettagli.next()) {
+                        Prodotto prodotto = new Prodotto.Builder()
+                                .id(rsDettagli.getInt("id"))
+                                .nome(rsDettagli.getString("nome"))
+                                .quantita(rsDettagli.getInt("quantita"))
+                                .scaffale(rsDettagli.getString("scaffale"))
+                                .codiceAbarre(rsDettagli.getString("codiceAbarre"))
+                                .soglia(rsDettagli.getInt("soglia"))
+                                .prezzoAcquisto(rsDettagli.getDouble("prezzoAcquisto"))
+                                .prezzoVendita(rsDettagli.getDouble("prezzoVendita"))
+                                .categoria(rsDettagli.getString("categoria"))
+                                .immagine(rsDettagli.getBytes("immagine"))
+                                .build();
+                        mappaProdotti.put(prodotto.getId(), prodotto);
+                    }
+
+                    // Ricostruisci ordini completi
+                    for (Map.Entry<Integer, Map<Integer, Integer>> entry : mappaOrdineProdotti.entrySet()) {
+                        Ordine ordine = ordiniMappa.get(entry.getKey());
+                        Map<Prodotto, Integer> prodottiOrdine = new HashMap<>();
+                        for (Map.Entry<Integer, Integer> prodottoEntry : entry.getValue().entrySet()) {
+                            Prodotto prodotto = mappaProdotti.get(prodottoEntry.getKey());
+                            if (prodotto != null) {
+                                prodottiOrdine.put(prodotto, prodottoEntry.getValue());
+                            }
+                        }
+                        ordine.setProdotti(prodottiOrdine);
+                    }
+
+                    ordini.addAll(ordiniMappa.values());
+                }
+            }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Errore durante getOrdiniPerCliente", e);
         }
