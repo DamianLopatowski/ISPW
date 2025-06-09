@@ -57,12 +57,12 @@ public class OrdineDAOImpl implements OrdineDAO {
                         ordine.setId(ordineId);
 
                         try (PreparedStatement psProdotti = connection.prepareStatement(
-                                "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
+                                "INSERT INTO ordine_prodotti (prodotto_id, quantita, ordine_id) VALUES (?, ?, ?)")) {
 
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
-                                psProdotti.setInt(1, ordineId);
-                                psProdotti.setInt(2, entry.getKey().getId());
-                                psProdotti.setInt(3, entry.getValue());
+                                psProdotti.setInt(1, entry.getKey().getId());
+                                psProdotti.setInt(2, entry.getValue());
+                                psProdotti.setInt(3, ordineId);  // ora l'ordineId è alla fine
                                 psProdotti.addBatch();
                             }
 
@@ -74,7 +74,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
 
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Errore nel salvataggio dell'ordine: {0}", e.getMessage());
+                LOGGER.log(Level.SEVERE, "Errore nel salvataggio dell''ordine: {0}", e.getMessage());
             }
         } else {
             if (ordine.getCliente() == null || ordine.getCliente().getUsername() == null) {
@@ -108,6 +108,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             return new ArrayList<>();
         }
     }
+
     private List<Ordine> getOrdiniOffline(String username) {
         List<Ordine> ordini = new ArrayList<>();
         for (Ordine o : ordiniOffline) {
@@ -212,6 +213,4 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
         return new ArrayList<>(ordiniMappa.values());
     }
-
-
 }
