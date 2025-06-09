@@ -8,6 +8,7 @@ import org.example.service.NavigationService;
 import org.example.view.Gestione2View;
 import org.example.view.Gestione1View;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GestioneController {
@@ -57,36 +58,39 @@ public class GestioneController {
     }
 
     private void handleLogout() {
-        LOGGER.info("Logout in corso...");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Logout in corso...");
+        }
         authController.logout(navigationService);
     }
 
     private void handleGestione(String sezione) {
-        LOGGER.log(java.util.logging.Level.INFO, "Navigazione a: {0}", sezione);
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.log(Level.INFO, "Navigazione a: {0}", sezione);
+        }
 
         switch (sezione) {
             case "Prodotti" -> {
-                Parent root = navigationService.navigateToGestioneProdottiView(); // Metodo da aggiungere se non esiste
+                Parent root = navigationService.navigateToGestioneProdottiView();
                 stage.setScene(new Scene(root, 1100, 700));
             }
-            case "Soglia" -> {
-                // TODO: Navigazione futura per soglia
-                LOGGER.info("⚠️ Navigazione a 'Soglia' non ancora implementata.");
-            }
-            case "Spedizioni" -> {
-                // TODO: Navigazione futura per spedizioni
-                LOGGER.info("⚠️ Navigazione a 'Spedizioni' non ancora implementata.");
-            }
+            case "Soglia" -> LOGGER.info("⚠️ Navigazione alla gestione 'Soglia' non ancora implementata.");
+            case "Spedizioni" -> LOGGER.info("⚠️ Navigazione alla gestione 'Spedizioni' non ancora implementata.");
             default -> LOGGER.warning("❌ Sezione di gestione non riconosciuta: " + sezione);
         }
     }
 
     public Parent getRootView() {
-        LOGGER.info("Restituzione root view di GestioneProdotto...");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Restituzione root view di GestioneProdotto...");
+        }
+
         Parent root = isInterfaccia1 ? onlineView.getRoot() : offlineView.getRoot();
+
         if (root == null) {
             LOGGER.warning("Errore: La vista di GestioneProdotto è NULL!");
         }
+
         return root;
     }
 }

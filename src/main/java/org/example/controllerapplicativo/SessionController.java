@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.example.ApplicationContext;
@@ -66,7 +67,9 @@ public class SessionController {
     private void initializeView() {
         View view = context.getMainView();
 
-        LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
+        }
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
