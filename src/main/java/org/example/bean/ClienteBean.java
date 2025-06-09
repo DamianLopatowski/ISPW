@@ -18,7 +18,6 @@ public class ClienteBean {
         //riempimento
     }
 
-    // 🔹 Getter e Setter
     public String getUsername() {
         return username;
     }
@@ -89,7 +88,6 @@ public class ClienteBean {
         this.citta = citta;
     }
 
-    // 🔹 Metodo per ottenere un oggetto Cliente dal bean
     public Cliente toCliente() {
         return new Cliente.Builder()
                 .username(username)
