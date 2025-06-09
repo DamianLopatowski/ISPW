@@ -91,113 +91,127 @@ public class OrdineDAOImpl implements OrdineDAO {
 
     @Override
     public List<Ordine> getOrdiniPerCliente(String username) {
-        List<Ordine> ordini = new ArrayList<>();
-
         if (!isOnlineMode) {
-            for (Ordine o : ordiniOffline) {
-                if (o.getCliente() != null && o.getCliente().getUsername().equalsIgnoreCase(username)) {
-                    ordini.add(o);
-                }
-            }
-            LOGGER.log(Level.INFO, "Recuperati {0} ordini in offline per {1}", new Object[]{ordini.size(), username});
-            return ordini;
+            return getOrdiniOffline(username);
         }
 
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-             PreparedStatement ps = conn.prepareStatement(
-                     "SELECT id, data, totale FROM ordini WHERE cliente_username = ?")) {
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
+            Map<Integer, Ordine> ordiniMappa = recuperaOrdiniBase(conn, username);
+            if (ordiniMappa.isEmpty()) return new ArrayList<>();
 
+            Map<Integer, Map<Integer, Integer>> prodottiPerOrdine = recuperaProdottiPerOrdine(conn, ordiniMappa.keySet());
+            Map<Integer, Prodotto> dettagliProdotti = recuperaDettagliProdotti(conn, prodottiPerOrdine);
+
+            return costruisciOrdiniComposti(ordiniMappa, prodottiPerOrdine, dettagliProdotti);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Errore durante getOrdiniPerCliente", e);
+            return new ArrayList<>();
+        }
+    }
+    private List<Ordine> getOrdiniOffline(String username) {
+        List<Ordine> ordini = new ArrayList<>();
+        for (Ordine o : ordiniOffline) {
+            if (o.getCliente() != null && o.getCliente().getUsername().equalsIgnoreCase(username)) {
+                ordini.add(o);
+            }
+        }
+        LOGGER.log(Level.INFO, "Recuperati {0} ordini in offline per {1}", new Object[]{ordini.size(), username});
+        return ordini;
+    }
+
+    private Map<Integer, Ordine> recuperaOrdiniBase(Connection conn, String username) throws SQLException {
+        Map<Integer, Ordine> ordini = new HashMap<>();
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT id, data, totale FROM ordini WHERE cliente_username = ?")) {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
-            Map<Integer, Ordine> ordiniMappa = new HashMap<>();
-            Set<Integer> tuttiProdottoId = new HashSet<>();
-
             while (rs.next()) {
-                int ordineId = rs.getInt("id");
                 Ordine ordine = new Ordine();
-                ordine.setId(ordineId);
+                ordine.setId(rs.getInt("id"));
                 ordine.setData(rs.getTimestamp("data").toLocalDateTime());
                 ordine.setTotale(rs.getDouble("totale"));
                 ordine.setCliente(new Cliente.Builder().username(username).build());
-                ordiniMappa.put(ordineId, ordine);
+                ordini.put(ordine.getId(), ordine);
             }
-
-            if (ordiniMappa.isEmpty()) return ordini;
-
-            try (PreparedStatement psProdotti = conn.prepareStatement(
-                    "SELECT ordine_id, prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id IN (" +
-                            String.join(",", Collections.nCopies(ordiniMappa.size(), "?")) + ")")) {
-
-                int index = 1;
-                for (Integer ordineId : ordiniMappa.keySet()) {
-                    psProdotti.setInt(index++, ordineId);
-                }
-
-                ResultSet rsProdotti = psProdotti.executeQuery();
-                Map<Integer, Map<Integer, Integer>> mappaOrdineProdotti = new HashMap<>();
-
-                while (rsProdotti.next()) {
-                    int ordineId = rsProdotti.getInt("ordine_id");
-                    int prodottoId = rsProdotti.getInt("prodotto_id");
-                    int quantita = rsProdotti.getInt("quantita");
-
-                    tuttiProdottoId.add(prodottoId);
-                    mappaOrdineProdotti
-                            .computeIfAbsent(ordineId, k -> new HashMap<>())
-                            .put(prodottoId, quantita);
-                }
-
-                if (tuttiProdottoId.isEmpty()) return new ArrayList<>(ordiniMappa.values());
-
-                try (PreparedStatement psDettagli = conn.prepareStatement(
-                        "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine " +
-                                "FROM prodotti WHERE id IN (" +
-                                String.join(",", Collections.nCopies(tuttiProdottoId.size(), "?")) + ")")) {
-
-                    index = 1;
-                    for (Integer prodottoId : tuttiProdottoId) {
-                        psDettagli.setInt(index++, prodottoId);
-                    }
-
-                    ResultSet rsDettagli = psDettagli.executeQuery();
-                    Map<Integer, Prodotto> mappaProdotti = new HashMap<>();
-
-                    while (rsDettagli.next()) {
-                        Prodotto prodotto = new Prodotto.Builder()
-                                .id(rsDettagli.getInt("id"))
-                                .nome(rsDettagli.getString("nome"))
-                                .quantita(rsDettagli.getInt("quantita"))
-                                .scaffale(rsDettagli.getString("scaffale"))
-                                .codiceAbarre(rsDettagli.getString("codiceAbarre"))
-                                .soglia(rsDettagli.getInt("soglia"))
-                                .prezzoAcquisto(rsDettagli.getDouble("prezzoAcquisto"))
-                                .prezzoVendita(rsDettagli.getDouble("prezzoVendita"))
-                                .categoria(rsDettagli.getString("categoria"))
-                                .immagine(rsDettagli.getBytes("immagine"))
-                                .build();
-                        mappaProdotti.put(prodotto.getId(), prodotto);
-                    }
-
-                    for (Map.Entry<Integer, Map<Integer, Integer>> entry : mappaOrdineProdotti.entrySet()) {
-                        Ordine ordine = ordiniMappa.get(entry.getKey());
-                        Map<Prodotto, Integer> prodottiOrdine = new HashMap<>();
-                        for (Map.Entry<Integer, Integer> prodottoEntry : entry.getValue().entrySet()) {
-                            Prodotto prodotto = mappaProdotti.get(prodottoEntry.getKey());
-                            if (prodotto != null) {
-                                prodottiOrdine.put(prodotto, prodottoEntry.getValue());
-                            }
-                        }
-                        ordine.setProdotti(prodottiOrdine);
-                    }
-
-                    ordini.addAll(ordiniMappa.values());
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Errore durante getOrdiniPerCliente", e);
         }
-
         return ordini;
     }
+
+    private Map<Integer, Map<Integer, Integer>> recuperaProdottiPerOrdine(Connection conn, Set<Integer> ordineIds) throws SQLException {
+        Map<Integer, Map<Integer, Integer>> prodottiPerOrdine = new HashMap<>();
+        if (ordineIds.isEmpty()) return prodottiPerOrdine;
+
+        String query = "SELECT ordine_id, prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id IN (" +
+                String.join(",", Collections.nCopies(ordineIds.size(), "?")) + ")";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            int index = 1;
+            for (Integer id : ordineIds) {
+                ps.setInt(index++, id);
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int ordineId = rs.getInt("ordine_id");
+                int prodottoId = rs.getInt("prodotto_id");
+                int quantita = rs.getInt("quantita");
+
+                prodottiPerOrdine.computeIfAbsent(ordineId, k -> new HashMap<>()).put(prodottoId, quantita);
+            }
+        }
+        return prodottiPerOrdine;
+    }
+
+    private Map<Integer, Prodotto> recuperaDettagliProdotti(Connection conn, Map<Integer, Map<Integer, Integer>> prodottiPerOrdine) throws SQLException {
+        Set<Integer> prodottoIds = new HashSet<>();
+        for (Map<Integer, Integer> prodotti : prodottiPerOrdine.values()) {
+            prodottoIds.addAll(prodotti.keySet());
+        }
+        if (prodottoIds.isEmpty()) return Collections.emptyMap();
+
+        Map<Integer, Prodotto> prodotti = new HashMap<>();
+        String query = "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine " +
+                "FROM prodotti WHERE id IN (" + String.join(",", Collections.nCopies(prodottoIds.size(), "?")) + ")";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            int index = 1;
+            for (Integer id : prodottoIds) {
+                ps.setInt(index++, id);
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Prodotto prodotto = new Prodotto.Builder()
+                        .id(rs.getInt("id"))
+                        .nome(rs.getString("nome"))
+                        .quantita(rs.getInt("quantita"))
+                        .scaffale(rs.getString("scaffale"))
+                        .codiceAbarre(rs.getString("codiceAbarre"))
+                        .soglia(rs.getInt("soglia"))
+                        .prezzoAcquisto(rs.getDouble("prezzoAcquisto"))
+                        .prezzoVendita(rs.getDouble("prezzoVendita"))
+                        .categoria(rs.getString("categoria"))
+                        .immagine(rs.getBytes("immagine"))
+                        .build();
+                prodotti.put(prodotto.getId(), prodotto);
+            }
+        }
+        return prodotti;
+    }
+
+    private List<Ordine> costruisciOrdiniComposti(Map<Integer, Ordine> ordiniMappa,
+                                                  Map<Integer, Map<Integer, Integer>> prodottiPerOrdine,
+                                                  Map<Integer, Prodotto> prodottiDettagliati) {
+        for (Map.Entry<Integer, Map<Integer, Integer>> entry : prodottiPerOrdine.entrySet()) {
+            Ordine ordine = ordiniMappa.get(entry.getKey());
+            Map<Prodotto, Integer> prodotti = new HashMap<>();
+            for (Map.Entry<Integer, Integer> prodottoEntry : entry.getValue().entrySet()) {
+                Prodotto prodotto = prodottiDettagliati.get(prodottoEntry.getKey());
+                if (prodotto != null) {
+                    prodotti.put(prodotto, prodottoEntry.getValue());
+                }
+            }
+            ordine.setProdotti(prodotti);
+        }
+        return new ArrayList<>(ordiniMappa.values());
+    }
+
+
 }
