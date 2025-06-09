@@ -86,7 +86,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             ordiniOffline.add(ordine);
 
             LOGGER.log(Level.INFO,
-                    String.format("Ordine salvato in modalit\u00E0 offline per cliente: %s", ordine.getCliente().getUsername()));
+                    "Ordine salvato in modalita offline per cliente: {0}", ordine.getCliente().getUsername());
         }
     }
 
