@@ -2,7 +2,7 @@ package org.example.model;
 
 public class Gestore {
     private String username;
-    private String password; // Dovrebbe essere hashata nel database
+    private String password;
 
     public Gestore(String username, String password) {
         this.username = username;

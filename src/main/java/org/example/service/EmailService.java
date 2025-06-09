@@ -20,7 +20,7 @@ public class EmailService {
     private static String emailSender;
     private static String emailPassword;
 
-    // 🔹 Costruttore privato per nascondere quello pubblico implicito (java:S1118)
+    // costruttore privato per nascondere quello pubblico implicito (java:S1118)
     private EmailService() {
         throw new UnsupportedOperationException("Questa è una classe di utility e non può essere istanziata.");
     }
@@ -37,7 +37,7 @@ public class EmailService {
 
             LOGGER.info("📩 Configurazione email caricata con successo.");
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "❌ Errore nel caricamento della configurazione email.", e);
+            LOGGER.log(Level.SEVERE, "Errore nel caricamento della configurazione email.", e);
         }
     }
 
@@ -64,10 +64,10 @@ public class EmailService {
 
             Transport.send(message);
 
-            // 🔹 Uso del logging con built-in formatting (java:S2629)
-            LOGGER.log(Level.INFO, "✅ Email di conferma inviata a {0}", recipientEmail);
+            // Uso del logging con built-in formatting (java:S2629)
+            LOGGER.log(Level.INFO, "Email di conferma inviata a {0}", recipientEmail);
         } catch (MessagingException e) {
-            LOGGER.log(Level.SEVERE, "❌ Errore nell'invio dell'email", e);
+            LOGGER.log(Level.SEVERE, "Errore nell'invio dell'email", e);
         }
     }
 
@@ -103,7 +103,7 @@ public class EmailService {
                 totale += subtotale;
                 content.append("- ").append(p.getNome())
                         .append(" x").append(q)
-                        .append(" → €").append(String.format("%.2f", subtotale)).append("\n");
+                        .append(" -> €").append(String.format("%.2f", subtotale)).append("\n");
             }
 
             content.append("\nTotale ordine: €").append(String.format("%.2f", totale));
@@ -112,9 +112,9 @@ public class EmailService {
             message.setText(content.toString());
 
             Transport.send(message);
-            LOGGER.log(Level.INFO, "✅ Email riepilogo ordine inviata a {0}", recipientEmail);
+            LOGGER.log(Level.INFO, "Email riepilogo ordine inviata a {0}", recipientEmail);
         } catch (MessagingException e) {
-            LOGGER.log(Level.SEVERE, "❌ Errore nell'invio dell'email di ordine", e);
+            LOGGER.log(Level.SEVERE, "Errore nell'invio dell'email di ordine", e);
         }
     }
 

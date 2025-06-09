@@ -32,9 +32,9 @@ public class OrdineDAOImpl implements OrdineDAO {
             this.dbUrl = properties.getProperty("db.url");
             this.dbUsername = properties.getProperty("db.username");
             this.dbPassword = properties.getProperty("db.password");
-            LOGGER.info("✅ Configurazione database caricata con successo!");
+            LOGGER.info("Configurazione database caricata con successo!");
         } catch (IOException e) {
-            LOGGER.severe("❌ Errore nel caricamento del file di configurazione: " + e.getMessage());
+            LOGGER.severe("Errore nel caricamento del file di configurazione: " + e.getMessage());
         }
     }
 
@@ -69,21 +69,21 @@ public class OrdineDAOImpl implements OrdineDAO {
                             psProdotti.executeBatch();
                         }
 
-                        LOGGER.info("✅ Ordine salvato con successo nel database.");
+                        LOGGER.info("Ordine salvato con successo nel database.");
                     }
                 }
 
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "❌ Errore nel salvataggio dell'ordine: {0}", e.getMessage());
+                LOGGER.log(Level.SEVERE, "Errore nel salvataggio dell'ordine: {0}", e.getMessage());
             }
         } else {
             if (ordine.getCliente() == null || ordine.getCliente().getUsername() == null) {
-                LOGGER.warning("⚠️ Ordine offline senza cliente associato. Ignorato.");
+                LOGGER.warning("Ordine offline senza cliente associato. Ignorato.");
                 return;
             }
 
             ordiniOffline.add(ordine);
-            LOGGER.log(Level.INFO, "🟢 Ordine salvato in modalità offline per cliente: {0}", ordine.getCliente().getUsername());
+            LOGGER.log(Level.INFO, "Ordine salvato in modalità offline per cliente: {0}", ordine.getCliente().getUsername());
         }
     }
 
@@ -97,7 +97,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                     ordini.add(o);
                 }
             }
-            LOGGER.log(Level.INFO, "📦 Recuperati {0} ordini in offline per {1}", new Object[]{ordini.size(), username});
+            LOGGER.log(Level.INFO, "Recuperati {0} ordini in offline per {1}", new Object[]{ordini.size(), username});
             return ordini;
         }
 
@@ -108,23 +108,23 @@ public class OrdineDAOImpl implements OrdineDAO {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                int ordineId = rs.getInt("id");
+            try (PreparedStatement psDettagli = conn.prepareStatement(
+                    "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
 
-                Ordine ordine = new Ordine();
-                ordine.setId(ordineId);
-                ordine.setData(rs.getTimestamp("data").toLocalDateTime());
-                ordine.setTotale(rs.getDouble("totale"));
-                ordine.setCliente(new Cliente.Builder().username(username).build());
+                while (rs.next()) {
+                    int ordineId = rs.getInt("id");
 
-                Map<Prodotto, Integer> prodotti = new HashMap<>();
-                try (PreparedStatement psProdotti = conn.prepareStatement(
-                        "SELECT prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id = ?")) {
-                    psProdotti.setInt(1, ordineId);
-                    ResultSet rsProd = psProdotti.executeQuery();
+                    Ordine ordine = new Ordine();
+                    ordine.setId(ordineId);
+                    ordine.setData(rs.getTimestamp("data").toLocalDateTime());
+                    ordine.setTotale(rs.getDouble("totale"));
+                    ordine.setCliente(new Cliente.Builder().username(username).build());
 
-                    try (PreparedStatement psDettagli = conn.prepareStatement(
-                            "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
+                    Map<Prodotto, Integer> prodotti = new HashMap<>();
+                    try (PreparedStatement psProdotti = conn.prepareStatement(
+                            "SELECT prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id = ?")) {
+                        psProdotti.setInt(1, ordineId);
+                        ResultSet rsProd = psProdotti.executeQuery();
 
                         while (rsProd.next()) {
                             int prodottoId = rsProd.getInt("prodotto_id");
@@ -150,10 +150,10 @@ public class OrdineDAOImpl implements OrdineDAO {
                             }
                         }
                     }
-                }
 
-                ordine.setProdotti(prodotti);
-                ordini.add(ordine);
+                    ordine.setProdotti(prodotti);
+                    ordini.add(ordine);
+                }
             }
 
         } catch (SQLException e) {

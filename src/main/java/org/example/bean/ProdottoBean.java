@@ -14,12 +14,10 @@ public class ProdottoBean {
     private String categoria;
     private byte[] immagine;
 
-    // 🔹 Costruttore vuoto
     public ProdottoBean() {
         //riempimento
     }
 
-    // 🔁 Conversione in model Prodotto
     public Prodotto toProdotto() {
         return new Prodotto.Builder()
                 .id(id)
@@ -35,7 +33,6 @@ public class ProdottoBean {
                 .build();
     }
 
-    // ✅ Builder pattern per creare ProdottoBean
     public static class Builder {
         private final ProdottoBean bean;
 

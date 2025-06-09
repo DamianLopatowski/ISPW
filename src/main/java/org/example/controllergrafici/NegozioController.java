@@ -146,7 +146,7 @@ public class NegozioController {
                 // riduci quantità prodotti
                 for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
                     prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
-                    logger.log(Level.INFO, "🛒 Ordinato: {0} x{1}", new Object[]{entry.getKey().getNome(), entry.getValue()});
+                    logger.log(Level.INFO, "Ordinato: {0} x{1}", new Object[]{entry.getKey().getNome(), entry.getValue()});
                 }
 
                 carrello.clear();
@@ -290,9 +290,9 @@ public class NegozioController {
             infoRiga.setPadding(new Insets(5, 5, 2, 5));
             infoRiga.setStyle("-fx-alignment: CENTER_LEFT;");
 
-            Button plus = new Button("➕");
-            Button minus = new Button("➖");
-            Button remove = new Button("❌");
+            Button plus = new Button("+");
+            Button minus = new Button("-");
+            Button remove = new Button("x");
 
             plus.setOnAction(e -> {
                 SessionController.aggiungiAlCarrello(prodotto);

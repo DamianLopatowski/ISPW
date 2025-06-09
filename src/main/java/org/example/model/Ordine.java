@@ -10,7 +10,7 @@ public class Ordine {
     private Map<Prodotto, Integer> prodotti;
     private double totale;
 
-    // 🔹 Costruttore usato normalmente per creare un ordine
+    // Costruttore usato normalmente per creare un ordine
     public Ordine(Cliente cliente, Map<Prodotto, Integer> prodotti, double totale) {
         this.cliente = cliente;
         this.prodotti = prodotti;
@@ -18,10 +18,10 @@ public class Ordine {
         this.totale = totale;
     }
 
-    // 🔹 Costruttore vuoto usato dal DAO (per riempire dopo)
+    // Costruttore vuoto usato dal DAO (per riempire dopo)
     public Ordine() {}
 
-    // ✅ Descrizione leggibile dei prodotti per la tabella
+    // Descrizione leggibile dei prodotti per la tabella
     public String getDescrizioneProdotti() {
         if (prodotti == null || prodotti.isEmpty()) return "Nessun prodotto";
         StringBuilder sb = new StringBuilder();
@@ -34,7 +34,6 @@ public class Ordine {
         return sb.substring(0, sb.length() - 2); // Rimuove l'ultima virgola
     }
 
-    // ✅ Getter e Setter
     public int getId() {
         return id;
     }

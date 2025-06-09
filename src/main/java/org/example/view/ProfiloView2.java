@@ -19,9 +19,9 @@ public class ProfiloView2 {
     private final PasswordField confirmPasswordField = new PasswordField();
 
     private final Button avantiButton = new Button("Avanti ➡");
-    private final Button indietroButton = new Button("⬅ Indietro");
-    private final Button saveButton = new Button("✔ Salva");
-    private final Button backButton = new Button("↩ Torna al Negozio");
+    private final Button indietroButton = new Button("<- Indietro");
+    private final Button saveButton = new Button("Salva");
+    private final Button backButton = new Button("<- Torna al Negozio");
 
     public ProfiloView2() {
         root = new VBox(15);

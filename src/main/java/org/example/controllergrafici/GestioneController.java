@@ -75,7 +75,7 @@ public class GestioneController {
                 stage.setScene(new Scene(root, 1100, 700));
             }
             case "Soglia" -> LOGGER.info("⚠️ Navigazione alla gestione 'Soglia' non ancora implementata.");
-            case "Spedizioni" -> LOGGER.info("⚠️ Navigazione alla gestione 'Spedizioni' non ancora implementata.");
+            case "Spedizioni" -> LOGGER.info("Navigazione alla gestione 'Spedizioni' non ancora implementata.");
             default -> LOGGER.log(Level.WARNING, "Sezione di gestione non riconosciuta: {0}", sezione);
         }
     }

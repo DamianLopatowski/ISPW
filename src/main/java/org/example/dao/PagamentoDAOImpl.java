@@ -30,9 +30,9 @@ public class PagamentoDAOImpl implements PagamentoDAO {
             this.dbUrl = properties.getProperty("db.url");
             this.dbUsername = properties.getProperty("db.username");
             this.dbPassword = properties.getProperty("db.password");
-            LOGGER.info("✅ Configurazione database caricata per PagamentoDAOImpl.");
+            LOGGER.info("Configurazione database caricata per PagamentoDAOImpl.");
         } catch (IOException e) {
-            LOGGER.severe("❌ Errore caricamento config PagamentoDAOImpl: " + e.getMessage());
+            LOGGER.severe("Errore caricamento config PagamentoDAOImpl: " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class PagamentoDAOImpl implements PagamentoDAO {
     public void registraPagamento(Pagamento pagamento) {
         if (!isOnline) {
             SessionController.salvaPagamentoOffline(pagamento); // 🔄 Salvataggio in SessionController
-            LOGGER.log(Level.INFO, "💾 Pagamento salvato in RAM per {0}: €{1}",
+            LOGGER.log(Level.INFO, "Pagamento salvato in RAM per {0}: €{1}",
                     new Object[]{pagamento.getClienteUsername(), pagamento.getImporto()});
             return;
         }
@@ -55,22 +55,22 @@ public class PagamentoDAOImpl implements PagamentoDAO {
 
             int rows = ps.executeUpdate();
             if (rows > 0) {
-                LOGGER.log(Level.INFO, "✅ Pagamento registrato nel database: {0} → €{1}",
+                LOGGER.log(Level.INFO, "Pagamento registrato nel database: {0} → €{1}",
                         new Object[]{pagamento.getClienteUsername(), pagamento.getImporto()});
             } else {
-                LOGGER.warning("⚠️ Nessuna riga inserita per pagamento.");
+                LOGGER.warning("Nessuna riga inserita per pagamento.");
             }
 
         } catch (SQLException e) {
-            LOGGER.severe("❌ Errore SQL durante salvataggio pagamento: " + e.getMessage());
+            LOGGER.severe("Errore SQL durante salvataggio pagamento: " + e.getMessage());
         }
     }
 
     @Override
     public List<Pagamento> getPagamentiPerCliente(String username) {
         if (!isOnline) {
-            LOGGER.log(Level.INFO, "📋 Recupero pagamenti da RAM per: {0}", username);
-            return SessionController.getPagamentiOfflinePer(username); // 🔄 Recupero da SessionController
+            LOGGER.log(Level.INFO, "Recupero pagamenti da RAM per: {0}", username);
+            return SessionController.getPagamentiOfflinePer(username); //Recupero da SessionController
         }
 
         List<Pagamento> pagamenti = new ArrayList<>();
@@ -90,10 +90,10 @@ public class PagamentoDAOImpl implements PagamentoDAO {
                 pagamenti.add(p);
             }
 
-            LOGGER.log(Level.INFO, "📋 {0} pagamenti recuperati per {1}", new Object[]{pagamenti.size(), username});
+            LOGGER.log(Level.INFO, "{0} pagamenti recuperati per {1}", new Object[]{pagamenti.size(), username});
 
         } catch (SQLException e) {
-            LOGGER.severe("❌ Errore durante recupero pagamenti per cliente: " + e.getMessage());
+            LOGGER.severe("Errore durante recupero pagamenti per cliente: " + e.getMessage());
         }
 
         return pagamenti;

@@ -37,17 +37,14 @@ public class Prodotto {
     public String getCategoria() { return categoria; }
     public byte[] getImmagine() { return immagine; }
 
-    // ✅ Setter per quantità (esistente)
     public void setQuantita(int nuova) {
         this.quantita = nuova;
     }
 
-    // ✅ Aggiunto: Setter per ID per uso in modalità offline (RAM)
     public void setId(int id) {
         this.id = id;
     }
 
-    // 🔧 Builder pattern
     public static class Builder {
         private int id;
         private String nome;

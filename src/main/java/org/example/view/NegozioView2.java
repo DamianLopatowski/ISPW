@@ -15,23 +15,23 @@ public class NegozioView2 {
     private final Button aggiungiButton;
 
     private final VBox carrelloBox;
-    private final VBox righeCarrelloBox; // ✅ VBox per righe dinamiche del carrello
-    private final Label totaleLabel;     // ✅ Etichetta per il totale
+    private final VBox righeCarrelloBox; //VBox per righe dinamiche del carrello
+    private final Label totaleLabel;     //Etichetta per il totale
 
     private final Button inviaOrdineButton = new Button("Invia Ordine");
     private final Button logoutButton = new Button("Logout");
     private final Button profiloButton = new Button("Modifica Profilo");
-    private final Button visualizzaPagamentiButton = new Button("💰 Pagamenti & Ordini");
+    private final Button visualizzaPagamentiButton = new Button("Pagamenti & Ordini");
 
 
     public NegozioView2() {
         root = new BorderPane();
 
-        // ✅ Lista prodotti a sinistra
+        // Lista prodotti a sinistra
         listaProdotti = new ListView<>();
         listaProdotti.setPrefWidth(200);
 
-        // ✅ Dettagli prodotto al centro
+        // Dettagli prodotto al centro
         dettagliBox = new VBox(10);
         dettagliBox.setPadding(new Insets(10));
         imageView = new ImageView();
@@ -45,7 +45,7 @@ public class NegozioView2 {
 
         dettagliBox.getChildren().addAll(imageView, disponibilitaLabel, quantitaField, aggiungiButton);
 
-        // ✅ Box carrello a destra
+        // Box carrello a destra
         carrelloBox = new VBox(10);
         carrelloBox.setPadding(new Insets(10));
         carrelloBox.setPrefWidth(270);
@@ -57,10 +57,10 @@ public class NegozioView2 {
             -fx-border-width: 1px;
         """);
 
-        Label titoloCarrello = new Label("🛒 Carrello");
+        Label titoloCarrello = new Label("Carrello");
         titoloCarrello.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        righeCarrelloBox = new VBox(5); // ✅ contiene solo righe dinamiche
+        righeCarrelloBox = new VBox(5); // contiene solo righe dinamiche
 
         totaleLabel = new Label("Totale: €0.00");
         totaleLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5 0 0 0;");
@@ -75,7 +75,7 @@ public class NegozioView2 {
                 visualizzaPagamentiButton
         );
 
-        // ✅ ScrollPane per mantenere leggibilità in caso di overflow
+        //ScrollPane per mantenere leggibilità in caso di overflow
         ScrollPane scrollCarrello = new ScrollPane(carrelloBox);
         scrollCarrello.setFitToWidth(true);
         scrollCarrello.setStyle("-fx-background-color: transparent;");
@@ -84,13 +84,12 @@ public class NegozioView2 {
         scrollCarrello.setPrefWidth(300);
         scrollCarrello.setMinWidth(280);
 
-        // ✅ Layout generale
+        //Layout generale
         root.setLeft(listaProdotti);
         root.setCenter(dettagliBox);
         root.setRight(scrollCarrello);
     }
 
-    // ✅ Getter per accesso dal controller
     public BorderPane getRoot() { return root; }
     public ListView<String> getListaProdotti() { return listaProdotti; }
     public VBox getDettagliBox() { return dettagliBox; }

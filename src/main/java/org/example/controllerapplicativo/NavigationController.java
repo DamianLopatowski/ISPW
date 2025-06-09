@@ -48,32 +48,32 @@ public class NavigationController implements NavigationService {
             stage.setTitle("Login Cliente");
             stage.show();
         } else {
-            LOGGER.warning("❌ Errore: LoginView è NULL!");
+            LOGGER.warning("Errore: LoginView è NULL!");
         }
     }
     @Override
     public Parent navigateToRegistrazioneCliente(boolean isInterfaccia1) {
-        // ✅ Acquisiamo la modalità online una volta SOLA e la passiamo
+        //Acquisiamo la modalità online una volta SOLA e la passiamo
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
 
-        // ✅ Stampa di debug per verificare il valore corretto
-        LOGGER.log(Level.INFO, "🟢 Modalità selezionata: {0} | Interfaccia: {1}",
+        //Stampa di debug per verificare il valore corretto
+        LOGGER.log(Level.INFO, "Modalità selezionata: {0} | Interfaccia: {1}",
                 new Object[]{isOnlineMode ? "ONLINE" : "OFFLINE", isInterfaccia1 ? "1" : "2"});
 
-        // ✅ Creiamo il DAO con la modalità corretta
+        //Creiamo il DAO con la modalità corretta
         ClienteDAOImpl clienteDAO = new ClienteDAOImpl(isOnlineMode);
 
-        // ✅ Carichiamo il codice univoco dal file di configurazione
+        //Carichiamo il codice univoco dal file di configurazione
         String codiceUnivoco = caricaCodiceUnivoco();
 
-        // ✅ Creiamo il controller della registrazione con le scelte separate
+        //Creiamo il controller della registrazione con le scelte separate
         RegistratiClienteController registratiClienteController = new RegistratiClienteController(clienteDAO, this, codiceUnivoco, isInterfaccia1);
         Parent registrazioneView = registratiClienteController.getView();
 
         if (registrazioneView != null) {
             stage.setScene(new Scene(registrazioneView, 400, 300));
             stage.setTitle("Registrazione Cliente");
-            LOGGER.log(Level.INFO, "🔄 Navigazione alla registrazione cliente - Modalità: {0} | Interfaccia: {1}",
+            LOGGER.log(Level.INFO, "Navigazione alla registrazione cliente - Modalità: {0} | Interfaccia: {1}",
                     new Object[]{isOnlineMode ? "Online" : "Offline", isInterfaccia1 ? "1" : "2"});
         } else {
             LOGGER.warning("❌ Errore: registrazioneView è NULL!");
@@ -82,21 +82,21 @@ public class NavigationController implements NavigationService {
     }
 
 
-    // 🔹 Metodo per caricare il codice univoco da config.properties
+    // Metodo per caricare il codice univoco da config.properties
     private String caricaCodiceUnivoco() {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream(CONFIG_FILE_PATH)) {
             properties.load(fis);
             return properties.getProperty("codiceUnivoco", "DEFAULT-CODE");
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "❌ Errore nel caricamento del codice univoco!", e);
+            LOGGER.log(Level.WARNING, "Errore nel caricamento del codice univoco!", e);
             return "DEFAULT-CODE"; // Valore di fallback
         }
     }
 
     @Override
     public void navigateToMainView() {
-        LOGGER.info("🔄 Creazione di una NUOVA istanza di View per il logout...");
+        LOGGER.info("Creazione di una NUOVA istanza di View per il logout...");
 
         View newMainView = new View();
         new ViewController(newMainView, this);
@@ -105,18 +105,18 @@ public class NavigationController implements NavigationService {
         if (root != null) {
             stage.setScene(new Scene(root, 400, 300));
             stage.setTitle("Schermata Principale");
-            LOGGER.info("✅ Navigazione alla nuova View completata.");
+            LOGGER.info("Navigazione alla nuova View completata.");
 
             new SessionController(stage, SessionController.getIsOnlineModeStatic(), this);
         } else {
-            LOGGER.warning("❌ Errore: View principale è NULL!");
+            LOGGER.warning("Errore: View principale è NULL!");
         }
     }
 
     @Override
     public Parent navigateToGestioneView(boolean isOfflineMode, boolean isInterfaccia1) {
         if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
-            LOGGER.info(String.format("🔄 Creazione di GestioneProdottoController per %s, Interfaccia: %s",
+            LOGGER.info(String.format("Creazione di GestioneProdottoController per %s, Interfaccia: %s",
                     isOfflineMode ? "Offline" : "Online",
                     isInterfaccia1 ? "1" : "2"));
         }
@@ -129,9 +129,9 @@ public class NavigationController implements NavigationService {
 
         Parent rootView = gestioneController.getRootView();
         if (rootView == null) {
-            LOGGER.warning("❌ Errore: `getRootView()` ha restituito NULL!");
+            LOGGER.warning("Errore: `getRootView()` ha restituito NULL!");
         } else {
-            LOGGER.info("✅ GestioneProdottoController creato con successo!");
+            LOGGER.info("GestioneProdottoController creato con successo!");
         }
 
         return rootView;
@@ -139,12 +139,12 @@ public class NavigationController implements NavigationService {
 
     @Override
     public void navigateToNegozio() {
-        LOGGER.info("🔄 Navigazione all'interfaccia del negozio...");
+        LOGGER.info("Navigazione all'interfaccia del negozio...");
 
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
         boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static(); // Usa la stessa logica già usata altrove
 
-        LOGGER.log(Level.INFO, "🛒 Modalità: {0} | Interfaccia: {1}",
+        LOGGER.log(Level.INFO, "Modalità: {0} | Interfaccia: {1}",
                 new Object[]{isOnlineMode ? "ONLINE" : "OFFLINE", isInterfaccia1 ? "1" : "2"});
 
         NegozioController controller = new NegozioController(isOnlineMode, isInterfaccia1, this);
@@ -154,15 +154,15 @@ public class NavigationController implements NavigationService {
             stage.setScene(new Scene(root, 900, 600));
             stage.setTitle("Negozio");
             stage.show();
-            LOGGER.info("✅ Navigazione al negozio completata.");
+            LOGGER.info("Navigazione al negozio completata.");
         } else {
-            LOGGER.warning("❌ Errore: NegozioView è NULL!");
+            LOGGER.warning("Errore: NegozioView è NULL!");
         }
     }
 
     @Override
     public void navigateToProfilo() {
-        LOGGER.info("👤 Navigazione al profilo utente...");
+        LOGGER.info("Navigazione al profilo utente...");
         boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
 
         ProfiloController controller = new ProfiloController(isInterfaccia1, this);
@@ -172,15 +172,15 @@ public class NavigationController implements NavigationService {
             stage.setScene(new Scene(root, 600, 400));
             stage.setTitle("Profilo Utente");
             stage.show();
-            LOGGER.info("✅ Profilo utente caricato correttamente.");
+            LOGGER.info("Profilo utente caricato correttamente.");
         } else {
-            LOGGER.warning("❌ Errore: ProfiloView è NULL!");
+            LOGGER.warning("Errore: ProfiloView è NULL!");
         }
     }
 
     @Override
     public void navigateToProfilo(boolean isInterfaccia1) {
-        LOGGER.info("🧭 Navigazione al profilo utente (con parametro)...");
+        LOGGER.info("Navigazione al profilo utente (con parametro)...");
 
         ProfiloController controller = new ProfiloController(isInterfaccia1, this);
         Parent root = controller.getRootView();
@@ -189,9 +189,9 @@ public class NavigationController implements NavigationService {
             stage.setScene(new Scene(root, 600, 400));
             stage.setTitle("Profilo Utente");
             stage.show();
-            LOGGER.info("✅ Profilo utente caricato correttamente.");
+            LOGGER.info("Profilo utente caricato correttamente.");
         } else {
-            LOGGER.warning("❌ Errore: ProfiloView è NULL!");
+            LOGGER.warning("Errore: ProfiloView è NULL!");
         }
     }
 

@@ -18,7 +18,7 @@ public class AuthController {
         gestoreDAO.resetToOfflineGestore();
         LOGGER.info("Logout effettuato, credenziali offline ripristinate.");
 
-        // **🔄 Naviga alla schermata principale e resetta la sessione**
+        // Naviga alla schermata principale e resetta la sessione
         navigationService.navigateToMainView();
     }
 
@@ -28,14 +28,14 @@ public class AuthController {
         }
         if (isOfflineMode) {
             Gestore gestore = gestoreDAO.getGestore();
-            LOGGER.info("🟢 Verifica credenziali offline per: " + gestore.getUsername());
+            LOGGER.info("Verifica credenziali offline per: " + gestore.getUsername());
             boolean success = gestore.getUsername().equals(username) && gestore.getPassword().equals(password);
-            LOGGER.info(success ? "✅ Accesso offline riuscito" : "❌ Accesso offline fallito");
+            LOGGER.info(success ? "Accesso offline riuscito" : "Accesso offline fallito");
             return success;
         } else {
-            LOGGER.info("🔄 Verifica credenziali online nel database...");
+            LOGGER.info(" Verifica credenziali online nel database...");
             boolean success = gestoreDAO.authenticateOnline(username, password);
-            LOGGER.info(success ? "✅ Accesso online riuscito" : "❌ Accesso online fallito");
+            LOGGER.info(success ? " Accesso online riuscito" : "❌ Accesso online fallito");
             return success;
         }
     }

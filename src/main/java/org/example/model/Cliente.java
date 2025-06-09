@@ -12,7 +12,7 @@ public class Cliente {
     private final String cap;
     private final String citta;
 
-    // 🔹 Costruttore Privato: Solo il Builder può creare un Cliente
+    //Costruttore Privato: Solo il Builder può creare un Cliente
     private Cliente(Builder builder) {
         this.username = builder.username;
         this.nome = builder.nome;
@@ -26,7 +26,7 @@ public class Cliente {
         this.citta = builder.citta;
     }
 
-    // ✅ Getter per tutti i campi
+    //Getter per tutti i campi
     public String getUsername() { return username; }
     public String getNome() { return nome; }
     public String getCognome() { return cognome; }
@@ -38,7 +38,7 @@ public class Cliente {
     public String getCap() { return cap; }
     public String getCitta() { return citta; }
 
-    // 🔹 Classe Builder interna per costruire oggetti Cliente
+    //Classe Builder interna per costruire oggetti Cliente
     public static class Builder {
         private String username;
         private String nome;
@@ -51,7 +51,7 @@ public class Cliente {
         private String cap;
         private String citta;
 
-        // ✅ Metodi Fluent per impostare i campi
+        //Metodi Fluent per impostare i campi
         public Builder username(String username) {
             this.username = username;
             return this;
@@ -93,7 +93,7 @@ public class Cliente {
             return this;
         }
 
-        // ✅ Metodo finale per creare l'oggetto Cliente
+        //Metodo finale per creare l'oggetto Cliente
         public Cliente build() {
             return new Cliente(this);
         }

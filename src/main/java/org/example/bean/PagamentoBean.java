@@ -14,7 +14,6 @@ public class PagamentoBean {
         this.dataPagamento = LocalDateTime.now();
     }
 
-    // 🔁 Conversione in model
     public Pagamento toPagamento() {
         Pagamento pagamento = new Pagamento();
         pagamento.setClienteUsername(clienteUsername);

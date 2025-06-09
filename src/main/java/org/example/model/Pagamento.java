@@ -9,7 +9,7 @@ public class Pagamento {
     private LocalDateTime dataPagamento;
 
     public Pagamento() {
-        //
+        //riempimento
     }
 
     public Pagamento(String clienteUsername, double importo) {

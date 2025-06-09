@@ -19,14 +19,30 @@ import java.util.List;
 
 public class GestioneProdottiView {
     private final VBox root;
-    private final TextField nomeField, quantitaField, scaffaleField, codiceAbarreField, sogliaField, prezzoAcquistoField, prezzoVenditaField;
+
+    private final TextField nomeField;
+    private final TextField quantitaField;
+    private final TextField scaffaleField;
+    private final TextField codiceAbarreField;
+    private final TextField sogliaField;
+    private final TextField prezzoAcquistoField;
+    private final TextField prezzoVenditaField;
+
     private final ComboBox<String> categoriaCombo;
-    private final Button selezionaImmagineButton, aggiungiProdottoButton, eliminaProdottoButton, tornaIndietroButton;
+
+    private final Button selezionaImmagineButton;
+    private final Button aggiungiProdottoButton;
+    private final Button eliminaProdottoButton;
+    private final Button tornaIndietroButton;
+
     private final ImageView immaginePreview;
+
     private final TableView<ProdottoTableRow> tabellaProdotti;
 
     private final TextField modificaQuantitaField;
-    private final Button aumentaQuantitaButton, diminuisciQuantitaButton;
+
+    private final Button aumentaQuantitaButton;
+    private final Button diminuisciQuantitaButton;
 
     private byte[] immagineSelezionata;
 
@@ -45,13 +61,12 @@ public class GestioneProdottiView {
         categoriaCombo = new ComboBox<>();
         categoriaCombo.getItems().addAll("negozio", "magazzino");
 
-        selezionaImmagineButton = new Button("📷 Seleziona immagine");
+        selezionaImmagineButton = new Button("Seleziona immagine");
         immaginePreview = new ImageView();
         immaginePreview.setFitHeight(100);
         immaginePreview.setFitWidth(100);
         immaginePreview.setPreserveRatio(true);
 
-        // ➕ pulsante immagine funzionante
         selezionaImmagineButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Seleziona immagine");
@@ -70,9 +85,9 @@ public class GestioneProdottiView {
             }
         });
 
-        aggiungiProdottoButton = new Button("➕ Aggiungi prodotto");
-        eliminaProdottoButton = new Button("❌ Elimina prodotto");
-        tornaIndietroButton = new Button("🔙 Torna alla gestione");
+        aggiungiProdottoButton = new Button("+ Aggiungi prodotto");
+        eliminaProdottoButton = new Button("x Elimina prodotto");
+        tornaIndietroButton = new Button("<- Torna alla gestione");
 
         GridPane form = new GridPane();
         form.setVgap(5);
@@ -126,21 +141,42 @@ public class GestioneProdottiView {
         modificaQuantitaField = new TextField();
         modificaQuantitaField.setPromptText("Quantità");
         modificaQuantitaField.setMaxWidth(80);
-        aumentaQuantitaButton = new Button("➕");
-        diminuisciQuantitaButton = new Button("➖");
+
+        aumentaQuantitaButton = new Button("+");
+        diminuisciQuantitaButton = new Button("-");
 
         HBox modificaBox = new HBox(5, modificaQuantitaField, aumentaQuantitaButton, diminuisciQuantitaButton, eliminaProdottoButton);
 
         root.getChildren().addAll(form, new HBox(10, aggiungiProdottoButton), tabellaProdotti, modificaBox, tornaIndietroButton);
     }
 
-    public VBox getRoot() { return root; }
-    public Button getAggiungiProdottoButton() { return aggiungiProdottoButton; }
-    public Button getEliminaProdottoButton() { return eliminaProdottoButton; }
-    public Button getTornaIndietroButton() { return tornaIndietroButton; }
-    public TextField getModificaQuantitaField() { return modificaQuantitaField; }
-    public Button getAumentaQuantitaButton() { return aumentaQuantitaButton; }
-    public Button getDiminuisciQuantitaButton() { return diminuisciQuantitaButton; }
+    public VBox getRoot() {
+        return root;
+    }
+
+    public Button getAggiungiProdottoButton() {
+        return aggiungiProdottoButton;
+    }
+
+    public Button getEliminaProdottoButton() {
+        return eliminaProdottoButton;
+    }
+
+    public Button getTornaIndietroButton() {
+        return tornaIndietroButton;
+    }
+
+    public TextField getModificaQuantitaField() {
+        return modificaQuantitaField;
+    }
+
+    public Button getAumentaQuantitaButton() {
+        return aumentaQuantitaButton;
+    }
+
+    public Button getDiminuisciQuantitaButton() {
+        return diminuisciQuantitaButton;
+    }
 
     public void mostraProdotti(List<ProdottoBean> prodottiBean) {
         ObservableList<ProdottoTableRow> righe = FXCollections.observableArrayList();
@@ -149,7 +185,6 @@ public class GestioneProdottiView {
         }
         tabellaProdotti.setItems(righe);
     }
-
 
     public ProdottoBean creaProdottoDaInput() {
         try {
@@ -175,7 +210,6 @@ public class GestioneProdottiView {
         ProdottoTableRow row = tabellaProdotti.getSelectionModel().getSelectedItem();
         return (row != null) ? row.getProdottoOriginale() : null;
     }
-
 
     public void setImmagine(byte[] imgBytes) {
         this.immagineSelezionata = imgBytes;

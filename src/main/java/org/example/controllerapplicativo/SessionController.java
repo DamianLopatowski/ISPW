@@ -68,7 +68,7 @@ public class SessionController {
         View view = context.getMainView();
 
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
+            LOGGER.info(String.format("Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
         }
 
         view.getLoginButton().setOnAction(event -> {
@@ -77,11 +77,11 @@ public class SessionController {
             } else if (view.getInterfaccia2Option().isSelected()) {
                 setIsInterfaccia1Static(false);
             } else {
-                LOGGER.warning("❌ Nessuna interfaccia selezionata.");
+                LOGGER.warning("Nessuna interfaccia selezionata.");
                 return;
             }
 
-            LOGGER.info(String.format("🔄 Avvio login (%s) - %s",
+            LOGGER.info(String.format("Avvio login (%s) - %s",
                     isInterfaccia1 ? INTERFACCIA_1_LABEL : INTERFACCIA_2_LABEL,
                     isOnlineMode ? "ONLINE" : "OFFLINE"));
             startLogin();
@@ -93,16 +93,16 @@ public class SessionController {
     }
 
     private void startLogin() {
-        LOGGER.info("🔐 Avvio schermata login...");
+        LOGGER.info("Avvio schermata login...");
 
         GestoreDAOImpl gestoreDAO = new GestoreDAOImpl();
         AuthController authController = new AuthController(gestoreDAO);
 
         if (isOnlineMode) {
             gestoreDAO.refreshOnlineCredentials();
-            LOGGER.info("🌐 Credenziali ricaricate dal database.");
+            LOGGER.info("Credenziali ricaricate dal database.");
         } else {
-            LOGGER.info("🟢 Modalità offline: credenziali locali.");
+            LOGGER.info("Modalità offline: credenziali locali.");
         }
 
         Parent loginRoot;
@@ -131,33 +131,32 @@ public class SessionController {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
 
-                LOGGER.info(String.format("🔑 Tentativo di login con username: %s", username));
+                LOGGER.info(String.format("Tentativo di login con username: %s", username));
                 boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
                 if (loginSuccess) {
-                    // ✅ SET CLIENTE LOGGATO
                     setClienteLoggato(new Cliente.Builder().username(username).build());
 
-                    LOGGER.info("✅ Login riuscito!");
+                    LOGGER.info("Login riuscito!");
                     navigateToGestione();
                 } else {
-                    LOGGER.warning("❌ Login fallito: credenziali errate.");
+                    LOGGER.warning("Login fallito: credenziali errate.");
                 }
             });
         } else {
-            LOGGER.warning("⚠️ Bottone login nullo.");
+            LOGGER.warning("Bottone login nullo.");
         }
 
         if (loginRoot != null) {
             stage.setScene(new Scene(new VBox(loginRoot), 400, 300));
             stage.setTitle(String.format("Login - %s", isInterfaccia1 ? INTERFACCIA_1_LABEL : INTERFACCIA_2_LABEL));
         } else {
-            LOGGER.warning("❌ Root login nullo.");
+            LOGGER.warning("Root login nullo.");
         }
     }
 
     private void navigateToGestione() {
-        LOGGER.info("🔁 Navigazione all'interfaccia del negozio...");
+        LOGGER.info("Navigazione all'interfaccia del negozio...");
         Parent gestioneView = navigationService.navigateToGestioneView(isOnlineMode, isInterfaccia1);
 
         if (gestioneView != null) {
@@ -165,7 +164,7 @@ public class SessionController {
             stage.setResizable(true);
             stage.setTitle(String.format("Negozio - %s", isInterfaccia1 ? INTERFACCIA_1_LABEL : INTERFACCIA_2_LABEL));
         } else {
-            LOGGER.warning("❌ gestioneView null!");
+            LOGGER.warning("gestioneView null!");
         }
     }
 

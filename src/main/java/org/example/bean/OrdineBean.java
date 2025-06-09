@@ -19,7 +19,7 @@ public class OrdineBean {
         this.prodotti = new HashMap<>();
     }
 
-    // 🔄 Conversione in model Ordine
+    // Conversione in model Ordine
     public Ordine toOrdine() {
         Map<Prodotto, Integer> prodottiModel = new HashMap<>();
         for (Map.Entry<ProdottoBean, Integer> entry : prodotti.entrySet()) {

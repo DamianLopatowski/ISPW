@@ -27,20 +27,20 @@ public class OrdineService {
     public void procediOrdine() {
         Cliente cliente = navigationService.getClienteLoggato();
         if (cliente == null) {
-            LOGGER.severe("❌ Errore: cliente nullo in OrdineService!");
+            LOGGER.severe("Errore: cliente nullo in OrdineService!");
             return;
         }
 
-        // 🔍 Recupera carrello e modalità
+        // Recupera carrello e modalità
         Map<ProdottoBean, Integer> carrello = new HashMap<>(SessionController.getCarrello());
         boolean isOnline = SessionController.getIsOnlineModeStatic();
 
         if (carrello.isEmpty()) {
-            LOGGER.warning("⚠️ Carrello vuoto, nessun ordine da processare.");
+            LOGGER.warning("Carrello vuoto, nessun ordine da processare.");
             return;
         }
 
-        // 💰 Calcola il totale dell'ordine
+        //Calcola il totale dell'ordine
         double totale = 0.0;
         for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
             ProdottoBean prodotto = entry.getKey();
@@ -72,10 +72,10 @@ public class OrdineService {
                 ordine.getProdotti()
         );
 
-        // 🧹 Svuota il carrello
+        //Svuota il carrello
         SessionController.svuotaCarrello();
 
-        // ✅ Notifica di conferma
+        //Notifica di conferma
         LOGGER.info("✅ Ordine confermato per il cliente: " + cliente.getUsername());
         new Alert(Alert.AlertType.INFORMATION, "✅ Ordine inviato correttamente!", ButtonType.OK).showAndWait();
     }

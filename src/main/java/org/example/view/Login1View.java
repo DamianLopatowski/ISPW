@@ -12,7 +12,7 @@ public class Login1View {
     private final Button loginButton;
     private final Label statusLabel;
 
-    public Login1View() { // ✅ Aggiunto il costruttore
+    public Login1View() { // Aggiunto il costruttore
         root = new VBox(15);
         statusLabel = new Label("Inserisci dati:");
         usernameField = new TextField();

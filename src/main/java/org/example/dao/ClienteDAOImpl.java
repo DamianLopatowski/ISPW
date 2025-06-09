@@ -31,9 +31,9 @@ public class ClienteDAOImpl implements ClienteDAO {
             this.dbUrl = properties.getProperty("db.url");
             this.dbUsername = properties.getProperty("db.username");
             this.dbPassword = properties.getProperty("db.password");
-            LOGGER.info("✅ Configurazione database caricata con successo!");
+            LOGGER.info("Configurazione database caricata con successo!");
         } catch (IOException e) {
-            LOGGER.severe("❌ Errore nel caricamento del file di configurazione: " + e.getMessage());
+            LOGGER.severe("Errore nel caricamento del file di configurazione: " + e.getMessage());
         }
     }
 
@@ -45,7 +45,7 @@ public class ClienteDAOImpl implements ClienteDAO {
                          "INSERT INTO usercliente (username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta) " +
                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-                LOGGER.log(Level.INFO, "🔄 Tentativo di salvataggio cliente nel DATABASE: {0}", cliente.getUsername());
+                LOGGER.log(Level.INFO, "Tentativo di salvataggio cliente nel DATABASE: {0}", cliente.getUsername());
 
                 stmt.setString(1, cliente.getUsername());
                 stmt.setString(2, cliente.getNome());
@@ -60,23 +60,23 @@ public class ClienteDAOImpl implements ClienteDAO {
 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
-                    LOGGER.info("✅ Cliente registrato nel database.");
+                    LOGGER.info("Cliente registrato nel database.");
                 } else {
-                    LOGGER.warning("❌ Nessuna riga inserita, possibile errore.");
+                    LOGGER.warning("Nessuna riga inserita, possibile errore.");
                 }
             } catch (SQLIntegrityConstraintViolationException e) {
-                LOGGER.severe("❌ Errore: Username già esistente!");
+                LOGGER.severe("Errore: Username già esistente!");
             } catch (SQLException e) {
-                LOGGER.severe("❌ Errore SQL nella registrazione del cliente: " + e.getMessage());
+                LOGGER.severe("Errore SQL nella registrazione del cliente: " + e.getMessage());
             }
         } else {
-            LOGGER.log(Level.INFO, "🔄 Salvataggio cliente in RAM (OFFLINE): {0}", cliente.getUsername());
+            LOGGER.log(Level.INFO, "Salvataggio cliente in RAM (OFFLINE): {0}", cliente.getUsername());
 
             if (clientiOffline.containsKey(cliente.getUsername())) {
-                LOGGER.warning("❌ Cliente già esistente in RAM!");
+                LOGGER.warning("Cliente già esistente in RAM!");
             } else {
                 clientiOffline.put(cliente.getUsername(), cliente);
-                LOGGER.info("✅ Cliente registrato in RAM.");
+                LOGGER.info("Cliente registrato in RAM.");
             }
         }
     }
@@ -84,7 +84,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     @Override
     public Cliente findByEmail(String email) {
         if (isOnlineMode) {
-            LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE tramite email: {0}", email);
+            LOGGER.log(Level.INFO, "Ricerca cliente nel DATABASE tramite email: {0}", email);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement(
                          "SELECT username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta " +
@@ -106,10 +106,10 @@ public class ClienteDAOImpl implements ClienteDAO {
                             .build();
                 }
             } catch (SQLException e) {
-                LOGGER.severe("❌ Errore nella ricerca del cliente per email: " + e.getMessage());
+                LOGGER.severe("Errore nella ricerca del cliente per email: " + e.getMessage());
             }
         } else {
-            LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM tramite email: {0}", email);
+            LOGGER.log(Level.INFO, "Ricerca cliente in RAM tramite email: {0}", email);
             for (Cliente cliente : clientiOffline.values()) {
                 if (cliente.getEmail().equalsIgnoreCase(email)) {
                     return cliente;
@@ -122,7 +122,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     @Override
     public Cliente findByUsername(String username) {
         if (isOnlineMode) {
-            LOGGER.log(Level.INFO, "🔎 Ricerca cliente nel DATABASE: {0}", username);
+            LOGGER.log(Level.INFO, "Ricerca cliente nel DATABASE: {0}", username);
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                  PreparedStatement stmt = conn.prepareStatement(
                          "SELECT username, nome, cognome, password, email, partita_iva, indirizzo, civico, cap, citta " +
@@ -144,10 +144,10 @@ public class ClienteDAOImpl implements ClienteDAO {
                             .build();
                 }
             } catch (SQLException e) {
-                LOGGER.severe("❌ Errore nella ricerca del cliente per username: " + e.getMessage());
+                LOGGER.severe("Errore nella ricerca del cliente per username: " + e.getMessage());
             }
         } else {
-            LOGGER.log(Level.INFO, "🔎 Ricerca cliente in RAM (OFFLINE): {0}", username);
+            LOGGER.log(Level.INFO, "Ricerca cliente in RAM (OFFLINE): {0}", username);
             return clientiOffline.get(username);
         }
         return null;
@@ -169,14 +169,14 @@ public class ClienteDAOImpl implements ClienteDAO {
                 stmt.setString(5, vecchioUsername);
 
                 int rows = stmt.executeUpdate();
-                LOGGER.log(Level.INFO, "✅ Cliente aggiornato nel database. Righe modificate: {0}", rows);
+                LOGGER.log(Level.INFO, "Cliente aggiornato nel database. Righe modificate: {0}", rows);
                 return rows > 0;
             } catch (SQLException e) {
-                LOGGER.severe("❌ Errore durante l'update del cliente: " + e.getMessage());
+                LOGGER.severe("Errore durante l'update del cliente: " + e.getMessage());
                 return false;
             }
         } else {
-            LOGGER.log(Level.INFO, "🔄 Aggiornamento cliente in RAM (OFFLINE): {0}", cliente.getUsername());
+            LOGGER.log(Level.INFO, "Aggiornamento cliente in RAM (OFFLINE): {0}", cliente.getUsername());
             clientiOffline.put(cliente.getUsername(), cliente);
             return true;
         }

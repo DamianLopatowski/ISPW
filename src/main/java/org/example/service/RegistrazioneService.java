@@ -24,7 +24,7 @@ public class RegistrazioneService {
     public RegistrazioneService(ClienteDAO clienteDAO, String codiceUnivoco) {
         this.clienteDAO = clienteDAO;
         this.codiceUnivoco = codiceUnivoco;
-        LOGGER.log(Level.INFO, "✅ Codice Univoco caricato in RegistrazioneService: {0}", codiceUnivoco);
+        LOGGER.log(Level.INFO, "Codice Univoco caricato in RegistrazioneService: {0}", codiceUnivoco);
     }
 
 
@@ -55,11 +55,11 @@ public class RegistrazioneService {
     }
 
     public boolean isCodiceUnivocoValido(String codice) {
-        LOGGER.log(Level.INFO, "📢 Confronto codice univoco inserito: {0} con codice salvato: {1}", new Object[]{codice, codiceUnivoco});
+        LOGGER.log(Level.INFO, "Confronto codice univoco inserito: {0} con codice salvato: {1}", new Object[]{codice, codiceUnivoco});
 
         if (!codice.equals(codiceUnivoco)) {
             tentativiErrati++;
-            LOGGER.log(Level.WARNING, "❌ Codice Univoco errato! Tentativi rimanenti: {0}", getTentativiRimasti());
+            LOGGER.log(Level.WARNING, "Codice Univoco errato! Tentativi rimanenti: {0}", getTentativiRimasti());
             return false;
         }
         return true;
@@ -80,48 +80,48 @@ public class RegistrazioneService {
     public void registraCliente(ClienteBean clienteBean) throws RegistrazioneException {
 
         Cliente cliente = clienteBean.toCliente();
-        LOGGER.log(Level.INFO, "📢 Avvio registrazione cliente: {0}", cliente.getUsername());
+        LOGGER.log(Level.INFO, "Avvio registrazione cliente: {0}", cliente.getUsername());
 
         // ✅ Validazione dei dati di input
         if (!isUsernameValid(cliente.getUsername())) {
-            throw new RegistrazioneException("❌ Lo username deve essere di almeno 8 caratteri.");
+            throw new RegistrazioneException("Lo username deve essere di almeno 8 caratteri.");
         }
         if (!isEmailValid(cliente.getEmail())) {
-            throw new RegistrazioneException("❌ L'email non è valida.");
+            throw new RegistrazioneException("L'email non è valida.");
         }
         if (!isPasswordValid(cliente.getPassword())) {
-            throw new RegistrazioneException("❌ La password non rispetta i requisiti di sicurezza.");
+            throw new RegistrazioneException("La password non rispetta i requisiti di sicurezza.");
         }
         if (isBloccatoPerTroppiTentativi()) {
-            throw new RegistrazioneException("❌ Hai superato il numero massimo di tentativi per il codice univoco.");
+            throw new RegistrazioneException("Hai superato il numero massimo di tentativi per il codice univoco.");
         }
         if (!isPartitaIvaValid(cliente.getPartitaIva())) {
-            throw new RegistrazioneException("❌ La Partita IVA deve contenere 11 cifre.");
+            throw new RegistrazioneException("La Partita IVA deve contenere 11 cifre.");
         }
         if (!isIndirizzoValid(cliente.getIndirizzo())) {
-            throw new RegistrazioneException("❌ L'indirizzo deve iniziare con 'Via' o 'Piazza'!");
+            throw new RegistrazioneException("L'indirizzo deve iniziare con 'Via' o 'Piazza'!");
         }
         if (!isCivicoValid(cliente.getCivico())) {
-            throw new RegistrazioneException("❌ Numero civico non valido!");
+            throw new RegistrazioneException("Numero civico non valido!");
         }
         if (!isCapValid(cliente.getCap())) {
-            throw new RegistrazioneException("❌ Il CAP deve essere di 5 cifre!");
+            throw new RegistrazioneException("Il CAP deve essere di 5 cifre!");
         }
 
-        // ✅ Controllo se lo username o l'email sono già registrati
+        //Controllo se lo username o l'email sono già registrati
         if (clienteDAO.findByUsername(cliente.getUsername()) != null) {
-            throw new RegistrazioneException("❌ Lo username è già in uso. Scegli un altro username.");
+            throw new RegistrazioneException("Lo username è già in uso. Scegli un altro username.");
         }
         if (clienteDAO.findByEmail(cliente.getEmail()) != null) {
-            throw new RegistrazioneException("❌ L'email è già registrata. Usa un'altra email.");
+            throw new RegistrazioneException("L'email è già registrata. Usa un'altra email.");
         }
 
         try {
-            // ✅ Salvataggio nel database o in RAM
+            //Salvataggio nel database o in RAM
             clienteDAO.saveCliente(cliente);
-            LOGGER.log(Level.INFO, "✅ Cliente registrato con successo: {0}", cliente.getUsername());
+            LOGGER.log(Level.INFO, "Cliente registrato con successo: {0}", cliente.getUsername());
 
-            // ✅ Invio dell'email di conferma
+            //Invio dell'email di conferma
             EmailService.sendConfirmationEmail(cliente.getEmail(), cliente.getUsername());
 
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class RegistrazioneService {
                     ": " + e.getMessage());
         }
 
-        // ✅ Reset dei tentativi di inserimento del codice univoco
+        //Reset dei tentativi di inserimento del codice univoco
         resetTentativiErrati();
     }
 }
