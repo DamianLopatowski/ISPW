@@ -181,17 +181,11 @@ public class RegistratiCliente1View {
     public TextField getIndirizzoField() {
         return indirizzoField;
     }
-    public Label getIndirizzoFeedback() {
-        return indirizzoFeedback;
-    }
     public TextField getCivicoField() {
         return civicoField;
     }
     public TextField getCapField() {
         return capField;
-    }
-    public Label getCapFeedback() {
-        return capFeedback;
     }
     public TextField getCittaField() {
         return cittaField;

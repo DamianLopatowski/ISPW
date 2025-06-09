@@ -1,9 +1,11 @@
-// OrdineService.java
 package org.example.service;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAOImpl;
+import org.example.dao.ProdottoDAO;
+import org.example.dao.ProdottoDAOImpl;
 import org.example.model.Cliente;
 import org.example.model.Ordine;
 import org.example.model.Prodotto;
@@ -29,23 +31,17 @@ public class OrdineService {
             return;
         }
 
-        LOGGER.info("Ordine confermato per il cliente: " + cliente.getUsername());
-        new Alert(Alert.AlertType.INFORMATION, "✅ Ordine inviato correttamente!", ButtonType.OK).showAndWait();
-    }
+        // 🔍 Recupera carrello e modalità
+        Map<Prodotto, Integer> carrello = new HashMap<>(SessionController.getCarrello());
+        boolean isOnline = SessionController.getIsOnlineModeStatic();
 
-    public void salvaOrdineOnline(Map<Prodotto, Integer> carrello, boolean isOnline) {
-        Cliente cliente = navigationService.getClienteLoggato();
-        if (cliente == null) {
-            LOGGER.warning("⚠️ Nessun cliente loggato.");
+        if (carrello.isEmpty()) {
+            LOGGER.warning("⚠️ Carrello vuoto, nessun ordine da processare.");
             return;
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("📦 Dettaglio ordine per: " + cliente.getNome() + " " + cliente.getCognome());
-        }
-
+        // 💰 Calcola il totale dell'ordine
         double totale = 0.0;
-
         for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
             Prodotto prodotto = entry.getKey();
             int q = entry.getValue();
@@ -61,8 +57,29 @@ public class OrdineService {
             LOGGER.info(String.format("Totale: €%.2f", totale));
         }
 
-        Ordine ordine = new Ordine(cliente, new HashMap<>(carrello), totale);
-
+        // 📦 Crea e salva l'ordine
+        Ordine ordine = new Ordine(cliente, carrello, totale);
         new OrdineDAOImpl(isOnline).salvaOrdine(ordine);
+
+        // 📉 Riduci le quantità dei prodotti
+        ProdottoDAO prodottoDAO = new ProdottoDAOImpl(isOnline);
+        for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
+            prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
+        }
+
+        // 📧 Invia email riepilogo
+        LOGGER.info("📧 Invio email riepilogo a " + cliente.getEmail() + "...");
+        EmailService.sendOrderSummaryEmail(
+                cliente.getEmail(),
+                cliente.getNome() + " " + cliente.getCognome(),
+                ordine.getProdotti()
+        );
+
+        // 🧹 Svuota il carrello
+        SessionController.svuotaCarrello();
+
+        // ✅ Notifica di conferma
+        LOGGER.info("✅ Ordine confermato per il cliente: " + cliente.getUsername());
+        new Alert(Alert.AlertType.INFORMATION, "✅ Ordine inviato correttamente!", ButtonType.OK).showAndWait();
     }
 }

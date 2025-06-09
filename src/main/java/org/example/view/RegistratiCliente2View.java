@@ -194,14 +194,9 @@ public class RegistratiCliente2View {
     public TextField getUsernameField() {
         return usernameField;
     }
-    public Label getUsernameFeedback() {
-        return usernameFeedback;
-    }
+
     public TextField getPartitaIvaField() {
         return partitaIvaField;
-    }
-    public Label getPartitaIvaFeedback() {
-        return partitaIvaFeedback;
     }
     public TextField getEmailField() {
         return emailField;
@@ -221,17 +216,11 @@ public class RegistratiCliente2View {
     public TextField getIndirizzoField() {
         return indirizzoField;
     }
-    public Label getIndirizzoFeedback() {
-        return indirizzoFeedback;
-    }
     public TextField getCivicoField() {
         return civicoField;
     }
     public TextField getCapField() {
         return capField;
-    }
-    public Label getCapFeedback() {
-        return capFeedback;
     }
     public TextField getCittaField() {
         return cittaField;
@@ -244,16 +233,5 @@ public class RegistratiCliente2View {
         return registratiButton;
     }
 
-    public Label getEmailFeedback() {
-        return emailFeedback;
-    }
-
-    public Label getPasswordFeedback() {
-        return passwordFeedback;
-    }
-
-    public Label getConfirmPasswordFeedback() {
-        return confirmPasswordFeedback;
-    }
 
 }

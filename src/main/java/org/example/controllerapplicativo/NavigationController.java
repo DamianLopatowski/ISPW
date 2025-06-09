@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 import org.example.controllergrafici.*;
 import org.example.dao.ClienteDAOImpl;
 import org.example.dao.GestoreDAOImpl;
+import org.example.dao.ProdottoDAO;
+import org.example.dao.ProdottoDAOImpl;
 import org.example.model.Cliente;
 import org.example.service.NavigationService;
 import org.example.view.*;
@@ -192,6 +194,15 @@ public class NavigationController implements NavigationService {
             LOGGER.warning("❌ Errore: ProfiloView è NULL!");
         }
     }
+
+    @Override
+    public Parent navigateToGestioneProdottiView() {
+        LOGGER.info("Navigazione alla GestioneProdottiView...");
+        ProdottoDAO prodottoDAO = new ProdottoDAOImpl(SessionController.getIsOnlineModeStatic());
+        GestioneProdottiController controller = new GestioneProdottiController(prodottoDAO, this);
+        return controller.getRoot();
+    }
+
 
 
     @Override

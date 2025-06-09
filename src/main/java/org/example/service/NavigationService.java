@@ -14,7 +14,7 @@ public interface NavigationService {
     void navigateToProfilo(boolean isInterfaccia1);
     void setClienteLoggato(Cliente cliente);
     Cliente getClienteLoggato();
-
+    Parent navigateToGestioneProdottiView();
 
 
 }

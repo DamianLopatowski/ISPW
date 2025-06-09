@@ -25,6 +25,7 @@ public class Prodotto {
         this.immagine = builder.immagine;
     }
 
+    // ✅ Getter
     public int getId() { return id; }
     public String getNome() { return nome; }
     public int getQuantita() { return quantita; }
@@ -36,10 +37,17 @@ public class Prodotto {
     public String getCategoria() { return categoria; }
     public byte[] getImmagine() { return immagine; }
 
+    // ✅ Setter per quantità (esistente)
     public void setQuantita(int nuova) {
         this.quantita = nuova;
     }
 
+    // ✅ Aggiunto: Setter per ID per uso in modalità offline (RAM)
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    // 🔧 Builder pattern
     public static class Builder {
         private int id;
         private String nome;
@@ -105,5 +113,10 @@ public class Prodotto {
         public Prodotto build() {
             return new Prodotto(this);
         }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
     }
 }

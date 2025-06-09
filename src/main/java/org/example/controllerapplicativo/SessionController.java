@@ -8,8 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.example.ApplicationContext;
@@ -17,6 +16,7 @@ import org.example.controllergrafici.LoginController;
 import org.example.controllergrafici.ViewController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.model.Cliente;
+import org.example.model.Pagamento;
 import org.example.model.Prodotto;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
@@ -32,10 +32,12 @@ public class SessionController {
     private final boolean isOnlineMode;
     private static boolean isInterfaccia1;
     protected static boolean isOnlineModeStatic = true;
-    private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
-    private static final String INTERFACCIA_2_LABEL = "Interfaccia 2";
     private static Cliente clienteLoggato;
     private static final Map<Prodotto, Integer> carrello = new HashMap<>();
+    private static final List<Pagamento> pagamentiOffline = new ArrayList<>();
+
+    private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
+    private static final String INTERFACCIA_2_LABEL = "Interfaccia 2";
 
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
@@ -64,15 +66,13 @@ public class SessionController {
     private void initializeView() {
         View view = context.getMainView();
 
-        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
-            LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
-        }
+        LOGGER.info(String.format("✅ Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
 
         view.getLoginButton().setOnAction(event -> {
             if (view.getInterfaccia1Option().isSelected()) {
-                SessionController.setIsInterfaccia1Static(true);
+                setIsInterfaccia1Static(true);
             } else if (view.getInterfaccia2Option().isSelected()) {
-                SessionController.setIsInterfaccia1Static(false);
+                setIsInterfaccia1Static(false);
             } else {
                 LOGGER.warning("❌ Nessuna interfaccia selezionata.");
                 return;
@@ -132,6 +132,9 @@ public class SessionController {
                 boolean loginSuccess = authController.handleLogin(username, password, !isOnlineMode);
 
                 if (loginSuccess) {
+                    // ✅ SET CLIENTE LOGGATO
+                    setClienteLoggato(new Cliente.Builder().username(username).build());
+
                     LOGGER.info("✅ Login riuscito!");
                     navigateToGestione();
                 } else {
@@ -195,4 +198,18 @@ public class SessionController {
         carrello.remove(prodotto);
     }
 
+    // 🔽🔽 GESTIONE PAGAMENTI OFFLINE 🔽🔽
+    public static void salvaPagamentoOffline(Pagamento pagamento) {
+        pagamentiOffline.add(pagamento);
+    }
+
+    public static List<Pagamento> getPagamentiOfflinePer(String username) {
+        List<Pagamento> risultati = new ArrayList<>();
+        for (Pagamento p : pagamentiOffline) {
+            if (p.getClienteUsername().equalsIgnoreCase(username)) {
+                risultati.add(p);
+            }
+        }
+        return risultati;
+    }
 }

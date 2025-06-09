@@ -12,6 +12,7 @@ public class PagamentiView {
     private final Label totalePagatoLabel;
     private final Label residuoLabel;
     private final TableView<OrdineTableRow> ordiniTable;
+    private final TableView<PagamentoTableRow> pagamentiTable;
     private final Button tornaAlNegozioButton;
 
     public PagamentiView() {
@@ -34,7 +35,7 @@ public class PagamentiView {
 
         // Tabella ordini
         ordiniTable = new TableView<>();
-        ordiniTable.setPrefHeight(300);
+        ordiniTable.setPrefHeight(250);
 
         TableColumn<OrdineTableRow, String> dataCol = new TableColumn<>("Data");
         TableColumn<OrdineTableRow, Double> importoCol = new TableColumn<>("Importo");
@@ -46,12 +47,32 @@ public class PagamentiView {
 
         ordiniTable.getColumns().addAll(dataCol, importoCol, prodottiCol);
 
+        // Tabella pagamenti
+        pagamentiTable = new TableView<>();
+        pagamentiTable.setPrefHeight(200);
+
+        TableColumn<PagamentoTableRow, String> dataPagamentoCol = new TableColumn<>("Data Pagamento");
+        TableColumn<PagamentoTableRow, Double> importoPagamentoCol = new TableColumn<>("Importo Pagato");
+
+        dataPagamentoCol.setCellValueFactory(c -> c.getValue().dataProperty());
+        importoPagamentoCol.setCellValueFactory(c -> c.getValue().importoProperty().asObject());
+
+        pagamentiTable.getColumns().addAll(dataPagamentoCol, importoPagamentoCol);
+
         // Bottone per tornare al negozio
         tornaAlNegozioButton = new Button("🏠 Torna al Negozio");
         tornaAlNegozioButton.setPrefWidth(200);
 
         // Composizione finale
-        root.getChildren().addAll(title, infoBox, new Label("Storico Ordini:"), ordiniTable, tornaAlNegozioButton);
+        root.getChildren().addAll(
+                title,
+                infoBox,
+                new Label("Storico Ordini:"),
+                ordiniTable,
+                new Label("Storico Pagamenti:"),
+                pagamentiTable,
+                tornaAlNegozioButton
+        );
     }
 
     // Getter per MVC
@@ -73,6 +94,10 @@ public class PagamentiView {
 
     public TableView<OrdineTableRow> getOrdiniTable() {
         return ordiniTable;
+    }
+
+    public TableView<PagamentoTableRow> getPagamentiTable() {
+        return pagamentiTable;
     }
 
     public Button getTornaAlNegozioButton() {

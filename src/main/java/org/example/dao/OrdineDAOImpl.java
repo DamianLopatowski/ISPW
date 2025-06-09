@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 
 public class OrdineDAOImpl implements OrdineDAO {
     private static final Logger LOGGER = Logger.getLogger(OrdineDAOImpl.class.getName());
+
+    // 🆕 Salvataggio ordini in RAM in modalità offline
     private static final List<Ordine> ordiniOffline = new ArrayList<>();
 
     private final boolean isOnlineMode;
@@ -38,6 +40,7 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
     }
 
+    @Override
     public void salvaOrdine(Ordine ordine) {
         if (isOnlineMode) {
             try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -58,9 +61,8 @@ public class OrdineDAOImpl implements OrdineDAO {
                         try (PreparedStatement psProdotti = connection.prepareStatement(
                                 "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
 
-                            psProdotti.setInt(1, ordineId);
-
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
+                                psProdotti.setInt(1, ordineId);
                                 psProdotti.setInt(2, entry.getKey().getId());
                                 psProdotti.setInt(3, entry.getValue());
                                 psProdotti.addBatch();
@@ -74,13 +76,17 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
 
             } catch (SQLException e) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, String.format("❌ Errore nel salvataggio dell'ordine: %s", e.getMessage()), e);
-                }
+                LOGGER.log(Level.SEVERE, "❌ Errore nel salvataggio dell'ordine: " + e.getMessage(), e);
             }
         } else {
+            // 🟢 Salvataggio offline in RAM
+            if (ordine.getCliente() == null || ordine.getCliente().getUsername() == null) {
+                LOGGER.warning("⚠️ Ordine offline senza cliente associato. Ignorato.");
+                return;
+            }
+
             ordiniOffline.add(ordine);
-            LOGGER.info("🟢 Ordine salvato in modalità offline in memoria.");
+            LOGGER.info("🟢 Ordine salvato in modalità offline per cliente: " + ordine.getCliente().getUsername());
         }
     }
 
@@ -94,6 +100,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                     ordini.add(o);
                 }
             }
+            LOGGER.info("📦 Recuperati " + ordini.size() + " ordini in offline per " + username);
             return ordini;
         }
 
@@ -112,11 +119,9 @@ public class OrdineDAOImpl implements OrdineDAO {
                 ordine.setData(rs.getTimestamp("data").toLocalDateTime());
                 ordine.setTotale(rs.getDouble("totale"));
 
-                // imposta cliente
                 Cliente cliente = new Cliente.Builder().username(username).build();
                 ordine.setCliente(cliente);
 
-                // carica prodotti
                 Map<Prodotto, Integer> prodotti = new HashMap<>();
                 try (PreparedStatement psProdotti = conn.prepareStatement(
                         "SELECT prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id = ?")) {

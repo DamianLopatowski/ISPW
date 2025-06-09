@@ -1,11 +1,13 @@
 package org.example.controllergrafici;
 
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.controllerapplicativo.AuthController;
+import org.example.service.NavigationService;
 import org.example.view.Gestione2View;
 import org.example.view.Gestione1View;
-import org.example.service.NavigationService;
+
 import java.util.logging.Logger;
 
 public class GestioneController {
@@ -29,7 +31,6 @@ public class GestioneController {
         setupHandlers();
     }
 
-
     private void setupHandlers() {
         if (isInterfaccia1) {
             setupOnlineHandlers();
@@ -44,6 +45,7 @@ public class GestioneController {
         onlineView.getGestioneSpedizioniButton().setOnAction(event -> handleGestione("Spedizioni"));
         onlineView.getLogoutButton().setOnAction(event -> handleLogout());
     }
+
     private void setupOfflineHandlers() {
         offlineView.getConfermaButton().setOnAction(event -> {
             String selectedOption = offlineView.getMenuTendina().getValue();
@@ -53,29 +55,38 @@ public class GestioneController {
         });
         offlineView.getLogoutButton().setOnAction(event -> handleLogout());
     }
+
     private void handleLogout() {
         LOGGER.info("🔄 Logout in corso...");
-        authController.logout(navigationService); // ✅ Passiamo NavigationService
+        authController.logout(navigationService);
     }
 
     private void handleGestione(String sezione) {
         LOGGER.log(java.util.logging.Level.INFO, "Navigazione a: {0}", sezione);
+
+        switch (sezione) {
+            case "Prodotti" -> {
+                Parent root = navigationService.navigateToGestioneProdottiView(); // Metodo da aggiungere se non esiste
+                stage.setScene(new Scene(root, 1100, 700));
+            }
+            case "Soglia" -> {
+                // TODO: Navigazione futura per soglia
+                LOGGER.info("⚠️ Navigazione a 'Soglia' non ancora implementata.");
+            }
+            case "Spedizioni" -> {
+                // TODO: Navigazione futura per spedizioni
+                LOGGER.info("⚠️ Navigazione a 'Spedizioni' non ancora implementata.");
+            }
+            default -> LOGGER.warning("❌ Sezione di gestione non riconosciuta: " + sezione);
+        }
     }
 
     public Parent getRootView() {
         LOGGER.info("📦 Restituzione root view di GestioneProdotto...");
-
-        Parent root;
-        if (isInterfaccia1) {
-            root = onlineView.getRoot();
-        } else {
-            root = offlineView.getRoot();
-        }
-
+        Parent root = isInterfaccia1 ? onlineView.getRoot() : offlineView.getRoot();
         if (root == null) {
             LOGGER.warning("❌ Errore: La vista di GestioneProdotto è NULL!");
         }
-
         return root;
     }
 }

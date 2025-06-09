@@ -9,6 +9,8 @@ import java.util.*;
 
 public class ProdottoDAOImpl implements ProdottoDAO {
     private static final Map<Integer, Prodotto> prodottiOffline = new HashMap<>();
+    private static int nextOfflineId = 1;
+
     private final boolean isOnlineMode;
     private Connection connection;
 
@@ -78,7 +80,20 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 e.printStackTrace();
             }
         } else {
-            prodottiOffline.put(prodotto.getId(), prodotto);
+            int newId = nextOfflineId++;
+            Prodotto prodottoConId = new Prodotto.Builder()
+                    .id(newId)
+                    .nome(prodotto.getNome())
+                    .quantita(prodotto.getQuantita())
+                    .scaffale(prodotto.getScaffale())
+                    .codiceAbarre(prodotto.getCodiceAbarre())
+                    .soglia(prodotto.getSoglia())
+                    .prezzoAcquisto(prodotto.getPrezzoAcquisto())
+                    .prezzoVendita(prodotto.getPrezzoVendita())
+                    .categoria(prodotto.getCategoria())
+                    .immagine(prodotto.getImmagine())
+                    .build();
+            prodottiOffline.put(newId, prodottoConId);
         }
     }
 
@@ -96,13 +111,90 @@ public class ProdottoDAOImpl implements ProdottoDAO {
         } else {
             Prodotto p = prodottiOffline.get(id);
             if (p != null) {
+                // ✅ Modifica diretta per non perdere il riferimento
                 p.setQuantita(Math.max(0, p.getQuantita() - quantita));
             }
         }
     }
 
+    @Override
+    public void aggiornaQuantita(int id, int nuovaQuantita) {
+        if (isOnlineMode) {
+            try (PreparedStatement stmt = connection.prepareStatement(
+                    "UPDATE prodotti SET quantita = ? WHERE id = ?")) {
+                stmt.setInt(1, nuovaQuantita);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Prodotto p = prodottiOffline.get(id);
+            if (p != null) {
+                p.setQuantita(nuovaQuantita);
+            }
+        }
+    }
+
+    @Override
+    public void rimuoviProdotto(int id) {
+        if (isOnlineMode) {
+            try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM prodotti WHERE id = ?")) {
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            prodottiOffline.remove(id);
+        }
+    }
+
+    @Override
+    public Prodotto getProdottoById(int id) {
+        if (isOnlineMode) {
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM prodotti WHERE id = ?")) {
+                stmt.setInt(1, id);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return new Prodotto.Builder()
+                                .id(rs.getInt("id"))
+                                .nome(rs.getString("nome"))
+                                .quantita(rs.getInt("quantita"))
+                                .scaffale(rs.getString("scaffale"))
+                                .codiceAbarre(rs.getString("codiceAbarre"))
+                                .soglia(rs.getInt("soglia"))
+                                .prezzoAcquisto(rs.getDouble("prezzoAcquisto"))
+                                .prezzoVendita(rs.getDouble("prezzoVendita"))
+                                .categoria(rs.getString("categoria"))
+                                .immagine(rs.getBytes("immagine"))
+                                .build();
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        } else {
+            return prodottiOffline.get(id);
+        }
+    }
+
+    @Override
     public boolean isOnline() {
         return isOnlineMode;
     }
 
+    // ✅ Metodi alias compatibili con il controller gestione
+    public List<Prodotto> getAll() {
+        return getAllProdotti();
+    }
+
+    public void salva(Prodotto prodotto) {
+        saveProdotto(prodotto);
+    }
+
+    public void rimuovi(int id) {
+        rimuoviProdotto(id);
+    }
 }

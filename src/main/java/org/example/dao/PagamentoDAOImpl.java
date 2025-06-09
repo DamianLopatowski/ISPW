@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import org.example.model.Pagamento;
+import org.example.controllerapplicativo.SessionController;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.util.logging.Logger;
 public class PagamentoDAOImpl implements PagamentoDAO {
     private static final Logger LOGGER = Logger.getLogger(PagamentoDAOImpl.class.getName());
     private final boolean isOnline;
-    private static final List<Pagamento> pagamentiOffline = new ArrayList<>();
 
     private String dbUrl;
     private String dbUsername;
@@ -39,8 +39,8 @@ public class PagamentoDAOImpl implements PagamentoDAO {
     @Override
     public void registraPagamento(Pagamento pagamento) {
         if (!isOnline) {
-            pagamentiOffline.add(pagamento);
-            LOGGER.log(Level.INFO, "💾 Pagamento salvato in RAM: {0} → €{1}",
+            SessionController.salvaPagamentoOffline(pagamento); // 🔄 Salvataggio in SessionController
+            LOGGER.log(Level.INFO, "💾 Pagamento salvato in RAM per {0}: €{1}",
                     new Object[]{pagamento.getClienteUsername(), pagamento.getImporto()});
             return;
         }
@@ -70,13 +70,7 @@ public class PagamentoDAOImpl implements PagamentoDAO {
     public List<Pagamento> getPagamentiPerCliente(String username) {
         if (!isOnline) {
             LOGGER.log(Level.INFO, "📋 Recupero pagamenti da RAM per: {0}", username);
-            List<Pagamento> risultati = new ArrayList<>();
-            for (Pagamento p : pagamentiOffline) {
-                if (p.getClienteUsername().equalsIgnoreCase(username)) {
-                    risultati.add(p);
-                }
-            }
-            return risultati;
+            return SessionController.getPagamentiOfflinePer(username); // 🔄 Recupero da SessionController
         }
 
         List<Pagamento> pagamenti = new ArrayList<>();

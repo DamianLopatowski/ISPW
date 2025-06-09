@@ -84,37 +84,6 @@ public class NegozioController {
         }
     }
 
-    private void inviaOrdine() {
-        boolean isOnline = prodottoDAO.isOnline(); // ✅ Warning S1905 risolto
-
-        for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
-            Prodotto prodotto = entry.getKey();
-            int quantita = entry.getValue();
-
-            prodottoDAO.riduciQuantita(prodotto.getId(), quantita);
-
-            // ✅ Warning S2629 risolto
-            logger.log(Level.INFO, "🛒 Ordinato: {0} x{1}", new Object[]{prodotto.getNome(), quantita});
-        }
-
-        if (isOnline) {
-            ordineService.salvaOrdineOnline(carrello, isOnline);
-        }
-
-        EmailService.sendOrderSummaryEmail(
-                cliente.getEmail(),
-                cliente.getNome(),
-                new HashMap<>(carrello)
-        );
-
-        SessionController.svuotaCarrello();
-        carrello.clear();
-        aggiornaCarrello();
-        aggiornaListaProdotti();
-    }
-
-
-
     public void handleConfermaOrdine() {
         if (cliente == null) {
             logger.warning("❌ Cliente non presente! Ordine annullato.");
@@ -165,17 +134,32 @@ public class NegozioController {
 
         if (result.isPresent()) {
             if (result.get() == annulla) {
-                // ordine annullato, non fare nulla
+                // ordine annullato
             } else if (result.get() == modifica) {
                 boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
                 navigationService.navigateToProfilo(isInterfaccia1);
             } else if (result.get() == conferma) {
-                ordineService.procediOrdine();
-                inviaOrdine();
+                ordineService.procediOrdine(); // salva ordine + pagamento offline se necessario
+
+                // riduci quantità prodotti
+                boolean isOnline = prodottoDAO.isOnline();
+                for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
+                    prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
+                    logger.log(Level.INFO, "🛒 Ordinato: {0} x{1}", new Object[]{entry.getKey().getNome(), entry.getValue()});
+                }
+
+
+                carrello.clear();
+                aggiornaCarrello();
+                aggiornaListaProdotti();
+
                 showAlert("✅ Ordine inviato con successo!");
             }
         }
     }
+
+
+
 
     private void aggiornaListaProdotti() {
         if (view instanceof NegozioView1) {

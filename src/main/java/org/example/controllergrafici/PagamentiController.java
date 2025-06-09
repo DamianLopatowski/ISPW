@@ -13,6 +13,7 @@ import org.example.service.PagamentoService;
 import org.example.service.NavigationService;
 import org.example.view.OrdineTableRow;
 import org.example.view.PagamentiView;
+import org.example.view.PagamentoTableRow;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,7 +24,6 @@ public class PagamentiController {
     private final OrdineDAO ordineDAO;
     private final NavigationService navigationService;
     private static final Logger LOGGER = Logger.getLogger(PagamentiController.class.getName());
-
 
     public PagamentiController(PagamentoDAO pagamentoDAO, OrdineDAO ordineDAO, NavigationService navigationService) {
         this.view = new PagamentiView();
@@ -46,12 +46,20 @@ public class PagamentiController {
         List<Ordine> ordini = ordineDAO.getOrdiniPerCliente(username);
         List<Pagamento> pagamenti = pagamentoService.getPagamentiPerCliente(username);
 
+        if (ordini.isEmpty()) {
+            LOGGER.info("📭 Nessun ordine trovato per " + username);
+        }
+        if (pagamenti.isEmpty()) {
+            LOGGER.info("📭 Nessun pagamento trovato per " + username);
+        }
+
         double totaleOrdini = calcolaTotaleOrdini(ordini);
         double totalePagato = calcolaTotalePagamenti(pagamenti);
         double daPagare = totaleOrdini - totalePagato;
 
         aggiornaEtichette(totaleOrdini, totalePagato, daPagare);
         popolaTabellaOrdini(ordini);
+        popolaTabellaPagamenti(pagamenti);
     }
 
     private double calcolaTotaleOrdini(List<Ordine> ordini) {
@@ -76,11 +84,18 @@ public class PagamentiController {
         }
     }
 
+    private void popolaTabellaPagamenti(List<Pagamento> pagamenti) {
+        TableView<PagamentoTableRow> tabellaPagamenti = view.getPagamentiTable();
+        tabellaPagamenti.getItems().clear();
+        for (Pagamento pagamento : pagamenti) {
+            tabellaPagamenti.getItems().add(new PagamentoTableRow(pagamento));
+        }
+    }
+
     private void configuraBottoneIndietro() {
         Button indietroButton = view.getTornaAlNegozioButton();
         indietroButton.setOnAction(e -> navigationService.navigateToNegozio());
     }
-
 
     public Parent getRoot() {
         return view.getRoot();

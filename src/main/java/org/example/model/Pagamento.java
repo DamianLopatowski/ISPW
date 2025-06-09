@@ -1,6 +1,7 @@
 package org.example.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Pagamento {
     private String clienteUsername;
@@ -15,12 +16,43 @@ public class Pagamento {
         this.dataPagamento = LocalDateTime.now();
     }
 
-    public String getClienteUsername() { return clienteUsername; }
-    public void setClienteUsername(String clienteUsername) { this.clienteUsername = clienteUsername; }
+    public String getClienteUsername() {
+        return clienteUsername;
+    }
 
-    public double getImporto() { return importo; }
-    public void setImporto(double importo) { this.importo = importo; }
+    public void setClienteUsername(String clienteUsername) {
+        this.clienteUsername = clienteUsername;
+    }
 
-    public LocalDateTime getDataPagamento() { return dataPagamento; }
-    public void setDataPagamento(LocalDateTime dataPagamento) { this.dataPagamento = dataPagamento; }
+    public double getImporto() {
+        return importo;
+    }
+
+    public void setImporto(double importo) {
+        this.importo = importo;
+    }
+
+    public LocalDateTime getDataPagamento() {
+        return dataPagamento;
+    }
+
+    public void setDataPagamento(LocalDateTime dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
+
+    // ✅ Metodo comodo per visualizzare la data in formato leggibile
+    public String getDataPagamentoFormattata() {
+        if (dataPagamento == null) return "N/D";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return dataPagamento.format(formatter);
+    }
+
+    @Override
+    public String toString() {
+        return "Pagamento{" +
+                "clienteUsername='" + clienteUsername + '\'' +
+                ", importo=" + importo +
+                ", dataPagamento=" + getDataPagamentoFormattata() +
+                '}';
+    }
 }
