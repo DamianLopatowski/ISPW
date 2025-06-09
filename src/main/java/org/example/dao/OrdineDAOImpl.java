@@ -13,8 +13,6 @@ import java.util.logging.Logger;
 
 public class OrdineDAOImpl implements OrdineDAO {
     private static final Logger LOGGER = Logger.getLogger(OrdineDAOImpl.class.getName());
-
-    // 🆕 Salvataggio ordini in RAM in modalità offline
     private static final List<Ordine> ordiniOffline = new ArrayList<>();
 
     private final boolean isOnlineMode;
@@ -76,17 +74,16 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
 
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "❌ Errore nel salvataggio dell'ordine: " + e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, "❌ Errore nel salvataggio dell'ordine: {0}", e.getMessage());
             }
         } else {
-            // 🟢 Salvataggio offline in RAM
             if (ordine.getCliente() == null || ordine.getCliente().getUsername() == null) {
                 LOGGER.warning("⚠️ Ordine offline senza cliente associato. Ignorato.");
                 return;
             }
 
             ordiniOffline.add(ordine);
-            LOGGER.info("🟢 Ordine salvato in modalità offline per cliente: " + ordine.getCliente().getUsername());
+            LOGGER.log(Level.INFO, "🟢 Ordine salvato in modalità offline per cliente: {0}", ordine.getCliente().getUsername());
         }
     }
 
@@ -100,7 +97,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                     ordini.add(o);
                 }
             }
-            LOGGER.info("📦 Recuperati " + ordini.size() + " ordini in offline per " + username);
+            LOGGER.log(Level.INFO, "📦 Recuperati {0} ordini in offline per {1}", new Object[]{ordini.size(), username});
             return ordini;
         }
 
@@ -118,9 +115,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 ordine.setId(ordineId);
                 ordine.setData(rs.getTimestamp("data").toLocalDateTime());
                 ordine.setTotale(rs.getDouble("totale"));
-
-                Cliente cliente = new Cliente.Builder().username(username).build();
-                ordine.setCliente(cliente);
+                ordine.setCliente(new Cliente.Builder().username(username).build());
 
                 Map<Prodotto, Integer> prodotti = new HashMap<>();
                 try (PreparedStatement psProdotti = conn.prepareStatement(
@@ -128,14 +123,16 @@ public class OrdineDAOImpl implements OrdineDAO {
                     psProdotti.setInt(1, ordineId);
                     ResultSet rsProd = psProdotti.executeQuery();
 
-                    while (rsProd.next()) {
-                        int prodottoId = rsProd.getInt("prodotto_id");
-                        int quantita = rsProd.getInt("quantita");
+                    try (PreparedStatement psDettagli = conn.prepareStatement(
+                            "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
 
-                        try (PreparedStatement psDettagli = conn.prepareStatement(
-                                "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
+                        while (rsProd.next()) {
+                            int prodottoId = rsProd.getInt("prodotto_id");
+                            int quantita = rsProd.getInt("quantita");
+
                             psDettagli.setInt(1, prodottoId);
                             ResultSet rsDett = psDettagli.executeQuery();
+
                             if (rsDett.next()) {
                                 Prodotto prodotto = new Prodotto.Builder()
                                         .id(rsDett.getInt("id"))
@@ -149,7 +146,6 @@ public class OrdineDAOImpl implements OrdineDAO {
                                         .categoria(rsDett.getString("categoria"))
                                         .immagine(rsDett.getBytes("immagine"))
                                         .build();
-
                                 prodotti.put(prodotto, quantita);
                             }
                         }

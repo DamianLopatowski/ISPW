@@ -13,6 +13,7 @@ import org.example.service.*;
 import org.example.view.PagamentiView;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -45,11 +46,12 @@ public class PagamentiController {
         List<PagamentoBean> pagamenti = pagamentoService.getPagamentiPerCliente(username).stream().map(PagamentoMapper::toBean).collect(Collectors.toList());
 
         if (ordini.isEmpty()) {
-            LOGGER.info("Nessun ordine trovato per " + username);
+            LOGGER.log(Level.INFO, "Nessun ordine trovato per {0}", username);
         }
         if (pagamenti.isEmpty()) {
-            LOGGER.info("Nessun pagamento trovato per " + username);
+            LOGGER.log(Level.INFO, "Nessun pagamento trovato per {0}", username);
         }
+
 
         double totaleOrdini = calcolaTotaleOrdini(ordini);
         double totalePagato = calcolaTotalePagamenti(pagamenti);

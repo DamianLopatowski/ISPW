@@ -70,7 +70,7 @@ public class Ordine {
         this.totale = totale;
     }
 
-    public static Ordine Ordine2(Cliente clienteBean, Map<org.example.bean.ProdottoBean, Integer> prodottiBean, double totale) {
+    public static Ordine creaDaBean(Cliente clienteBean, Map<org.example.bean.ProdottoBean, Integer> prodottiBean, double totale) {
         Ordine ordine = new Ordine();
         if (clienteBean != null) {
             ordine.cliente = clienteBean;

@@ -80,7 +80,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 e.printStackTrace();
             }
         } else {
-            aggiungiProdottoOffline(prodotto); // ✅ Usa metodo statico
+            aggiungiProdottoOffline(prodotto);
         }
     }
 
@@ -156,7 +156,8 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     @Override
     public Prodotto getProdottoById(int id) {
         if (isOnlineMode) {
-            try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM prodotti WHERE id = ?")) {
+            try (PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
                 stmt.setInt(1, id);
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
@@ -188,14 +189,17 @@ public class ProdottoDAOImpl implements ProdottoDAO {
         return isOnlineMode;
     }
 
+    @Override
     public List<Prodotto> getAll() {
         return getAllProdotti();
     }
 
+    @Override
     public void salva(Prodotto prodotto) {
         saveProdotto(prodotto);
     }
 
+    @Override
     public void rimuovi(int id) {
         rimuoviProdotto(id);
     }

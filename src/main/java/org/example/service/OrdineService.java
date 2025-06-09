@@ -57,7 +57,7 @@ public class OrdineService {
             LOGGER.info(String.format("Totale: €%.2f", totale));
         }
 
-        Ordine ordine = Ordine.Ordine2(cliente, carrello, totale);
+        Ordine ordine = Ordine.creaDaBean(cliente, carrello, totale);
         new OrdineDAOImpl(isOnline).salvaOrdine(ordine);
 
         ProdottoDAO prodottoDAO = new ProdottoDAOImpl(isOnline);

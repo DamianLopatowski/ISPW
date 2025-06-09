@@ -135,20 +135,9 @@ public class GestioneProdottiView {
     }
 
     public VBox getRoot() { return root; }
-    public TextField getNomeField() { return nomeField; }
-    public TextField getQuantitaField() { return quantitaField; }
-    public TextField getScaffaleField() { return scaffaleField; }
-    public TextField getCodiceAbarreField() { return codiceAbarreField; }
-    public TextField getSogliaField() { return sogliaField; }
-    public TextField getPrezzoAcquistoField() { return prezzoAcquistoField; }
-    public TextField getPrezzoVenditaField() { return prezzoVenditaField; }
-    public ComboBox<String> getCategoriaCombo() { return categoriaCombo; }
     public Button getAggiungiProdottoButton() { return aggiungiProdottoButton; }
     public Button getEliminaProdottoButton() { return eliminaProdottoButton; }
     public Button getTornaIndietroButton() { return tornaIndietroButton; }
-    public Button getSelezionaImmagineButton() { return selezionaImmagineButton; }
-    public ImageView getImmaginePreview() { return immaginePreview; }
-    public TableView<ProdottoTableRow> getTabellaProdotti() { return tabellaProdotti; }
     public TextField getModificaQuantitaField() { return modificaQuantitaField; }
     public Button getAumentaQuantitaButton() { return aumentaQuantitaButton; }
     public Button getDiminuisciQuantitaButton() { return diminuisciQuantitaButton; }

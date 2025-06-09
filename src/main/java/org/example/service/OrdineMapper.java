@@ -1,9 +1,7 @@
 package org.example.service;
 
-import org.example.bean.ClienteBean;
 import org.example.bean.OrdineBean;
 import org.example.bean.ProdottoBean;
-import org.example.model.Cliente;
 import org.example.model.Ordine;
 import org.example.model.Prodotto;
 
@@ -12,6 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OrdineMapper {
+
+    private OrdineMapper() {
+        //riempimento
+    }
 
     public static OrdineBean toBean(Ordine ordine) {
         OrdineBean bean = new OrdineBean();

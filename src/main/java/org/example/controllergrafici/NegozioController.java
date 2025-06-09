@@ -15,7 +15,6 @@ import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAOImpl;
 import org.example.dao.PagamentoDAOImpl;
 import org.example.dao.ProdottoDAOImpl;
-import org.example.model.Prodotto;
 import org.example.service.ClienteMapper;
 import org.example.service.NavigationService;
 import org.example.service.OrdineService;
@@ -99,7 +98,7 @@ public class NegozioController {
             return;
         }
 
-        // 🔽 Costruzione messaggio con riepilogo ordine
+        //Costruzione messaggio con riepilogo ordine
         StringBuilder msgBuilder = new StringBuilder();
         msgBuilder.append("Dati di spedizione:\n")
                 .append("Nome: ").append(cliente.getNome()).append("\n")
@@ -145,7 +144,6 @@ public class NegozioController {
                 ordineService.procediOrdine(); // salva ordine + pagamento offline se necessario
 
                 // riduci quantità prodotti
-                boolean isOnline = prodottoDAO.isOnline();
                 for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
                     prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
                     logger.log(Level.INFO, "🛒 Ordinato: {0} x{1}", new Object[]{entry.getKey().getNome(), entry.getValue()});

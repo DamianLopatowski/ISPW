@@ -5,6 +5,10 @@ import org.example.model.Cliente;
 
 public class ClienteMapper {
 
+    private ClienteMapper() {
+        //riempimento
+    }
+
     public static ClienteBean toBean(Cliente cliente) {
         ClienteBean bean = new ClienteBean();
         bean.setUsername(cliente.getUsername());

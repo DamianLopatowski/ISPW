@@ -76,7 +76,7 @@ public class GestioneController {
             }
             case "Soglia" -> LOGGER.info("⚠️ Navigazione alla gestione 'Soglia' non ancora implementata.");
             case "Spedizioni" -> LOGGER.info("⚠️ Navigazione alla gestione 'Spedizioni' non ancora implementata.");
-            default -> LOGGER.warning("❌ Sezione di gestione non riconosciuta: " + sezione);
+            default -> LOGGER.log(Level.WARNING, "Sezione di gestione non riconosciuta: {0}", sezione);
         }
     }
 

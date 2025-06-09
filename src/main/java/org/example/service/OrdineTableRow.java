@@ -3,7 +3,6 @@ package org.example.service;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.example.bean.OrdineBean;
-import org.example.model.Ordine;
 
 public class OrdineTableRow {
     private final SimpleStringProperty data;
