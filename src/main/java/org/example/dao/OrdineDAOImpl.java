@@ -57,12 +57,13 @@ public class OrdineDAOImpl implements OrdineDAO {
                         ordine.setId(ordineId);
 
                         try (PreparedStatement psProdotti = connection.prepareStatement(
-                                "INSERT INTO ordine_prodotti (prodotto_id, quantita, ordine_id) VALUES (?, ?, ?)")) {
+                                "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
+
+                            psProdotti.setInt(1, ordineId);  // fuori dal ciclo: loop-invariant
 
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
-                                psProdotti.setInt(1, entry.getKey().getId());
-                                psProdotti.setInt(2, entry.getValue());
-                                psProdotti.setInt(3, ordineId);  // ora l'ordineId è alla fine
+                                psProdotti.setInt(2, entry.getKey().getId());
+                                psProdotti.setInt(3, entry.getValue());
                                 psProdotti.addBatch();
                             }
 
