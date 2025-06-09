@@ -15,7 +15,9 @@ public class ProdottoBean {
     private byte[] immagine;
 
     // 🔹 Costruttore vuoto
-    public ProdottoBean() {}
+    public ProdottoBean() {
+        //riempimento
+    }
 
     // 🔁 Conversione in model Prodotto
     public Prodotto toProdotto() {

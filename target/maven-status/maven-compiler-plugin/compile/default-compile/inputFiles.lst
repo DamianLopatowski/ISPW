@@ -4,9 +4,12 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\OrdineDAO.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\bean\OrdineBean.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\RegistrazioneException.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\RegistratiCliente2View.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\PagamentoMapper.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\DatabaseConfigurationException.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\ProdottoMapper.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllerapplicativo\NavigationController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\PagamentoDAO.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\OrdineMapper.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\GestoreInitializationException.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\model\Prodotto.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\GestoreDAO.java

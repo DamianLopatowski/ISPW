@@ -8,6 +8,7 @@ import org.example.bean.ProdottoBean;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ProdottoDAO;
 import org.example.service.NavigationService;
+import org.example.service.ProdottoMapper;
 import org.example.view.GestioneProdottiView;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class GestioneProdottiController {
 
     private void caricaProdotti() {
         List<ProdottoBean> prodotti = prodottoDAO.getAll().stream()
-                .map(p -> p.toBean())
+                .map(ProdottoMapper::toBean)
                 .collect(Collectors.toList());
         view.mostraProdotti(prodotti);
     }

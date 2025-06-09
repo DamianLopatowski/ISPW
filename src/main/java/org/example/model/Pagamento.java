@@ -8,7 +8,9 @@ public class Pagamento {
     private double importo;
     private LocalDateTime dataPagamento;
 
-    public Pagamento() {}
+    public Pagamento() {
+        //
+    }
 
     public Pagamento(String clienteUsername, double importo) {
         this.clienteUsername = clienteUsername;
@@ -40,7 +42,7 @@ public class Pagamento {
         this.dataPagamento = dataPagamento;
     }
 
-    // ✅ Metodo comodo per visualizzare la data in formato leggibile
+    // Metodo comodo per visualizzare la data in formato leggibile
     public String getDataPagamentoFormattata() {
         if (dataPagamento == null) return "N/D";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -54,15 +56,6 @@ public class Pagamento {
                 ", importo=" + importo +
                 ", dataPagamento=" + getDataPagamentoFormattata() +
                 '}';
-    }
-
-    // Conversione in PagamentoBean
-    public org.example.bean.PagamentoBean toBean() {
-        org.example.bean.PagamentoBean bean = new org.example.bean.PagamentoBean();
-        bean.setClienteUsername(this.clienteUsername);
-        bean.setImporto(this.importo);
-        bean.setDataPagamento(this.dataPagamento);
-        return bean;
     }
 
 }

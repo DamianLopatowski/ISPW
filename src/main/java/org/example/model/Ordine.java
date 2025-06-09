@@ -1,8 +1,5 @@
 package org.example.model;
 
-import org.example.bean.ClienteBean;
-import org.example.service.ClienteMapper;
-
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -71,26 +68,6 @@ public class Ordine {
     }
     public void setTotale(double totale) {
         this.totale = totale;
-    }
-
-    public org.example.bean.OrdineBean toBean() {
-        org.example.bean.OrdineBean bean = new org.example.bean.OrdineBean();
-        bean.setId(this.id);
-        if (this.cliente != null) {
-            bean.setCliente(ClienteMapper.toBean(this.cliente));
-        }
-        bean.setData(this.data);
-
-        if (this.prodotti != null) {
-            Map<org.example.bean.ProdottoBean, Integer> prodottiBean = new java.util.HashMap<>();
-            for (Map.Entry<Prodotto, Integer> entry : this.prodotti.entrySet()) {
-                prodottiBean.put(entry.getKey().toBean(), entry.getValue());
-            }
-            bean.setProdotti(prodottiBean);
-        }
-
-        bean.setTotale(this.totale);
-        return bean;
     }
 
     public static Ordine Ordine2(Cliente clienteBean, Map<org.example.bean.ProdottoBean, Integer> prodottiBean, double totale) {

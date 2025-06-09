@@ -43,8 +43,8 @@ public class PagamentiController {
         }
 
         String username = cliente.getUsername();
-        List<OrdineBean> ordini = ordineDAO.getOrdiniPerCliente(username).stream().map(Ordine::toBean).collect(Collectors.toList());
-        List<PagamentoBean> pagamenti = pagamentoService.getPagamentiPerCliente(username).stream().map(Pagamento::toBean).collect(Collectors.toList());
+        List<OrdineBean> ordini = ordineDAO.getOrdiniPerCliente(username).stream().map(OrdineMapper::toBean).collect(Collectors.toList());
+        List<PagamentoBean> pagamenti = pagamentoService.getPagamentiPerCliente(username).stream().map(PagamentoMapper::toBean).collect(Collectors.toList());
 
         if (ordini.isEmpty()) {
             LOGGER.info("Nessun ordine trovato per " + username);

@@ -19,6 +19,7 @@ import org.example.model.Prodotto;
 import org.example.service.ClienteMapper;
 import org.example.service.NavigationService;
 import org.example.service.OrdineService;
+import org.example.service.ProdottoMapper;
 import org.example.view.NegozioView1;
 import org.example.view.NegozioView2;
 
@@ -165,7 +166,9 @@ public class NegozioController {
             FlowPane contenitore = v1.getFlowPaneProdotti();
             contenitore.getChildren().clear();
 
-            for (ProdottoBean p : prodottoDAO.getAllProdotti().stream().map(Prodotto::toBean).collect(Collectors.toList())) {
+            for (ProdottoBean p : prodottoDAO.getAllProdotti().stream()
+                    .map(ProdottoMapper::toBean)
+                    .collect(Collectors.toList())) {
                 VBox boxProdotto = new VBox(5);
                 boxProdotto.setPadding(new Insets(10));
                 boxProdotto.setStyle("-fx-border-color: lightgray; -fx-background-color: white;");
@@ -202,7 +205,9 @@ public class NegozioController {
             lista.getItems().clear();
             Map<String, ProdottoBean> prodottiMap = new HashMap<>();
 
-            for (ProdottoBean p : prodottoDAO.getAllProdotti().stream().map(Prodotto::toBean).collect(Collectors.toList())) {
+            for (ProdottoBean p : prodottoDAO.getAllProdotti().stream()
+                    .map(ProdottoMapper::toBean)
+                    .collect(Collectors.toList())) {
                 String nomeVisualizzato = p.getNome() + " - €" + p.getPrezzoVendita();
                 prodottiMap.put(nomeVisualizzato, p);
                 lista.getItems().add(nomeVisualizzato);
