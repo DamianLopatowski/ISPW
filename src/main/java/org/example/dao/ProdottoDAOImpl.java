@@ -80,21 +80,25 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 e.printStackTrace();
             }
         } else {
-            int newId = nextOfflineId++;
-            Prodotto prodottoConId = new Prodotto.Builder()
-                    .id(newId)
-                    .nome(prodotto.getNome())
-                    .quantita(prodotto.getQuantita())
-                    .scaffale(prodotto.getScaffale())
-                    .codiceAbarre(prodotto.getCodiceAbarre())
-                    .soglia(prodotto.getSoglia())
-                    .prezzoAcquisto(prodotto.getPrezzoAcquisto())
-                    .prezzoVendita(prodotto.getPrezzoVendita())
-                    .categoria(prodotto.getCategoria())
-                    .immagine(prodotto.getImmagine())
-                    .build();
-            prodottiOffline.put(newId, prodottoConId);
+            aggiungiProdottoOffline(prodotto); // ✅ Usa metodo statico
         }
+    }
+
+    private static void aggiungiProdottoOffline(Prodotto prodotto) {
+        int newId = nextOfflineId++;
+        Prodotto prodottoConId = new Prodotto.Builder()
+                .id(newId)
+                .nome(prodotto.getNome())
+                .quantita(prodotto.getQuantita())
+                .scaffale(prodotto.getScaffale())
+                .codiceAbarre(prodotto.getCodiceAbarre())
+                .soglia(prodotto.getSoglia())
+                .prezzoAcquisto(prodotto.getPrezzoAcquisto())
+                .prezzoVendita(prodotto.getPrezzoVendita())
+                .categoria(prodotto.getCategoria())
+                .immagine(prodotto.getImmagine())
+                .build();
+        prodottiOffline.put(newId, prodottoConId);
     }
 
     @Override
@@ -111,7 +115,6 @@ public class ProdottoDAOImpl implements ProdottoDAO {
         } else {
             Prodotto p = prodottiOffline.get(id);
             if (p != null) {
-                // ✅ Modifica diretta per non perdere il riferimento
                 p.setQuantita(Math.max(0, p.getQuantita() - quantita));
             }
         }
@@ -185,7 +188,6 @@ public class ProdottoDAOImpl implements ProdottoDAO {
         return isOnlineMode;
     }
 
-    // ✅ Metodi alias compatibili con il controller gestione
     public List<Prodotto> getAll() {
         return getAllProdotti();
     }

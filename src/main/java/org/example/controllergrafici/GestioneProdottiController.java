@@ -36,68 +36,61 @@ public class GestioneProdottiController {
     }
 
     private void configuraAzioni() {
-        view.getAggiungiProdottoButton().setOnAction(e -> {
-            ProdottoBean nuovo = view.creaProdottoDaInput();
-            if (nuovo != null) {
-                prodottoDAO.saveProdotto(nuovo.toModel());
-                caricaProdotti();
-                view.pulisciCampiInput();
-            }
-        });
+        view.getAggiungiProdottoButton().setOnAction(e -> aggiungiProdotto());
 
-        view.getAumentaQuantitaButton().setOnAction(e -> {
-            ProdottoBean selezionato = view.getProdottoSelezionato();
-            if (selezionato != null) {
-                try {
-                    int quantita = Integer.parseInt(view.getModificaQuantitaField().getText());
-                    if (quantita > 0) {
-                        int nuovaQuantita = selezionato.getQuantita() + quantita;
-                        selezionato.setQuantita(nuovaQuantita);
-                        prodottoDAO.aggiornaQuantita(selezionato.getId(), nuovaQuantita);
-                        caricaProdotti();
-                    } else {
-                        mostraErrore("La quantità deve essere positiva");
-                    }
-                } catch (NumberFormatException ex) {
-                    mostraErrore("Inserisci un numero valido per la quantità");
+        view.getAumentaQuantitaButton().setOnAction(e -> gestisciModificaQuantita(true));
+
+        view.getDiminuisciQuantitaButton().setOnAction(e -> gestisciModificaQuantita(false));
+
+        view.getEliminaProdottoButton().setOnAction(e -> eliminaProdotto());
+
+        view.getTornaIndietroButton().setOnAction(e -> tornaAllaGestione());
+    }
+
+    private void aggiungiProdotto() {
+        ProdottoBean nuovo = view.creaProdottoDaInput();
+        if (nuovo != null) {
+            prodottoDAO.saveProdotto(nuovo.toModel());
+            caricaProdotti();
+            view.pulisciCampiInput();
+        }
+    }
+
+    private void gestisciModificaQuantita(boolean aumento) {
+        ProdottoBean selezionato = view.getProdottoSelezionato();
+        if (selezionato != null) {
+            try {
+                int quantita = Integer.parseInt(view.getModificaQuantitaField().getText());
+                if (quantita > 0) {
+                    int nuovaQuantita = aumento
+                            ? selezionato.getQuantita() + quantita
+                            : Math.max(0, selezionato.getQuantita() - quantita);
+                    selezionato.setQuantita(nuovaQuantita);
+                    prodottoDAO.aggiornaQuantita(selezionato.getId(), nuovaQuantita);
+                    caricaProdotti();
+                } else {
+                    mostraErrore("La quantità deve essere positiva");
                 }
+            } catch (NumberFormatException ex) {
+                mostraErrore("Inserisci un numero valido per la quantità");
             }
-        });
+        }
+    }
 
-        view.getDiminuisciQuantitaButton().setOnAction(e -> {
-            ProdottoBean selezionato = view.getProdottoSelezionato();
-            if (selezionato != null) {
-                try {
-                    int quantita = Integer.parseInt(view.getModificaQuantitaField().getText());
-                    if (quantita > 0) {
-                        int nuovaQuantita = Math.max(0, selezionato.getQuantita() - quantita);
-                        selezionato.setQuantita(nuovaQuantita);
-                        prodottoDAO.aggiornaQuantita(selezionato.getId(), nuovaQuantita);
-                        caricaProdotti();
-                    } else {
-                        mostraErrore("La quantità deve essere positiva");
-                    }
-                } catch (NumberFormatException ex) {
-                    mostraErrore("Inserisci un numero valido per la quantità");
-                }
-            }
-        });
+    private void eliminaProdotto() {
+        ProdottoBean selezionato = view.getProdottoSelezionato();
+        if (selezionato != null) {
+            prodottoDAO.rimuoviProdotto(selezionato.getId());
+            caricaProdotti();
+        }
+    }
 
-        view.getEliminaProdottoButton().setOnAction(e -> {
-            ProdottoBean selezionato = view.getProdottoSelezionato();
-            if (selezionato != null) {
-                prodottoDAO.rimuoviProdotto(selezionato.getId());
-                caricaProdotti();
-            }
-        });
-
-        view.getTornaIndietroButton().setOnAction(e -> {
-            boolean isOnline = SessionController.getIsOnlineModeStatic();
-            boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
-            Parent root = navigationService.navigateToGestioneView(isOnline, isInterfaccia1);
-            Stage stage = (Stage) view.getRoot().getScene().getWindow();
-            stage.setScene(new Scene(root, 1100, 700));
-        });
+    private void tornaAllaGestione() {
+        boolean isOnline = SessionController.getIsOnlineModeStatic();
+        boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
+        Parent root = navigationService.navigateToGestioneView(isOnline, isInterfaccia1);
+        Stage stage = (Stage) view.getRoot().getScene().getWindow();
+        stage.setScene(new Scene(root, 1100, 700));
     }
 
     private void mostraErrore(String messaggio) {

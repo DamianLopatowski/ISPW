@@ -18,7 +18,6 @@ import org.example.controllergrafici.ViewController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.model.Cliente;
 import org.example.model.Pagamento;
-import org.example.model.Prodotto;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
 import org.example.view.Login2View;

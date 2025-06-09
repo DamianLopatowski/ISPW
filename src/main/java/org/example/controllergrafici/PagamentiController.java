@@ -9,8 +9,6 @@ import org.example.bean.PagamentoBean;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAO;
 import org.example.dao.PagamentoDAO;
-import org.example.model.Ordine;
-import org.example.model.Pagamento;
 import org.example.service.*;
 import org.example.view.PagamentiView;
 

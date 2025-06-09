@@ -1,7 +1,6 @@
 package org.example.bean;
 
 import org.example.model.Ordine;
-import org.example.model.Cliente;
 import org.example.model.Prodotto;
 
 import java.time.LocalDateTime;
