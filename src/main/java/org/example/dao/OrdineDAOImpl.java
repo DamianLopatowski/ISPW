@@ -59,9 +59,8 @@ public class OrdineDAOImpl implements OrdineDAO {
                         try (PreparedStatement psProdotti = connection.prepareStatement(
                                 "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
 
-                            psProdotti.setInt(1, ordineId); // loop-invariant
-
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
+                                psProdotti.setInt(1, ordineId);
                                 psProdotti.setInt(2, entry.getKey().getId());
                                 psProdotti.setInt(3, entry.getValue());
                                 psProdotti.addBatch();
@@ -86,7 +85,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             ordiniOffline.add(ordine);
 
             LOGGER.log(Level.INFO,
-                    "Ordine salvato in modalita offline per cliente: {0}", ordine.getCliente().getUsername());
+                    "Ordine salvato in modalità offline per cliente: {0}", ordine.getCliente().getUsername());
         }
     }
 
@@ -126,7 +125,6 @@ public class OrdineDAOImpl implements OrdineDAO {
 
             if (ordiniMappa.isEmpty()) return ordini;
 
-            // Recupera relazioni ordine-prodotti
             try (PreparedStatement psProdotti = conn.prepareStatement(
                     "SELECT ordine_id, prodotto_id, quantita FROM ordine_prodotti WHERE ordine_id IN (" +
                             String.join(",", Collections.nCopies(ordiniMappa.size(), "?")) + ")")) {
@@ -152,7 +150,6 @@ public class OrdineDAOImpl implements OrdineDAO {
 
                 if (tuttiProdottoId.isEmpty()) return new ArrayList<>(ordiniMappa.values());
 
-                // Recupera tutti i prodotti in un'unica query
                 try (PreparedStatement psDettagli = conn.prepareStatement(
                         "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine " +
                                 "FROM prodotti WHERE id IN (" +
@@ -182,7 +179,6 @@ public class OrdineDAOImpl implements OrdineDAO {
                         mappaProdotti.put(prodotto.getId(), prodotto);
                     }
 
-                    // Ricostruisci ordini completi
                     for (Map.Entry<Integer, Map<Integer, Integer>> entry : mappaOrdineProdotti.entrySet()) {
                         Ordine ordine = ordiniMappa.get(entry.getKey());
                         Map<Prodotto, Integer> prodottiOrdine = new HashMap<>();
