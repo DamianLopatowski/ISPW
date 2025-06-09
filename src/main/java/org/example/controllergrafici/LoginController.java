@@ -3,7 +3,7 @@ package org.example.controllergrafici;
 import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
-import org.example.model.Cliente;
+import org.example.service.ClienteMapper;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
 import org.example.view.Login2View;
@@ -49,7 +49,7 @@ public class LoginController {
             usernameField = loginView.getUsernameField();
             passwordField = loginView.getPasswordField();
             loginButton = loginView.getLoginButton();
-            statusLabel = new Label("Login"); // puoi collegarla a loginView se necessario
+            statusLabel = new Label("Login");
         }
 
         loginButton.setOnAction(event -> performLogin());
@@ -65,7 +65,7 @@ public class LoginController {
             loginButton.setVisible(true);
             loginButton.setDisable(false);
         } else {
-            statusLabel.setText("⚠️ Inserisci un nome utente prima di proseguire!");
+            statusLabel.setText("Inserisci un nome utente prima di proseguire!");
         }
     }
 
@@ -73,22 +73,22 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
+        LOGGER.log(Level.INFO, "Tentativo di login con username: {0}", username);
 
         ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
-        ClienteBean cliente = clienteDAO.findByUsername(username).toBean();
+        ClienteBean cliente = ClienteMapper.toBean(clienteDAO.findByUsername(username));
 
         if (cliente != null && cliente.getPassword().equals(password)) {
-            LOGGER.info("✅ Login riuscito!");
-            statusLabel.setText("✅ Accesso effettuato!");
+            LOGGER.info("Login riuscito!");
+            statusLabel.setText("Accesso effettuato!");
 
-            // ✅ Imposta il cliente loggato nel navigationService
+            //Imposta il cliente loggato nel navigationService
             navigationService.setClienteLoggato(cliente.toCliente());
 
             navigationService.navigateToNegozio();
         } else {
-            LOGGER.warning("❌ Credenziali errate o utente inesistente!");
-            statusLabel.setText("❌ Errore: credenziali non valide.");
+            LOGGER.warning("Credenziali errate o utente inesistente!");
+            statusLabel.setText("Errore: credenziali non valide.");
         }
     }
 }

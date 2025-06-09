@@ -56,7 +56,7 @@ public class RegistratiClienteController {
             boolean isValid = validazione.test(valore);
 
             field.setStyle(isValid ? BORDER_GREEN : BORDER_RED);
-            feedbackLabel.setText(isValid ? "" : "❌ " + messaggioErrore);
+            feedbackLabel.setText(isValid ? "" : "x " + messaggioErrore);
             feedbackLabel.setStyle(TEXT_RED);
             feedbackLabel.setVisible(!isValid);
             feedbackLabel.setManaged(!isValid);
@@ -66,7 +66,7 @@ public class RegistratiClienteController {
         try {
             return (TextField) view.getClass().getMethod(methodName).invoke(view);
         } catch (Exception e) {
-            LOGGER.warning("❌ Errore nell'accesso al campo: " + methodName);
+            LOGGER.warning("Errore nell'accesso al campo: " + methodName);
             return new TextField();
         }
     }
@@ -75,7 +75,7 @@ public class RegistratiClienteController {
         try {
             return (Label) view.getClass().getMethod(methodName).invoke(view);
         } catch (Exception e) {
-            LOGGER.warning("❌ Errore nell'accesso al label: " + methodName);
+            LOGGER.warning("Errore nell'accesso al label: " + methodName);
             return new Label();
         }
     }

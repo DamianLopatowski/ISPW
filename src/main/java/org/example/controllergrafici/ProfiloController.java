@@ -7,6 +7,7 @@ import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
+import org.example.service.ClienteMapper;
 import org.example.service.NavigationService;
 import org.example.controllerapplicativo.SessionController;
 import org.example.view.ProfiloView1;
@@ -34,7 +35,7 @@ public class ProfiloController {
     }
 
     private void riempiCampi(Object v) {
-        ClienteBean cliente = navigationService.getClienteLoggato().toBean();
+        ClienteBean cliente = ClienteMapper.toBean(navigationService.getClienteLoggato());
 
         if (v instanceof ProfiloView1) {
             ProfiloView1 pv = (ProfiloView1) v;
@@ -50,19 +51,19 @@ public class ProfiloController {
     }
 
     private void salvaDati(Object v) {
-        ClienteBean cliente = navigationService.getClienteLoggato().toBean();
+        ClienteBean cliente = ClienteMapper.toBean(navigationService.getClienteLoggato());
         ProfiloInput input = estraiDatiProfilo(v);
 
         boolean vuoleCambiarePassword = input.vuoleCambiarePassword();
 
         if (vuoleCambiarePassword) {
             if (!input.oldPwd.equals(cliente.getPassword())) {
-                showAlert("❌ Password attuale errata");
+                showAlert("Password attuale errata");
                 return;
             }
 
             if (!input.newPwd.equals(input.confPwd)) {
-                showAlert("❌ Le nuove password non coincidono");
+                showAlert("Le nuove password non coincidono");
                 return;
             }
         }
@@ -85,13 +86,13 @@ public class ProfiloController {
         if (successo) {
             Cliente clienteRicaricato = dao.findByUsername(nuovoClienteBean.getUsername());
             if (clienteRicaricato != null) {
-                ClienteBean clienteBeanRicaricato = clienteRicaricato.toBean();
+                ClienteBean clienteBeanRicaricato = ClienteMapper.toBean(clienteRicaricato);
                 SessionController.setClienteLoggato(clienteBeanRicaricato.toCliente());
                 navigationService.setClienteLoggato(clienteBeanRicaricato.toCliente());
             }
-            showAlert("✅ Profilo aggiornato con successo");
+            showAlert("Profilo aggiornato con successo");
         } else {
-            showAlert("❌ Errore durante il salvataggio");
+            showAlert("Errore durante il salvataggio");
         }
     }
 

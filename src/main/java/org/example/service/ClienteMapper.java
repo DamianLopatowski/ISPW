@@ -1,0 +1,37 @@
+package org.example.service;
+
+import org.example.bean.ClienteBean;
+import org.example.model.Cliente;
+
+public class ClienteMapper {
+
+    public static ClienteBean toBean(Cliente cliente) {
+        ClienteBean bean = new ClienteBean();
+        bean.setUsername(cliente.getUsername());
+        bean.setNome(cliente.getNome());
+        bean.setCognome(cliente.getCognome());
+        bean.setPassword(cliente.getPassword());
+        bean.setEmail(cliente.getEmail());
+        bean.setPartitaIva(cliente.getPartitaIva());
+        bean.setIndirizzo(cliente.getIndirizzo());
+        bean.setCivico(cliente.getCivico());
+        bean.setCap(cliente.getCap());
+        bean.setCitta(cliente.getCitta());
+        return bean;
+    }
+
+    public static Cliente toModel(ClienteBean bean) {
+        return new Cliente.Builder()
+                .username(bean.getUsername())
+                .nome(bean.getNome())
+                .cognome(bean.getCognome())
+                .password(bean.getPassword())
+                .email(bean.getEmail())
+                .partitaIva(bean.getPartitaIva())
+                .indirizzo(bean.getIndirizzo())
+                .civico(bean.getCivico())
+                .cap(bean.getCap())
+                .citta(bean.getCitta())
+                .build();
+    }
+}

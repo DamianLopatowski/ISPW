@@ -1,6 +1,7 @@
 package org.example.model;
 
 import org.example.bean.ClienteBean;
+import org.example.service.ClienteMapper;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class Ordine {
         org.example.bean.OrdineBean bean = new org.example.bean.OrdineBean();
         bean.setId(this.id);
         if (this.cliente != null) {
-            bean.setCliente(this.cliente.toBean());
+            bean.setCliente(ClienteMapper.toBean(this.cliente));
         }
         bean.setData(this.data);
 

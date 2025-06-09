@@ -23,24 +23,24 @@ public class ViewController {
 
     private void navigateToLogin(boolean isCliente) {
         if (navigationService == null) {
-            LOGGER.warning("❌ ERRORE: NavigationService è NULL! Assicurati di impostarlo prima di usare la navigazione.");
+            LOGGER.warning("ERRORE: NavigationService è NULL! Assicurati di impostarlo prima di usare la navigazione.");
             return;
         }
 
         boolean isInterfaccia1 = view.getInterfaccia1Option().isSelected();
-        navigationService.setInterfaccia1(isInterfaccia1);// ✅ SALVA LA SCELTA
+        navigationService.setInterfaccia1(isInterfaccia1);
         navigationService.navigateToLogin(isInterfaccia1, isCliente);
     }
 
 
     private void navigateToRegistrazioneCliente() {
         if (navigationService == null) {
-            LOGGER.warning("❌ ERRORE: NavigationService è NULL! Assicurati di impostarlo prima di usare la navigazione.");
+            LOGGER.warning("ERRORE: NavigationService è NULL! Assicurati di impostarlo prima di usare la navigazione.");
             return;
         }
 
         boolean isInterfaccia1 = view.getInterfaccia1Option().isSelected();
-        navigationService.setInterfaccia1(isInterfaccia1); // ✅ SALVA LA SCELTA
+        navigationService.setInterfaccia1(isInterfaccia1);
         navigationService.navigateToRegistrazioneCliente(isInterfaccia1);
     }
 }

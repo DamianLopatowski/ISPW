@@ -11,10 +11,7 @@ import org.example.dao.OrdineDAO;
 import org.example.dao.PagamentoDAO;
 import org.example.model.Ordine;
 import org.example.model.Pagamento;
-import org.example.service.NavigationService;
-import org.example.service.OrdineTableRow;
-import org.example.service.PagamentoService;
-import org.example.service.PagamentoTableRow;
+import org.example.service.*;
 import org.example.view.PagamentiView;
 
 import java.util.List;
@@ -39,7 +36,7 @@ public class PagamentiController {
     }
 
     private void caricaDatiUtenteLoggato() {
-        ClienteBean cliente = SessionController.getClienteLoggato().toBean();
+        ClienteBean cliente = ClienteMapper.toBean(SessionController.getClienteLoggato());
         if (cliente == null) {
             LOGGER.warning("Nessun cliente loggato. Impossibile caricare i dati dei pagamenti.");
             return;

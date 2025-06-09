@@ -16,6 +16,7 @@ import org.example.dao.OrdineDAOImpl;
 import org.example.dao.PagamentoDAOImpl;
 import org.example.dao.ProdottoDAOImpl;
 import org.example.model.Prodotto;
+import org.example.service.ClienteMapper;
 import org.example.service.NavigationService;
 import org.example.service.OrdineService;
 import org.example.view.NegozioView1;
@@ -41,7 +42,7 @@ public class NegozioController {
         this.prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
         this.navigationService = navigationService;
         this.ordineService = new OrdineService(navigationService);
-        this.cliente = navigationService.getClienteLoggato().toBean();
+        this.cliente = ClienteMapper.toBean(navigationService.getClienteLoggato());
         this.carrello = SessionController.getCarrello();
 
         aggiornaListaProdotti();
@@ -87,7 +88,7 @@ public class NegozioController {
 
     public void handleConfermaOrdine() {
         if (cliente == null) {
-            logger.warning("❌ Cliente non presente! Ordine annullato.");
+            logger.warning("Cliente non presente! Ordine annullato.");
             showAlert("Errore: cliente non loggato.");
             return;
         }
@@ -122,7 +123,7 @@ public class NegozioController {
         msgBuilder.append("Totale: €").append(String.format("%.2f", totale));
         String msg = msgBuilder.toString();
 
-        // 🔽 Pulsanti dell'Alert
+        //Pulsanti dell'Alert
         ButtonType annulla = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
         ButtonType modifica = new ButtonType("Modifica Spedizione");
         ButtonType conferma = new ButtonType("Conferma Ordine");
@@ -153,7 +154,7 @@ public class NegozioController {
                 aggiornaCarrello();
                 aggiornaListaProdotti();
 
-                showAlert("✅ Ordine inviato con successo!");
+                showAlert("Ordine inviato con successo!");
             }
         }
     }

@@ -99,20 +99,4 @@ public class Cliente {
         }
     }
 
-    // 🔁 Conversione in ClienteBean
-    public org.example.bean.ClienteBean toBean() {
-        org.example.bean.ClienteBean bean = new org.example.bean.ClienteBean();
-        bean.setUsername(this.username);
-        bean.setNome(this.nome);
-        bean.setCognome(this.cognome);
-        bean.setPassword(this.password);
-        bean.setEmail(this.email);
-        bean.setPartitaIva(this.partitaIva);
-        bean.setIndirizzo(this.indirizzo);
-        bean.setCivico(this.civico);
-        bean.setCap(this.cap);
-        bean.setCitta(this.citta);
-        return bean;
-    }
-
 }
