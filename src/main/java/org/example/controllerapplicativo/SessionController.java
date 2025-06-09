@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import org.example.ApplicationContext;
+import org.example.bean.ProdottoBean;
 import org.example.controllergrafici.LoginController;
 import org.example.controllergrafici.ViewController;
 import org.example.dao.GestoreDAOImpl;
@@ -33,7 +34,7 @@ public class SessionController {
     private static boolean isInterfaccia1;
     protected static boolean isOnlineModeStatic = true;
     private static Cliente clienteLoggato;
-    private static final Map<Prodotto, Integer> carrello = new HashMap<>();
+    private static final Map<ProdottoBean, Integer> carrello = new HashMap<>();
     private static final List<Pagamento> pagamentiOffline = new ArrayList<>();
 
     private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
@@ -178,7 +179,7 @@ public class SessionController {
         clienteLoggato = cliente;
     }
 
-    public static Map<Prodotto, Integer> getCarrello() {
+    public static Map<ProdottoBean, Integer> getCarrello() {
         return carrello;
     }
 
@@ -186,15 +187,15 @@ public class SessionController {
         carrello.clear();
     }
 
-    public static void aggiungiAlCarrello(Prodotto prodotto) {
+    public static void aggiungiAlCarrello(ProdottoBean prodotto) {
         carrello.put(prodotto, carrello.getOrDefault(prodotto, 0) + 1);
     }
 
-    public static void rimuoviUnitaDalCarrello(Prodotto prodotto) {
+    public static void rimuoviUnitaDalCarrello(ProdottoBean prodotto) {
         carrello.computeIfPresent(prodotto, (k, v) -> (v > 1) ? v - 1 : null);
     }
 
-    public static void rimuoviDalCarrello(Prodotto prodotto) {
+    public static void rimuoviDalCarrello(ProdottoBean prodotto) {
         carrello.remove(prodotto);
     }
 

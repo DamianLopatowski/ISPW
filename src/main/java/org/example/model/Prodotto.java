@@ -119,4 +119,20 @@ public class Prodotto {
         }
 
     }
+
+    public org.example.bean.ProdottoBean toBean() {
+        org.example.bean.ProdottoBean bean = new org.example.bean.ProdottoBean();
+        bean.setId(this.id);
+        bean.setNome(this.nome);
+        bean.setQuantita(this.quantita);
+        bean.setScaffale(this.scaffale);
+        bean.setCodiceAbarre(this.codiceAbarre);
+        bean.setSoglia(this.soglia);
+        bean.setPrezzoAcquisto(this.prezzoAcquisto);
+        bean.setPrezzoVendita(this.prezzoVendita);
+        bean.setCategoria(this.categoria);
+        bean.setImmagine(this.immagine);
+        return bean;
+    }
+
 }

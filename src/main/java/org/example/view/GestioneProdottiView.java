@@ -8,7 +8,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
-import org.example.model.Prodotto;
+import org.example.bean.ProdottoBean;
+import org.example.service.ProdottoTableRow;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -152,17 +153,18 @@ public class GestioneProdottiView {
     public Button getAumentaQuantitaButton() { return aumentaQuantitaButton; }
     public Button getDiminuisciQuantitaButton() { return diminuisciQuantitaButton; }
 
-    public void mostraProdotti(List<Prodotto> prodotti) {
+    public void mostraProdotti(List<ProdottoBean> prodottiBean) {
         ObservableList<ProdottoTableRow> righe = FXCollections.observableArrayList();
-        for (Prodotto p : prodotti) {
+        for (ProdottoBean p : prodottiBean) {
             righe.add(new ProdottoTableRow(p));
         }
         tabellaProdotti.setItems(righe);
     }
 
-    public Prodotto creaProdottoDaInput() {
+
+    public ProdottoBean creaProdottoDaInput() {
         try {
-            return new Prodotto.Builder()
+            return new ProdottoBean.Builder()
                     .nome(nomeField.getText())
                     .quantita(Integer.parseInt(quantitaField.getText()))
                     .scaffale(scaffaleField.getText())
@@ -180,10 +182,11 @@ public class GestioneProdottiView {
         }
     }
 
-    public Prodotto getProdottoSelezionato() {
+    public ProdottoBean getProdottoSelezionato() {
         ProdottoTableRow row = tabellaProdotti.getSelectionModel().getSelectedItem();
         return (row != null) ? row.getProdottoOriginale() : null;
     }
+
 
     public void setImmagine(byte[] imgBytes) {
         this.immagineSelezionata = imgBytes;

@@ -9,13 +9,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.example.bean.ClienteBean;
+import org.example.bean.ProdottoBean;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAOImpl;
 import org.example.dao.PagamentoDAOImpl;
 import org.example.dao.ProdottoDAOImpl;
-import org.example.model.Cliente;
 import org.example.model.Prodotto;
-import org.example.service.EmailService;
 import org.example.service.NavigationService;
 import org.example.service.OrdineService;
 import org.example.view.NegozioView1;
@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class NegozioController {
     private static final Logger logger = Logger.getLogger(NegozioController.class.getName());
@@ -32,15 +33,15 @@ public class NegozioController {
     private final ProdottoDAOImpl prodottoDAO;
     private final NavigationService navigationService;
     private final OrdineService ordineService;
-    private final Cliente cliente;
-    private final Map<Prodotto, Integer> carrello;
+    private final ClienteBean cliente;
+    private final Map<ProdottoBean, Integer> carrello;
 
     public NegozioController(boolean isOnlineMode, boolean isInterfaccia1, NavigationService navigationService) {
         this.view = isInterfaccia1 ? new NegozioView1() : new NegozioView2();
         this.prodottoDAO = new ProdottoDAOImpl(isOnlineMode);
         this.navigationService = navigationService;
         this.ordineService = new OrdineService(navigationService);
-        this.cliente = navigationService.getClienteLoggato();
+        this.cliente = navigationService.getClienteLoggato().toBean();
         this.carrello = SessionController.getCarrello();
 
         aggiornaListaProdotti();
@@ -107,8 +108,8 @@ public class NegozioController {
         msgBuilder.append("Riepilogo ordine:\n");
 
         double totale = 0.0;
-        for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
-            Prodotto prodotto = entry.getKey();
+        for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
+            ProdottoBean prodotto = entry.getKey();
             int quantita = entry.getValue();
             double prezzoTotale = prodotto.getPrezzoVendita() * quantita;
             totale += prezzoTotale;
@@ -143,11 +144,10 @@ public class NegozioController {
 
                 // riduci quantità prodotti
                 boolean isOnline = prodottoDAO.isOnline();
-                for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
+                for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
                     prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
                     logger.log(Level.INFO, "🛒 Ordinato: {0} x{1}", new Object[]{entry.getKey().getNome(), entry.getValue()});
                 }
-
 
                 carrello.clear();
                 aggiornaCarrello();
@@ -158,16 +158,13 @@ public class NegozioController {
         }
     }
 
-
-
-
     private void aggiornaListaProdotti() {
         if (view instanceof NegozioView1) {
             NegozioView1 v1 = (NegozioView1) view;
             FlowPane contenitore = v1.getFlowPaneProdotti();
             contenitore.getChildren().clear();
 
-            for (Prodotto p : prodottoDAO.getAllProdotti()) {
+            for (ProdottoBean p : prodottoDAO.getAllProdotti().stream().map(Prodotto::toBean).collect(Collectors.toList())) {
                 VBox boxProdotto = new VBox(5);
                 boxProdotto.setPadding(new Insets(10));
                 boxProdotto.setStyle("-fx-border-color: lightgray; -fx-background-color: white;");
@@ -202,9 +199,9 @@ public class NegozioController {
             NegozioView2 v2 = (NegozioView2) view;
             ListView<String> lista = v2.getListaProdotti();
             lista.getItems().clear();
-            Map<String, Prodotto> prodottiMap = new HashMap<>();
+            Map<String, ProdottoBean> prodottiMap = new HashMap<>();
 
-            for (Prodotto p : prodottoDAO.getAllProdotti()) {
+            for (ProdottoBean p : prodottoDAO.getAllProdotti().stream().map(Prodotto::toBean).collect(Collectors.toList())) {
                 String nomeVisualizzato = p.getNome() + " - €" + p.getPrezzoVendita();
                 prodottiMap.put(nomeVisualizzato, p);
                 lista.getItems().add(nomeVisualizzato);
@@ -221,8 +218,8 @@ public class NegozioController {
         }
     }
 
-    private void aggiornaDettagliProdotto(String nome, Map<String, Prodotto> prodottiMap, NegozioView2 v2) {
-        Prodotto selezionato = prodottiMap.get(nome);
+    private void aggiornaDettagliProdotto(String nome, Map<String, ProdottoBean> prodottiMap, NegozioView2 v2) {
+        ProdottoBean selezionato = prodottiMap.get(nome);
         if (selezionato == null) return;
 
         if (selezionato.getImmagine() != null) {
@@ -249,6 +246,7 @@ public class NegozioController {
         });
     }
 
+
     private void aggiornaCarrello() {
         VBox righeBox;
         Label totaleLabel;
@@ -268,14 +266,13 @@ public class NegozioController {
         righeBox.getChildren().clear();
         double totale = 0.0;
 
-        for (Map.Entry<Prodotto, Integer> entry : carrello.entrySet()) {
-            Prodotto prodotto = entry.getKey();
+        for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
+            ProdottoBean prodotto = entry.getKey();
             int quantita = entry.getValue();
             double prezzoUnitario = prodotto.getPrezzoVendita();
             double subtotale = prezzoUnitario * quantita;
             totale += subtotale;
 
-            // ✅ Etichette info prodotto
             Label nome = new Label(prodotto.getNome());
             nome.setWrapText(true);
             nome.setMaxWidth(130);
@@ -289,7 +286,6 @@ public class NegozioController {
             infoRiga.setPadding(new Insets(5, 5, 2, 5));
             infoRiga.setStyle("-fx-alignment: CENTER_LEFT;");
 
-            // ✅ Pulsanti gestione quantità
             Button plus = new Button("➕");
             Button minus = new Button("➖");
             Button remove = new Button("❌");
@@ -309,7 +305,6 @@ public class NegozioController {
                 aggiornaCarrello();
             });
 
-            // ✅ Contenitore bottoni allineati a destra
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
@@ -317,7 +312,6 @@ public class NegozioController {
             bottoniRiga.setPadding(new Insets(0, 5, 10, 5));
             bottoniRiga.setAlignment(Pos.CENTER_RIGHT);
 
-            // ✅ Blocco completo del prodotto (info + bottoni)
             VBox bloccoProdotto = new VBox(2, infoRiga, bottoniRiga);
             bloccoProdotto.setStyle("-fx-border-color: #ddd; -fx-border-width: 0 0 1 0;");
             bloccoProdotto.setPadding(new Insets(3, 0, 3, 0));

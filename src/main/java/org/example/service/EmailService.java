@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 public class EmailService {
     private static final Logger LOGGER = Logger.getLogger(EmailService.class.getName());
 
-    // 🔹 Campi rinominati per seguire le convenzioni Java (java:S3008)
     private static String smtpHost;
     private static String smtpPort;
     private static String emailSender;

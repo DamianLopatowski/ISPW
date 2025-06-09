@@ -1,19 +1,26 @@
-package org.example.model;
+package org.example.bean;
+
+import org.example.model.Pagamento;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Pagamento {
+public class PagamentoBean {
     private String clienteUsername;
     private double importo;
     private LocalDateTime dataPagamento;
 
-    public Pagamento() {}
-
-    public Pagamento(String clienteUsername, double importo) {
-        this.clienteUsername = clienteUsername;
-        this.importo = importo;
+    public PagamentoBean() {
         this.dataPagamento = LocalDateTime.now();
+    }
+
+    // 🔁 Conversione in model
+    public Pagamento toPagamento() {
+        Pagamento pagamento = new Pagamento();
+        pagamento.setClienteUsername(clienteUsername);
+        pagamento.setImporto(importo);
+        pagamento.setDataPagamento(dataPagamento);
+        return pagamento;
     }
 
     public String getClienteUsername() {
@@ -40,7 +47,6 @@ public class Pagamento {
         this.dataPagamento = dataPagamento;
     }
 
-    // ✅ Metodo comodo per visualizzare la data in formato leggibile
     public String getDataPagamentoFormattata() {
         if (dataPagamento == null) return "N/D";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -49,20 +55,10 @@ public class Pagamento {
 
     @Override
     public String toString() {
-        return "Pagamento{" +
+        return "PagamentoBean{" +
                 "clienteUsername='" + clienteUsername + '\'' +
                 ", importo=" + importo +
                 ", dataPagamento=" + getDataPagamentoFormattata() +
                 '}';
     }
-
-    // Conversione in PagamentoBean
-    public org.example.bean.PagamentoBean toBean() {
-        org.example.bean.PagamentoBean bean = new org.example.bean.PagamentoBean();
-        bean.setClienteUsername(this.clienteUsername);
-        bean.setImporto(this.importo);
-        bean.setDataPagamento(this.dataPagamento);
-        return bean;
-    }
-
 }

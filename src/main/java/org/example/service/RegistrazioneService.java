@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
 import org.example.model.Cliente;
 import java.util.regex.Pattern;
@@ -76,8 +77,9 @@ public class RegistrazioneService {
         tentativiErrati = 0;
     }
 
-    public void registraCliente(Cliente cliente) throws RegistrazioneException {
+    public void registraCliente(ClienteBean clienteBean) throws RegistrazioneException {
 
+        Cliente cliente = clienteBean.toCliente();
         LOGGER.log(Level.INFO, "📢 Avvio registrazione cliente: {0}", cliente.getUsername());
 
         // ✅ Validazione dei dati di input

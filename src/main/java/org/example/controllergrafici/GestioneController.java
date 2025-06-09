@@ -57,7 +57,7 @@ public class GestioneController {
     }
 
     private void handleLogout() {
-        LOGGER.info("🔄 Logout in corso...");
+        LOGGER.info("Logout in corso...");
         authController.logout(navigationService);
     }
 
@@ -82,10 +82,10 @@ public class GestioneController {
     }
 
     public Parent getRootView() {
-        LOGGER.info("📦 Restituzione root view di GestioneProdotto...");
+        LOGGER.info("Restituzione root view di GestioneProdotto...");
         Parent root = isInterfaccia1 ? onlineView.getRoot() : offlineView.getRoot();
         if (root == null) {
-            LOGGER.warning("❌ Errore: La vista di GestioneProdotto è NULL!");
+            LOGGER.warning("Errore: La vista di GestioneProdotto è NULL!");
         }
         return root;
     }

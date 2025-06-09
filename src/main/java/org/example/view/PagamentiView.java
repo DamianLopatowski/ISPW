@@ -4,6 +4,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import org.example.service.OrdineTableRow;
+import org.example.service.PagamentoTableRow;
 
 public class PagamentiView {
 

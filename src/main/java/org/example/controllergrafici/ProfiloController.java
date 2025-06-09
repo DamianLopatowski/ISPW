@@ -3,6 +3,7 @@ package org.example.controllergrafici;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -33,7 +34,7 @@ public class ProfiloController {
     }
 
     private void riempiCampi(Object v) {
-        Cliente cliente = navigationService.getClienteLoggato();
+        ClienteBean cliente = navigationService.getClienteLoggato().toBean();
 
         if (v instanceof ProfiloView1) {
             ProfiloView1 pv = (ProfiloView1) v;
@@ -49,7 +50,7 @@ public class ProfiloController {
     }
 
     private void salvaDati(Object v) {
-        Cliente cliente = navigationService.getClienteLoggato();
+        ClienteBean cliente = navigationService.getClienteLoggato().toBean();
         ProfiloInput input = estraiDatiProfilo(v);
 
         boolean vuoleCambiarePassword = input.vuoleCambiarePassword();
@@ -66,33 +67,34 @@ public class ProfiloController {
             }
         }
 
-        Cliente nuovoCliente = new Cliente.Builder()
-                .username(input.username.isEmpty() ? cliente.getUsername() : input.username)
-                .nome(input.nome.isEmpty() ? cliente.getNome() : input.nome)
-                .cognome(input.cognome.isEmpty() ? cliente.getCognome() : input.cognome)
-                .password(vuoleCambiarePassword && !input.newPwd.isEmpty() ? input.newPwd : cliente.getPassword())
-                .email(cliente.getEmail())
-                .partitaIva(cliente.getPartitaIva())
-                .indirizzo(cliente.getIndirizzo())
-                .civico(cliente.getCivico())
-                .cap(cliente.getCap())
-                .citta(cliente.getCitta())
-                .build();
+        ClienteBean nuovoClienteBean = new ClienteBean();
+        nuovoClienteBean.setUsername(input.username.isEmpty() ? cliente.getUsername() : input.username);
+        nuovoClienteBean.setNome(input.nome.isEmpty() ? cliente.getNome() : input.nome);
+        nuovoClienteBean.setCognome(input.cognome.isEmpty() ? cliente.getCognome() : input.cognome);
+        nuovoClienteBean.setPassword(vuoleCambiarePassword && !input.newPwd.isEmpty() ? input.newPwd : cliente.getPassword());
+        nuovoClienteBean.setEmail(cliente.getEmail());
+        nuovoClienteBean.setPartitaIva(cliente.getPartitaIva());
+        nuovoClienteBean.setIndirizzo(cliente.getIndirizzo());
+        nuovoClienteBean.setCivico(cliente.getCivico());
+        nuovoClienteBean.setCap(cliente.getCap());
+        nuovoClienteBean.setCitta(cliente.getCitta());
 
         ClienteDAO dao = new ClienteDAOImpl(SessionController.getIsOnlineModeStatic());
-        boolean successo = dao.update(nuovoCliente, cliente.getUsername());
+        boolean successo = dao.update(nuovoClienteBean.toCliente(), cliente.getUsername());
 
         if (successo) {
-            Cliente clienteRicaricato = dao.findByUsername(nuovoCliente.getUsername());
+            Cliente clienteRicaricato = dao.findByUsername(nuovoClienteBean.getUsername());
             if (clienteRicaricato != null) {
-                SessionController.setClienteLoggato(clienteRicaricato);
-                navigationService.setClienteLoggato(clienteRicaricato);
+                ClienteBean clienteBeanRicaricato = clienteRicaricato.toBean();
+                SessionController.setClienteLoggato(clienteBeanRicaricato.toCliente());
+                navigationService.setClienteLoggato(clienteBeanRicaricato.toCliente());
             }
             showAlert("✅ Profilo aggiornato con successo");
         } else {
             showAlert("❌ Errore durante il salvataggio");
         }
     }
+
 
     private ProfiloInput estraiDatiProfilo(Object v) {
         ProfiloInput input = new ProfiloInput();

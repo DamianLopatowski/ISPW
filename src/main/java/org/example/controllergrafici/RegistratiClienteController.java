@@ -4,8 +4,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
-import org.example.model.Cliente;
 import org.example.service.RegistrazioneException;
 import org.example.service.RegistrazioneService;
 import org.example.service.NavigationService;
@@ -173,7 +173,7 @@ public class RegistratiClienteController {
 
 
     private void registraCliente(Object view) {
-        LOGGER.info("📢 Registrazione avviata!");
+        LOGGER.info("Registrazione avviata!");
 
         String username;
         String nome;
@@ -224,24 +224,22 @@ public class RegistratiClienteController {
                 return;
             }
 
-            Cliente cliente = new Cliente.Builder()
-                    .username(username)
-                    .nome(nome)
-                    .cognome(cognome)
-                    .password(password)
-                    .email(email)
-                    .partitaIva(partitaIva)
-                    .indirizzo(indirizzo)
-                    .civico(civico)
-                    .cap(cap)
-                    .citta(citta)
-                    .build();
+            ClienteBean clienteBean = new ClienteBean();
+            clienteBean.setUsername(username);
+            clienteBean.setNome(nome);
+            clienteBean.setCognome(cognome);
+            clienteBean.setPassword(password);
+            clienteBean.setEmail(email);
+            clienteBean.setPartitaIva(partitaIva);
+            clienteBean.setIndirizzo(indirizzo);
+            clienteBean.setCivico(civico);
+            clienteBean.setCap(cap);
+            clienteBean.setCitta(citta);
 
-            registrazioneService.registraCliente(cliente);
+            registrazioneService.registraCliente(clienteBean);
 
             mostraMessaggioSuccesso("Cliente registrato con successo!");
 
-            // Navigazione al login dopo registrazione
             navigationService.navigateToLogin(true, true);
 
         } catch (RegistrazioneException ex) {

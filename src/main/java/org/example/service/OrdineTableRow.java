@@ -1,7 +1,8 @@
-package org.example.view;
+package org.example.service;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.example.bean.OrdineBean;
 import org.example.model.Ordine;
 
 public class OrdineTableRow {
@@ -9,7 +10,7 @@ public class OrdineTableRow {
     private final SimpleDoubleProperty importo;
     private final SimpleStringProperty prodotti;
 
-    public OrdineTableRow(Ordine ordine) {
+    public OrdineTableRow(OrdineBean ordine) {
         this.data = new SimpleStringProperty(ordine.getData().toString());
         this.importo = new SimpleDoubleProperty(ordine.getTotale());
         this.prodotti = new SimpleStringProperty(ordine.getDescrizioneProdotti());

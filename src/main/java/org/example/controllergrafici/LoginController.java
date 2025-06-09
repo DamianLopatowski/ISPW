@@ -1,5 +1,6 @@
 package org.example.controllergrafici;
 
+import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
 import org.example.dao.ClienteDAOImpl;
 import org.example.model.Cliente;
@@ -75,14 +76,14 @@ public class LoginController {
         LOGGER.log(Level.INFO, "🔑 Tentativo di login con username: {0}", username);
 
         ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
-        Cliente cliente = clienteDAO.findByUsername(username);
+        ClienteBean cliente = clienteDAO.findByUsername(username).toBean();
 
         if (cliente != null && cliente.getPassword().equals(password)) {
             LOGGER.info("✅ Login riuscito!");
             statusLabel.setText("✅ Accesso effettuato!");
 
             // ✅ Imposta il cliente loggato nel navigationService
-            navigationService.setClienteLoggato(cliente);
+            navigationService.setClienteLoggato(cliente.toCliente());
 
             navigationService.navigateToNegozio();
         } else {

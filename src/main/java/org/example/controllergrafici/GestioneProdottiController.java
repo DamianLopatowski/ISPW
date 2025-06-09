@@ -4,13 +4,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import org.example.bean.ProdottoBean;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ProdottoDAO;
-import org.example.model.Prodotto;
 import org.example.service.NavigationService;
 import org.example.view.GestioneProdottiView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GestioneProdottiController {
     private final GestioneProdottiView view;
@@ -27,22 +28,24 @@ public class GestioneProdottiController {
     }
 
     private void caricaProdotti() {
-        List<Prodotto> prodotti = prodottoDAO.getAll();
+        List<ProdottoBean> prodotti = prodottoDAO.getAll().stream()
+                .map(p -> p.toBean())
+                .collect(Collectors.toList());
         view.mostraProdotti(prodotti);
     }
 
     private void configuraAzioni() {
         view.getAggiungiProdottoButton().setOnAction(e -> {
-            Prodotto nuovo = view.creaProdottoDaInput();
+            ProdottoBean nuovo = view.creaProdottoDaInput();
             if (nuovo != null) {
-                prodottoDAO.saveProdotto(nuovo);
+                prodottoDAO.saveProdotto(nuovo.toModel());
                 caricaProdotti();
                 view.pulisciCampiInput();
             }
         });
 
         view.getAumentaQuantitaButton().setOnAction(e -> {
-            Prodotto selezionato = view.getProdottoSelezionato();
+            ProdottoBean selezionato = view.getProdottoSelezionato();
             if (selezionato != null) {
                 try {
                     int quantita = Integer.parseInt(view.getModificaQuantitaField().getText());
@@ -61,7 +64,7 @@ public class GestioneProdottiController {
         });
 
         view.getDiminuisciQuantitaButton().setOnAction(e -> {
-            Prodotto selezionato = view.getProdottoSelezionato();
+            ProdottoBean selezionato = view.getProdottoSelezionato();
             if (selezionato != null) {
                 try {
                     int quantita = Integer.parseInt(view.getModificaQuantitaField().getText());
@@ -80,7 +83,7 @@ public class GestioneProdottiController {
         });
 
         view.getEliminaProdottoButton().setOnAction(e -> {
-            Prodotto selezionato = view.getProdottoSelezionato();
+            ProdottoBean selezionato = view.getProdottoSelezionato();
             if (selezionato != null) {
                 prodottoDAO.rimuoviProdotto(selezionato.getId());
                 caricaProdotti();

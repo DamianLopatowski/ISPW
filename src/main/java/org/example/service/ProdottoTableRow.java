@@ -1,14 +1,14 @@
-package org.example.view;
+package org.example.service;
 
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.example.model.Prodotto;
+import org.example.bean.ProdottoBean;
 
 import java.io.ByteArrayInputStream;
 
 public class ProdottoTableRow {
-    private final Prodotto prodottoOriginale;
+    private final ProdottoBean prodottoOriginale;
 
     private final StringProperty nome;
     private final StringProperty quantita;
@@ -20,7 +20,7 @@ public class ProdottoTableRow {
     private final StringProperty categoria;
     private final ObjectProperty<ImageView> immagine;
 
-    public ProdottoTableRow(Prodotto prodotto) {
+    public ProdottoTableRow(ProdottoBean prodotto) {
         this.prodottoOriginale = prodotto;
 
         this.nome = new SimpleStringProperty(prodotto.getNome());
@@ -52,5 +52,5 @@ public class ProdottoTableRow {
     public StringProperty categoriaProperty() { return categoria; }
     public ObjectProperty<ImageView> immagineProperty() { return immagine; }
 
-    public Prodotto getProdottoOriginale() { return prodottoOriginale; }
+    public ProdottoBean getProdottoOriginale() { return prodottoOriginale; }
 }
