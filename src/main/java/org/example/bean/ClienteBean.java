@@ -14,8 +14,8 @@ public class ClienteBean {
     private String cap;
     private String citta;
 
-    // 🔹 Costruttore vuoto
     public ClienteBean() {
+        //riempimento
     }
 
     // 🔹 Getter e Setter
