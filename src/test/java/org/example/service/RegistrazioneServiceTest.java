@@ -18,7 +18,6 @@ public class RegistrazioneServiceTest {
         clienteDAOMock = mock(ClienteDAO.class);
         registrazioneService = new RegistrazioneService(clienteDAOMock, "online");
     }
-
     @Test
     public void testRegistrazioneSuccess() throws RegistrazioneException {
         ClienteBean clienteBean = new ClienteBean();

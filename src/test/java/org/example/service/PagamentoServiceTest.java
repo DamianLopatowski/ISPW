@@ -22,6 +22,7 @@ public class PagamentoServiceTest {
         pagamentoService = new PagamentoService(pagamentoDAOMock);
     }
 
+
     @Test
     public void testRegistraPagamento() {
         Pagamento pagamento = new Pagamento();
