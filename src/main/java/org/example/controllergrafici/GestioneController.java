@@ -64,6 +64,10 @@ public class GestioneController {
     }
 
     private void handleGestione(String sezione) {
+        if (sezione.startsWith("Gestione ")) {
+            sezione = sezione.substring("Gestione ".length());
+        }
+
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.log(Level.INFO, "Navigazione a: {0}", sezione);
         }
