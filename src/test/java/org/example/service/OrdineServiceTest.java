@@ -5,7 +5,6 @@ import org.example.controllerapplicativo.SessionController;
 import org.example.model.Cliente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,20 +18,23 @@ public class OrdineServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // Mock del NavigationService
         navigationService = mock(NavigationService.class);
-        ordineService = new OrdineService(navigationService);
+
+        // Creazione OrdineService con override di mostraConfermaOrdine
+        ordineService = new OrdineService(navigationService) {
+            protected void mostraConfermaOrdine() {
+                // Override vuoto per evitare Alert JavaFX nei test
+            }
+        };
     }
 
     @Test
     public void testProcediOrdine_conCarrelloValido() {
-        // Mock cliente
         Cliente clienteMock = mock(Cliente.class);
         when(clienteMock.getUsername()).thenReturn("testUser");
         when(clienteMock.getEmail()).thenReturn("test@example.com");
         when(navigationService.getClienteLoggato()).thenReturn(clienteMock);
 
-        // Mock carrello
         ProdottoBean prodotto = new ProdottoBean();
         prodotto.setId(1);
         prodotto.setNome("TestProdotto");
@@ -41,21 +43,19 @@ public class OrdineServiceTest {
         Map<ProdottoBean, Integer> carrello = new HashMap<>();
         carrello.put(prodotto, 2);
 
-        // Simuliamo carrello e modalità statica
         SessionController.setCarrello(carrello);
-        SessionController.setIsOnlineModeStatic(false); // test in modalità offline
+        SessionController.setIsOnlineModeStatic(false);
 
-        // Chiamata al metodo
         ordineService.procediOrdine();
 
-        // Se non ci sono eccezioni, il test passa (verifica manuale via log)
+        // Se non ci sono eccezioni, il test è considerato superato
     }
 
     @Test
     public void testProcediOrdine_clienteNullo() {
         when(navigationService.getClienteLoggato()).thenReturn(null);
         ordineService.procediOrdine();
-        // Dovrebbe loggare errore, ma non lanciare eccezioni
+        // Non deve lanciare eccezione
     }
 
     @Test
@@ -64,10 +64,10 @@ public class OrdineServiceTest {
         when(clienteMock.getUsername()).thenReturn("user");
         when(navigationService.getClienteLoggato()).thenReturn(clienteMock);
 
-        SessionController.setCarrello(new HashMap<>()); // carrello vuoto
+        SessionController.setCarrello(new HashMap<>());
         SessionController.setIsOnlineModeStatic(true);
 
         ordineService.procediOrdine();
-        // Dovrebbe loggare warning
+        // Non deve lanciare eccezione
     }
 }

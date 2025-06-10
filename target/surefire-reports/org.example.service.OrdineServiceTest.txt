@@ -1,15 +1,15 @@
 -------------------------------------------------------------------------------
 Test set: org.example.service.OrdineServiceTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 5.826 s <<< FAILURE! - in org.example.service.OrdineServiceTest
-org.example.service.OrdineServiceTest.testProcediOrdine_conCarrelloValido  Time elapsed: 5.747 s  <<< ERROR!
+Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 6.227 s <<< FAILURE! - in org.example.service.OrdineServiceTest
+org.example.service.OrdineServiceTest.testProcediOrdine_conCarrelloValido  Time elapsed: 6.142 s  <<< ERROR!
 java.lang.ExceptionInInitializerError
 	at javafx.scene.control.DialogPane.createContentLabel(DialogPane.java:167)
 	at javafx.scene.control.DialogPane.<init>(DialogPane.java:218)
 	at javafx.scene.control.Dialog.<init>(Dialog.java:512)
 	at javafx.scene.control.Alert.<init>(Alert.java:247)
-	at org.example.service.OrdineService.lambda$new$0(OrdineService.java:26)
-	at org.example.service.OrdineService.procediOrdine(OrdineService.java:88)
+	at org.example.service.OrdineService.mostraConfermaOrdine(OrdineService.java:96)
+	at org.example.service.OrdineService.procediOrdine(OrdineService.java:89)
 	at org.example.service.OrdineServiceTest.testProcediOrdine_conCarrelloValido(OrdineServiceTest.java:49)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)

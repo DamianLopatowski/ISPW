@@ -21,17 +21,24 @@ public class OrdineService {
     private final NavigationService navigationService;
     private final Consumer<String> notifica;
 
-    // Costruttore di default: usa Alert per mostrare conferma
+    /**
+     * Costruttore di default: utilizza Alert JavaFX per mostrare la conferma all'utente.
+     */
     public OrdineService(NavigationService navigationService) {
-        this(navigationService, msg -> new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait());
+        this(navigationService, OrdineService::mostraConfermaOrdine);
     }
 
-    // Costruttore con Consumer custom (utile per i test)
+    /**
+     * Costruttore alternativo: permette l’iniezione di una funzione per la notifica (utile per i test).
+     */
     public OrdineService(NavigationService navigationService, Consumer<String> notifica) {
         this.navigationService = navigationService;
         this.notifica = notifica;
     }
 
+    /**
+     * Metodo principale per processare l'ordine.
+     */
     public void procediOrdine() {
         Cliente cliente = navigationService.getClienteLoggato();
         if (cliente == null) {
@@ -47,7 +54,6 @@ public class OrdineService {
             return;
         }
 
-        // Calcolo del totale
         double totale = 0.0;
         for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
             ProdottoBean prodotto = entry.getKey();
@@ -55,27 +61,22 @@ public class OrdineService {
             double subtotale = prodotto.getPrezzoVendita() * q;
             totale += subtotale;
 
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(String.format("- %s x%d → €%.2f", prodotto.getNome(), q, subtotale));
-            }
+            LOGGER.info(String.format("- %s x%d → €%.2f", prodotto.getNome(), q, subtotale));
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info(String.format("Totale: €%.2f", totale));
-        }
+        LOGGER.info(String.format("Totale: €%.2f", totale));
 
-        // Creazione e salvataggio ordine
+        // Salvataggio ordine
         Ordine ordine = Ordine.creaDaBean(cliente, carrello, totale);
         new OrdineDAOImpl(isOnline).salvaOrdine(ordine);
 
-        // Riduzione quantità disponibili
+        // Riduzione quantità
         ProdottoDAO prodottoDAO = new ProdottoDAOImpl(isOnline);
         for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
             prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
         }
 
-        // Invio email
-        LOGGER.info("Invio email riepilogo a " + cliente.getEmail() + "...");
+        // Email riepilogo
         PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(isOnline);
         ClienteFacade facade = new ClienteFacade(pagamentoDAO);
         facade.inviaEmailRiepilogoOrdine(cliente, ordine.getProdotti());
@@ -83,8 +84,15 @@ public class OrdineService {
         // Svuota carrello
         SessionController.svuotaCarrello();
 
-        // Notifica finale
+        // Notifica di conferma
         LOGGER.info("Ordine confermato per il cliente: " + cliente.getUsername());
         notifica.accept("Ordine inviato correttamente!");
+    }
+
+    /**
+     * Metodo statico per mostrare conferma ordine (usato solo in modalità normale, non nei test).
+     */
+    private static void mostraConfermaOrdine(String messaggio) {
+        new Alert(Alert.AlertType.INFORMATION, messaggio, ButtonType.OK).showAndWait();
     }
 }

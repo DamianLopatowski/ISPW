@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="org.example.service.OrdineServiceTest" time="5.826" tests="3" errors="1" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="org.example.service.OrdineServiceTest" time="6.227" tests="3" errors="1" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="15"/>
     <property name="javafx.runtime.version" value="17.0.2-ea+3"/>
@@ -17,7 +17,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="C:\Users\Damian\.jdks\openjdk-15.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\Damian\AppData\Local\Temp\surefire3771712784396972690\surefirebooter-20250611001748614_3.jar C:\Users\Damian\AppData\Local\Temp\surefire3771712784396972690 2025-06-11T00-17-47_220-jvmRun1 surefire-20250611001748614_1tmp surefire_0-20250611001748614_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Damian\AppData\Local\Temp\surefire5449178976181357802\surefirebooter-20250611002825639_3.jar C:\Users\Damian\AppData\Local\Temp\surefire5449178976181357802 2025-06-11T00-28-24_169-jvmRun1 surefire-20250611002825639_1tmp surefire_0-20250611002825639_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Damian\IdeaProjects\ISPW\target\test-classes;C:\Users\Damian\IdeaProjects\ISPW\target\classes;C:\Users\Damian\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2.jar;C:\Users\Damian\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2-win.jar;C:\Users\Damian\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2.jar;C:\Users\Damian\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2-win.jar;C:\Users\Damian\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2.jar;C:\Users\Damian\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2-win.jar;C:\Users\Damian\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2.jar;C:\Users\Damian\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2-win.jar;C:\Users\Damian\.m2\repository\mysql\mysql-connector-java\8.0.23\mysql-connector-java-8.0.23.jar;C:\Users\Damian\.m2\repository\com\google\protobuf\protobuf-java\3.11.4\protobuf-java-3.11.4.jar;C:\Users\Damian\.m2\repository\org\slf4j\slf4j-api\1.7.30\slf4j-api-1.7.30.jar;C:\Users\Damian\.m2\repository\ch\qos\logback\logback-classic\1.2.3\logback-classic-1.2.3.jar;C:\Users\Damian\.m2\repository\ch\qos\logback\logback-core\1.2.3\logback-core-1.2.3.jar;C:\Users\Damian\.m2\repository\com\sun\mail\javax.mail\1.6.2\javax.mail-1.6.2.jar;C:\Users\Damian\.m2\repository\javax\activation\activation\1.1\activation-1.1.jar;C:\Users\Damian\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\Damian\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Damian\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\Damian\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Damian\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\Damian\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;C:\Users\Damian\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.3\junit-jupiter-params-5.9.3.jar;C:\Users\Damian\.m2\repository\org\mockito\mockito-core\5.12.0\mockito-core-5.12.0.jar;C:\Users\Damian\.m2\repository\net\bytebuddy\byte-buddy\1.14.15\byte-buddy-1.14.15.jar;C:\Users\Damian\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.15\byte-buddy-agent-1.14.15.jar;C:\Users\Damian\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -32,7 +32,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Damian\AppData\Local\Temp\surefire3771712784396972690\surefirebooter-20250611001748614_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Damian\AppData\Local\Temp\surefire5449178976181357802\surefirebooter-20250611002825639_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="15.0.2+7-27"/>
@@ -58,14 +58,14 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="59.0"/>
   </properties>
-  <testcase name="testProcediOrdine_conCarrelloValido" classname="org.example.service.OrdineServiceTest" time="5.747">
+  <testcase name="testProcediOrdine_conCarrelloValido" classname="org.example.service.OrdineServiceTest" time="6.142">
     <error type="java.lang.ExceptionInInitializerError"><![CDATA[java.lang.ExceptionInInitializerError
 	at javafx.scene.control.DialogPane.createContentLabel(DialogPane.java:167)
 	at javafx.scene.control.DialogPane.<init>(DialogPane.java:218)
 	at javafx.scene.control.Dialog.<init>(Dialog.java:512)
 	at javafx.scene.control.Alert.<init>(Alert.java:247)
-	at org.example.service.OrdineService.lambda$new$0(OrdineService.java:26)
-	at org.example.service.OrdineService.procediOrdine(OrdineService.java:88)
+	at org.example.service.OrdineService.mostraConfermaOrdine(OrdineService.java:96)
+	at org.example.service.OrdineService.procediOrdine(OrdineService.java:89)
 	at org.example.service.OrdineServiceTest.testProcediOrdine_conCarrelloValido(OrdineServiceTest.java:49)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
@@ -146,29 +146,27 @@ Caused by: java.lang.IllegalStateException: Toolkit not initialized
 	at javafx.scene.control.Control.<clinit>(Control.java:99)
 	... 78 more
 ]]></error>
-    <system-err><![CDATA[giu 11, 2025 12:17:52 AM org.example.service.OrdineService procediOrdine
+    <system-err><![CDATA[giu 11, 2025 12:28:30 AM org.example.service.OrdineService procediOrdine
 INFO: - TestProdotto x2 ? €20,00
-giu 11, 2025 12:17:52 AM org.example.service.OrdineService procediOrdine
+giu 11, 2025 12:28:30 AM org.example.service.OrdineService procediOrdine
 INFO: Totale: €20,00
-giu 11, 2025 12:17:52 AM org.example.dao.OrdineDAOImpl salvaOrdine
+giu 11, 2025 12:28:30 AM org.example.dao.OrdineDAOImpl salvaOrdine
 INFO: Ordine salvato in modalità offline per cliente: testUser
-giu 11, 2025 12:17:53 AM org.example.service.OrdineService procediOrdine
-INFO: Invio email riepilogo a test@example.com...
-giu 11, 2025 12:17:53 AM org.example.service.EmailService <clinit>
+giu 11, 2025 12:28:30 AM org.example.service.EmailService <clinit>
 INFO: Configurazione email caricata con successo.
-giu 11, 2025 12:17:55 AM org.example.service.EmailService sendOrderSummaryEmail
+giu 11, 2025 12:28:32 AM org.example.service.EmailService sendOrderSummaryEmail
 INFO: Email riepilogo ordine inviata a test@example.com
-giu 11, 2025 12:17:55 AM org.example.service.OrdineService procediOrdine
+giu 11, 2025 12:28:32 AM org.example.service.OrdineService procediOrdine
 INFO: Ordine confermato per il cliente: testUser
 ]]></system-err>
   </testcase>
-  <testcase name="testProcediOrdine_carrelloVuoto" classname="org.example.service.OrdineServiceTest" time="0.008">
-    <system-err><![CDATA[giu 11, 2025 12:17:56 AM org.example.service.OrdineService procediOrdine
+  <testcase name="testProcediOrdine_carrelloVuoto" classname="org.example.service.OrdineServiceTest" time="0.009">
+    <system-err><![CDATA[giu 11, 2025 12:28:33 AM org.example.service.OrdineService procediOrdine
 WARNING: Carrello vuoto, nessun ordine da processare.
 ]]></system-err>
   </testcase>
-  <testcase name="testProcediOrdine_clienteNullo" classname="org.example.service.OrdineServiceTest" time="0.007">
-    <system-err><![CDATA[giu 11, 2025 12:17:56 AM org.example.service.OrdineService procediOrdine
+  <testcase name="testProcediOrdine_clienteNullo" classname="org.example.service.OrdineServiceTest" time="0.006">
+    <system-err><![CDATA[giu 11, 2025 12:28:33 AM org.example.service.OrdineService procediOrdine
 SEVERE: Errore: cliente nullo in OrdineService!
 ]]></system-err>
   </testcase>
