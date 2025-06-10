@@ -14,6 +14,12 @@ import java.util.logging.Logger;
 public class EmailService {
     private static final Logger LOGGER = Logger.getLogger(EmailService.class.getName());
 
+    // Costanti per le chiavi delle proprietà SMTP
+    private static final String PROP_MAIL_SMTP_AUTH = "mail.smtp.auth";
+    private static final String PROP_MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
+    private static final String PROP_MAIL_SMTP_HOST = "mail.smtp.host";
+    private static final String PROP_MAIL_SMTP_PORT = "mail.smtp.port";
+
     private static String smtpHost;
     private static String smtpPort;
     private static String emailSender;
@@ -40,12 +46,17 @@ public class EmailService {
         }
     }
 
-    public static void sendConfirmationEmail(String recipientEmail, String username) {
+    private static Properties createEmailProperties() {
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", smtpHost);
-        props.put("mail.smtp.port", smtpPort);
+        props.put(PROP_MAIL_SMTP_AUTH, "true");
+        props.put(PROP_MAIL_SMTP_STARTTLS, "true");
+        props.put(PROP_MAIL_SMTP_HOST, smtpHost);
+        props.put(PROP_MAIL_SMTP_PORT, smtpPort);
+        return props;
+    }
+
+    public static void sendConfirmationEmail(String recipientEmail, String username) {
+        Properties props = createEmailProperties();
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
@@ -62,8 +73,6 @@ public class EmailService {
             message.setText(String.format("Ciao %s,%n%nGrazie per esserti registrato con successo!", username));
 
             Transport.send(message);
-
-            // Uso del logging con built-in formatting (java:S2629)
             LOGGER.log(Level.INFO, "Email di conferma inviata a {0}", recipientEmail);
         } catch (MessagingException e) {
             LOGGER.log(Level.SEVERE, "Errore nell'invio dell'email", e);
@@ -71,11 +80,7 @@ public class EmailService {
     }
 
     public static void sendOrderSummaryEmail(String recipientEmail, String nomeCliente, Map<Prodotto, Integer> carrello) {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", smtpHost);
-        props.put("mail.smtp.port", smtpPort);
+        Properties props = createEmailProperties();
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
@@ -118,11 +123,7 @@ public class EmailService {
     }
 
     public static void sendShippingConfirmationEmail(String recipientEmail, String nomeCliente, String codiceSpedizione) {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", smtpHost);
-        props.put("mail.smtp.port", smtpPort);
+        Properties props = createEmailProperties();
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
@@ -157,11 +158,7 @@ public class EmailService {
     }
 
     public static void sendPaymentConfirmationEmail(String recipientEmail, String nomeCliente, double importoBonificato, double totalePagato, double residuo) {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", smtpHost);
-        props.put("mail.smtp.port", smtpPort);
+        Properties props = createEmailProperties();
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
@@ -195,5 +192,4 @@ public class EmailService {
             LOGGER.log(Level.SEVERE, "Errore nell'invio dell'email di conferma bonifico", e);
         }
     }
-
 }
