@@ -9,6 +9,9 @@ public class Ordine {
     private LocalDateTime data;
     private Map<Prodotto, Integer> prodotti;
     private double totale;
+    private boolean spedito;
+    private String codiceSpedizione;
+
 
     // Costruttore usato normalmente per creare un ordine
     public Ordine(Cliente cliente, Map<Prodotto, Integer> prodotti, double totale) {
@@ -68,6 +71,11 @@ public class Ordine {
     public void setTotale(double totale) {
         this.totale = totale;
     }
+    public boolean isSpedito() { return spedito; }
+    public void setSpedito(boolean spedito) { this.spedito = spedito; }
+
+    public String getCodiceSpedizione() { return codiceSpedizione; }
+    public void setCodiceSpedizione(String codiceSpedizione) { this.codiceSpedizione = codiceSpedizione; }
 
     public static Ordine creaDaBean(Cliente clienteBean, Map<org.example.bean.ProdottoBean, Integer> prodottiBean, double totale) {
         Ordine ordine = new Ordine();

@@ -148,10 +148,19 @@ public class ClienteDAOImpl implements ClienteDAO {
             }
         } else {
             LOGGER.log(Level.INFO, "Ricerca cliente in RAM (OFFLINE): {0}", username);
-            return clientiOffline.get(username);
+            if (clientiOffline == null) {
+                LOGGER.warning("Lista clienti offline non inizializzata.");
+                return null;
+            }
+            Cliente cliente = clientiOffline.get(username);
+            if (cliente == null) {
+                LOGGER.warning("Cliente offline non trovato: " + username);
+            }
+            return cliente;
         }
         return null;
     }
+
 
     @Override
     public boolean update(Cliente cliente, String vecchioUsername) {
@@ -181,4 +190,10 @@ public class ClienteDAOImpl implements ClienteDAO {
             return true;
         }
     }
+
+    public static void resetClientiOffline() {
+        clientiOffline.clear();
+        LOGGER.info("Clienti offline azzerati all'avvio in modalità OFFLINE.");
+    }
+
 }

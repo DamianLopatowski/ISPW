@@ -1,11 +1,13 @@
 package org.example.dao;
 
+import org.example.bean.ProdottoBean;
 import org.example.model.Prodotto;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProdottoDAOImpl implements ProdottoDAO {
     private static final Map<Integer, Prodotto> prodottiOffline = new HashMap<>();
@@ -35,7 +37,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     public List<Prodotto> getAllProdotti() {
         if (isOnlineMode) {
             List<Prodotto> lista = new ArrayList<>();
-            String query = "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti";
+            String query = "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine, ordinato FROM prodotti";
             try (Statement stmt = connection.createStatement();
                  ResultSet rs = stmt.executeQuery(query)) {
                 while (rs.next()) {
@@ -50,6 +52,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                             .prezzoVendita(rs.getDouble("prezzoVendita"))
                             .categoria(rs.getString("categoria"))
                             .immagine(rs.getBytes("immagine"))
+                            .ordinato(rs.getBoolean("ordinato"))
                             .build());
                 }
             } catch (SQLException e) {
@@ -58,6 +61,40 @@ public class ProdottoDAOImpl implements ProdottoDAO {
             return lista;
         } else {
             return new ArrayList<>(prodottiOffline.values());
+        }
+    }
+
+    @Override
+    public List<ProdottoBean> getAllProdottiBean() {
+        List<Prodotto> prodotti = getAllProdotti();
+        return prodotti.stream().map(p -> {
+            ProdottoBean bean = new ProdottoBean();
+            bean.setId(p.getId());
+            bean.setNome(p.getNome());
+            bean.setQuantita(p.getQuantita());
+            bean.setSoglia(p.getSoglia());
+            bean.setOrdinato(p.isOrdinato()); // Assicurati che Prodotto abbia isOrdinato()
+            return bean;
+        }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public void aggiornaOrdinato(int id, boolean ordinato) {
+        if (isOnlineMode) {
+            try (PreparedStatement stmt = connection.prepareStatement(
+                    "UPDATE prodotti SET ordinato = ? WHERE id = ?")) {
+                stmt.setBoolean(1, ordinato);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Prodotto p = prodottiOffline.get(id);
+            if (p != null) {
+                p.setOrdinato(ordinato); // mantiene in RAM, dimentica alla chiusura
+            }
         }
     }
 
@@ -123,11 +160,18 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     @Override
     public void aggiornaQuantita(int id, int nuovaQuantita) {
         if (isOnlineMode) {
-            try (PreparedStatement stmt = connection.prepareStatement(
-                    "UPDATE prodotti SET quantita = ? WHERE id = ?")) {
-                stmt.setInt(1, nuovaQuantita);
-                stmt.setInt(2, id);
-                stmt.executeUpdate();
+            try {
+                Prodotto p = getProdottoById(id);
+                if (p != null) {
+                    boolean resetOrdinato = nuovaQuantita >= p.getSoglia();
+                    try (PreparedStatement stmt = connection.prepareStatement(
+                            "UPDATE prodotti SET quantita = ?, ordinato = ? WHERE id = ?")) {
+                        stmt.setInt(1, nuovaQuantita);
+                        stmt.setBoolean(2, resetOrdinato ? false : p.isOrdinato());
+                        stmt.setInt(3, id);
+                        stmt.executeUpdate();
+                    }
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -135,6 +179,9 @@ public class ProdottoDAOImpl implements ProdottoDAO {
             Prodotto p = prodottiOffline.get(id);
             if (p != null) {
                 p.setQuantita(nuovaQuantita);
+                if (nuovaQuantita >= p.getSoglia()) {
+                    p.setOrdinato(false);
+                }
             }
         }
     }
@@ -157,7 +204,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     public Prodotto getProdottoById(int id) {
         if (isOnlineMode) {
             try (PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine FROM prodotti WHERE id = ?")) {
+                    "SELECT id, nome, quantita, scaffale, codiceAbarre, soglia, prezzoAcquisto, prezzoVendita, categoria, immagine, ordinato FROM prodotti WHERE id = ?")) {
                 stmt.setInt(1, id);
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
@@ -172,6 +219,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                                 .prezzoVendita(rs.getDouble("prezzoVendita"))
                                 .categoria(rs.getString("categoria"))
                                 .immagine(rs.getBytes("immagine"))
+                                .ordinato(rs.getBoolean("ordinato"))
                                 .build();
                     }
                 }

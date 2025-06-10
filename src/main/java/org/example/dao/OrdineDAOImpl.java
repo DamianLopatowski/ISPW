@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.controllerapplicativo.SessionController;
 import org.example.model.Cliente;
 import org.example.model.Ordine;
 import org.example.model.Prodotto;
@@ -10,10 +11,10 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class OrdineDAOImpl implements OrdineDAO {
     private static final Logger LOGGER = Logger.getLogger(OrdineDAOImpl.class.getName());
-    private static final List<Ordine> ordiniOffline = new ArrayList<>();
 
     private final boolean isOnlineMode;
     private String dbUrl;
@@ -22,7 +23,9 @@ public class OrdineDAOImpl implements OrdineDAO {
 
     public OrdineDAOImpl(boolean isOnlineMode) {
         this.isOnlineMode = isOnlineMode;
-        loadDatabaseConfig();
+        if (isOnlineMode) {
+            loadDatabaseConfig();
+        }
     }
 
     private void loadDatabaseConfig() {
@@ -59,9 +62,8 @@ public class OrdineDAOImpl implements OrdineDAO {
                         try (PreparedStatement psProdotti = connection.prepareStatement(
                                 "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
 
-                            psProdotti.setInt(1, ordineId);  // fuori dal ciclo: loop-invariant
-
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
+                                psProdotti.setInt(1, ordineId);
                                 psProdotti.setInt(2, entry.getKey().getId());
                                 psProdotti.setInt(3, entry.getValue());
                                 psProdotti.addBatch();
@@ -75,7 +77,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
 
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Errore nel salvataggio dell''ordine: {0}", e.getMessage());
+                LOGGER.log(Level.SEVERE, "Errore nel salvataggio dell'ordine: {0}", e.getMessage());
             }
         } else {
             if (ordine.getCliente() == null || ordine.getCliente().getUsername() == null) {
@@ -83,7 +85,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 return;
             }
 
-            ordiniOffline.add(ordine);
+            SessionController.salvaOrdineOffline(ordine);
 
             LOGGER.log(Level.INFO,
                     "Ordine salvato in modalità offline per cliente: {0}", ordine.getCliente().getUsername());
@@ -93,7 +95,9 @@ public class OrdineDAOImpl implements OrdineDAO {
     @Override
     public List<Ordine> getOrdiniPerCliente(String username) {
         if (!isOnlineMode) {
-            return getOrdiniOffline(username);
+            return SessionController.getOrdiniOffline().stream()
+                    .filter(o -> o.getCliente() != null && o.getCliente().getUsername().equalsIgnoreCase(username))
+                    .collect(Collectors.toList());
         }
 
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
@@ -108,17 +112,6 @@ public class OrdineDAOImpl implements OrdineDAO {
             LOGGER.log(Level.SEVERE, "Errore durante getOrdiniPerCliente", e);
             return new ArrayList<>();
         }
-    }
-
-    private List<Ordine> getOrdiniOffline(String username) {
-        List<Ordine> ordini = new ArrayList<>();
-        for (Ordine o : ordiniOffline) {
-            if (o.getCliente() != null && o.getCliente().getUsername().equalsIgnoreCase(username)) {
-                ordini.add(o);
-            }
-        }
-        LOGGER.log(Level.INFO, "Recuperati {0} ordini in offline per {1}", new Object[]{ordini.size(), username});
-        return ordini;
     }
 
     private Map<Integer, Ordine> recuperaOrdiniBase(Connection conn, String username) throws SQLException {
@@ -214,4 +207,119 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
         return new ArrayList<>(ordiniMappa.values());
     }
+
+    @Override
+    public void aggiornaStatoSpedizione(Ordine ordine) {
+        if (!SessionController.getIsOnlineModeStatic()) {
+            SessionController.aggiornaOrdineOffline(ordine);
+            return;
+        }
+
+        String sql = "UPDATE ordini SET spedito = ?, codice_spedizione = ? WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setBoolean(1, ordine.isSpedito());
+            ps.setString(2, ordine.getCodiceSpedizione());
+            ps.setInt(3, ordine.getId());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.severe("Errore aggiornamento stato spedizione: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Ordine> getTuttiGliOrdini() {
+        if (!SessionController.getIsOnlineModeStatic()) return SessionController.getOrdiniOffline();
+
+        Map<Integer, Ordine> ordiniMappa = new HashMap<>();
+
+        String sql = "SELECT o.*, c.nome, c.cognome, c.email, c.indirizzo, c.civico, c.cap, c.citta " +
+                "FROM ordini o " +
+                "JOIN usercliente c ON o.cliente_username = c.username";
+
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Cliente cliente = new Cliente.Builder()
+                        .username(rs.getString("cliente_username"))
+                        .nome(rs.getString("nome"))
+                        .cognome(rs.getString("cognome"))
+                        .email(rs.getString("email"))
+                        .indirizzo(rs.getString("indirizzo"))
+                        .civico(rs.getString("civico"))
+                        .cap(rs.getString("cap"))
+                        .citta(rs.getString("citta"))
+                        .build();
+
+                Ordine ordine = new Ordine();
+                ordine.setId(rs.getInt("id"));
+                ordine.setData(rs.getTimestamp("data").toLocalDateTime());
+                ordine.setTotale(rs.getDouble("totale"));
+                ordine.setSpedito(rs.getBoolean("spedito"));
+                ordine.setCodiceSpedizione(rs.getString("codice_spedizione"));
+                ordine.setCliente(cliente);
+
+                ordiniMappa.put(ordine.getId(), ordine);
+            }
+
+            // ↪ Recupera i prodotti associati a ciascun ordine
+            Map<Integer, Map<Integer, Integer>> prodottiPerOrdine = recuperaProdottiPerOrdine(conn, ordiniMappa.keySet());
+            Map<Integer, Prodotto> prodottiDettagliati = recuperaDettagliProdotti(conn, prodottiPerOrdine);
+
+            // ↪ Associa prodotti agli ordini
+            for (Map.Entry<Integer, Map<Integer, Integer>> entry : prodottiPerOrdine.entrySet()) {
+                Ordine ordine = ordiniMappa.get(entry.getKey());
+                Map<Prodotto, Integer> prodotti = new HashMap<>();
+                for (Map.Entry<Integer, Integer> prodottoEntry : entry.getValue().entrySet()) {
+                    Prodotto prodotto = prodottiDettagliati.get(prodottoEntry.getKey());
+                    if (prodotto != null) {
+                        prodotti.put(prodotto, prodottoEntry.getValue());
+                    }
+                }
+                if (ordine != null) ordine.setProdotti(prodotti);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.severe("Errore caricamento ordini: " + e.getMessage());
+        }
+
+        return new ArrayList<>(ordiniMappa.values());
+    }
+
+    @Override
+    public List<String> getTuttiClientiConOrdini() {
+        List<String> clienti = new ArrayList<>();
+
+        if (!SessionController.getIsOnlineModeStatic()) {
+            // Recupera i clienti dagli ordini salvati in RAM
+            for (Ordine ordine : SessionController.getOrdiniOffline()) {
+                if (ordine.getCliente() != null && ordine.getCliente().getUsername() != null) {
+                    String username = ordine.getCliente().getUsername();
+                    if (!clienti.contains(username)) {
+                        clienti.add(username);
+                    }
+                }
+            }
+            return clienti;
+        }
+
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT DISTINCT cliente_username FROM ordini")) {
+
+            while (rs.next()) {
+                clienti.add(rs.getString("cliente_username"));
+            }
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Errore nel recuperare i clienti con ordini", e);
+        }
+
+        return clienti;
+    }
+
 }

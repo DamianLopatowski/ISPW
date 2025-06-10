@@ -16,8 +16,10 @@ import org.example.ApplicationContext;
 import org.example.bean.ProdottoBean;
 import org.example.controllergrafici.LoginController;
 import org.example.controllergrafici.ViewController;
+import org.example.dao.ClienteDAOImpl;
 import org.example.dao.GestoreDAOImpl;
 import org.example.model.Cliente;
+import org.example.model.Ordine;
 import org.example.model.Pagamento;
 import org.example.service.NavigationService;
 import org.example.view.Login1View;
@@ -36,9 +38,11 @@ public class SessionController {
     private static Cliente clienteLoggato;
     private static final Map<ProdottoBean, Integer> carrello = new HashMap<>();
     private static final List<Pagamento> pagamentiOffline = new ArrayList<>();
+    private static final Map<Integer, Ordine> ordiniOffline = new HashMap<>();
 
     private static final String INTERFACCIA_1_LABEL = "Interfaccia 1";
     private static final String INTERFACCIA_2_LABEL = "Interfaccia 2";
+    private static boolean offlineGiaResettato = false;
 
     public SessionController(Stage stage, boolean isOnlineMode, NavigationService navigationService) {
         this.stage = stage;
@@ -66,6 +70,15 @@ public class SessionController {
 
     private void initializeView() {
         View view = context.getMainView();
+
+        if (!isOnlineMode && !offlineGiaResettato) {
+            ClienteDAOImpl.resetClientiOffline();
+            ordiniOffline.clear();
+            pagamentiOffline.clear();
+            carrello.clear();
+            offlineGiaResettato = true;
+            LOGGER.info("Dati offline azzerati all’avvio OFFLINE.");
+        }
 
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.info(String.format("Modalità al riavvio: %s", isOnlineMode ? "ONLINE" : "OFFLINE"));
@@ -136,7 +149,6 @@ public class SessionController {
 
                 if (loginSuccess) {
                     setClienteLoggato(new Cliente.Builder().username(username).build());
-
                     LOGGER.info("Login riuscito!");
                     navigateToGestione();
                 } else {
@@ -166,6 +178,14 @@ public class SessionController {
         } else {
             LOGGER.warning("gestioneView null!");
         }
+    }
+
+    public static void resettaOfflineData() {
+        ClienteDAOImpl.resetClientiOffline();  // esistente
+        ordiniOffline.clear();
+        pagamentiOffline.clear();
+        carrello.clear();
+        LOGGER.info("Dati offline azzerati all’avvio OFFLINE.");
     }
 
     public static void setIsInterfaccia1Static(boolean value) {
@@ -200,7 +220,6 @@ public class SessionController {
         carrello.remove(prodotto);
     }
 
-    // 🔽🔽 GESTIONE PAGAMENTI OFFLINE 🔽🔽
     public static void salvaPagamentoOffline(Pagamento pagamento) {
         pagamentiOffline.add(pagamento);
     }
@@ -213,5 +232,17 @@ public class SessionController {
             }
         }
         return risultati;
+    }
+
+    public static void salvaOrdineOffline(Ordine ordine) {
+        ordiniOffline.put(ordine.getId(), ordine);
+    }
+
+    public static void aggiornaOrdineOffline(Ordine ordine) {
+        ordiniOffline.put(ordine.getId(), ordine); // sovrascrive l'ordine con lo stesso ID
+    }
+
+    public static List<Ordine> getOrdiniOffline() {
+        return new ArrayList<>(ordiniOffline.values());
     }
 }

@@ -13,6 +13,7 @@ public class ProdottoBean {
     private double prezzoVendita;
     private String categoria;
     private byte[] immagine;
+    private boolean ordinato;
 
     public ProdottoBean() {
         //riempimento
@@ -125,6 +126,14 @@ public class ProdottoBean {
 
     public byte[] getImmagine() { return immagine; }
     public void setImmagine(byte[] immagine) { this.immagine = immagine; }
+
+    public boolean isOrdinato() {
+        return ordinato;
+    }
+
+    public void setOrdinato(boolean ordinato) {
+        this.ordinato = ordinato;
+    }
 
     public Prodotto toModel() {
         return new Prodotto.Builder()

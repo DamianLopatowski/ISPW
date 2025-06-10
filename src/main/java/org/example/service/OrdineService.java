@@ -4,9 +4,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.example.bean.ProdottoBean;
 import org.example.controllerapplicativo.SessionController;
-import org.example.dao.OrdineDAOImpl;
-import org.example.dao.ProdottoDAO;
-import org.example.dao.ProdottoDAOImpl;
+import org.example.dao.*;
+import org.example.facade.ClienteFacade;
 import org.example.model.Cliente;
 import org.example.model.Ordine;
 
@@ -66,17 +65,16 @@ public class OrdineService {
         }
 
         LOGGER.info("Invio email riepilogo a " + cliente.getEmail() + "...");
-        EmailService.sendOrderSummaryEmail(
-                cliente.getEmail(),
-                cliente.getNome() + " " + cliente.getCognome(),
-                ordine.getProdotti()
-        );
+        PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic());
+        ClienteFacade facade = new ClienteFacade(pagamentoDAO);
+        facade.inviaEmailRiepilogoOrdine(cliente, ordine.getProdotti());
+
 
         //Svuota il carrello
         SessionController.svuotaCarrello();
 
         //Notifica di conferma
-        LOGGER.info("✅ Ordine confermato per il cliente: " + cliente.getUsername());
-        new Alert(Alert.AlertType.INFORMATION, "✅ Ordine inviato correttamente!", ButtonType.OK).showAndWait();
+        LOGGER.info("Ordine confermato per il cliente: " + cliente.getUsername());
+        new Alert(Alert.AlertType.INFORMATION, "Ordine inviato correttamente!", ButtonType.OK).showAndWait();
     }
 }

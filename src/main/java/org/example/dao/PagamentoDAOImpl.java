@@ -20,7 +20,9 @@ public class PagamentoDAOImpl implements PagamentoDAO {
 
     public PagamentoDAOImpl(boolean isOnline) {
         this.isOnline = isOnline;
-        loadDatabaseConfig();
+        if (isOnline) {
+            loadDatabaseConfig();
+        }
     }
 
     private void loadDatabaseConfig() {
@@ -39,7 +41,7 @@ public class PagamentoDAOImpl implements PagamentoDAO {
     @Override
     public void registraPagamento(Pagamento pagamento) {
         if (!isOnline) {
-            SessionController.salvaPagamentoOffline(pagamento); // 🔄 Salvataggio in SessionController
+            SessionController.salvaPagamentoOffline(pagamento);
             LOGGER.log(Level.INFO, "Pagamento salvato in RAM per {0}: €{1}",
                     new Object[]{pagamento.getClienteUsername(), pagamento.getImporto()});
             return;
@@ -70,7 +72,9 @@ public class PagamentoDAOImpl implements PagamentoDAO {
     public List<Pagamento> getPagamentiPerCliente(String username) {
         if (!isOnline) {
             LOGGER.log(Level.INFO, "Recupero pagamenti da RAM per: {0}", username);
-            return SessionController.getPagamentiOfflinePer(username); //Recupero da SessionController
+            List<Pagamento> pagamentiOffline = SessionController.getPagamentiOfflinePer(username);
+            LOGGER.log(Level.INFO, "{0} pagamenti offline trovati per {1}", new Object[]{pagamentiOffline.size(), username});
+            return pagamentiOffline;
         }
 
         List<Pagamento> pagamenti = new ArrayList<>();

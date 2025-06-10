@@ -78,11 +78,17 @@ public class LoginController {
         ClienteDAO clienteDAO = new ClienteDAOImpl(isOnlineMode);
         ClienteBean cliente = ClienteMapper.toBean(clienteDAO.findByUsername(username));
 
-        if (cliente != null && cliente.getPassword().equals(password)) {
+        if (cliente == null) {
+            LOGGER.warning("Utente non trovato: " + username);
+            statusLabel.setText("Errore: utente inesistente.");
+            return;
+        }
+
+        if (cliente.getPassword().equals(password)) {
             LOGGER.info("Login riuscito!");
             statusLabel.setText("Accesso effettuato!");
 
-            //Imposta il cliente loggato nel navigationService
+            // Imposta il cliente loggato nel navigationService
             navigationService.setClienteLoggato(cliente.toCliente());
 
             navigationService.navigateToNegozio();

@@ -1,7 +1,10 @@
 package org.example.service;
 
 import org.example.bean.ClienteBean;
+import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
+import org.example.dao.PagamentoDAOImpl;
+import org.example.facade.ClienteFacade;
 import org.example.model.Cliente;
 import java.util.regex.Pattern;
 import java.util.logging.Level;
@@ -82,7 +85,6 @@ public class RegistrazioneService {
         Cliente cliente = clienteBean.toCliente();
         LOGGER.log(Level.INFO, "Avvio registrazione cliente: {0}", cliente.getUsername());
 
-        // ✅ Validazione dei dati di input
         if (!isUsernameValid(cliente.getUsername())) {
             throw new RegistrazioneException("Lo username deve essere di almeno 8 caratteri.");
         }
@@ -122,10 +124,11 @@ public class RegistrazioneService {
             LOGGER.log(Level.INFO, "Cliente registrato con successo: {0}", cliente.getUsername());
 
             //Invio dell'email di conferma
-            EmailService.sendConfirmationEmail(cliente.getEmail(), cliente.getUsername());
+            ClienteFacade facade = new ClienteFacade(new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic()));
+            facade.inviaEmailConfermaRegistrazione(cliente.getEmail(), cliente.getUsername());
 
         } catch (Exception e) {
-            throw new RegistrazioneException("❌ Errore durante la registrazione del cliente " + cliente.getUsername() +
+            throw new RegistrazioneException("Errore durante la registrazione del cliente " + cliente.getUsername() +
                     ": " + e.getMessage());
         }
 

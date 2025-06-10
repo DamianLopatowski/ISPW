@@ -15,6 +15,9 @@ public interface NavigationService {
     void setClienteLoggato(Cliente cliente);
     Cliente getClienteLoggato();
     Parent navigateToGestioneProdottiView();
+    Parent navigateToGestioneSpedizioniView();
+    Parent navigateToGestioneSogliaView();
+
 
 
 }

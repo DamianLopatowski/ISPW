@@ -1,7 +1,6 @@
 package org.example.service;
 
 import org.example.model.Prodotto;
-
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -35,7 +34,7 @@ public class EmailService {
             emailSender = properties.getProperty("email.sender");
             emailPassword = properties.getProperty("email.password");
 
-            LOGGER.info("📩 Configurazione email caricata con successo.");
+            LOGGER.info("Configurazione email caricata con successo.");
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Errore nel caricamento della configurazione email.", e);
         }
@@ -115,6 +114,85 @@ public class EmailService {
             LOGGER.log(Level.INFO, "Email riepilogo ordine inviata a {0}", recipientEmail);
         } catch (MessagingException e) {
             LOGGER.log(Level.SEVERE, "Errore nell'invio dell'email di ordine", e);
+        }
+    }
+
+    public static void sendShippingConfirmationEmail(String recipientEmail, String nomeCliente, String codiceSpedizione) {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
+
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(emailSender, emailPassword);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(emailSender));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject("Conferma Spedizione");
+
+            String content = String.format("""
+                Ciao %s,
+
+                Il tuo ordine è stato spedito!
+                Codice di spedizione: %s
+
+                Grazie per aver ordinato da noi!
+
+                """, nomeCliente, codiceSpedizione);
+
+            message.setText(content);
+
+            Transport.send(message);
+            LOGGER.log(Level.INFO, "Email di spedizione inviata a {0}", recipientEmail);
+        } catch (MessagingException e) {
+            LOGGER.log(Level.SEVERE, "Errore nell'invio dell'email di spedizione", e);
+        }
+    }
+
+    public static void sendPaymentConfirmationEmail(String recipientEmail, String nomeCliente, double importoBonificato, double totalePagato, double residuo) {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
+
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(emailSender, emailPassword);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(emailSender));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject("Conferma ricezione bonifico");
+
+            String content = String.format("""
+                Ciao %s,
+
+                Abbiamo ricevuto un tuo bonifico di €%.2f.
+
+                Totale pagato finora: €%.2f
+                Importo residuo: €%.2f
+
+                Grazie per l'acquisto!
+                """, nomeCliente, importoBonificato, totalePagato, residuo);
+
+            message.setText(content);
+
+            Transport.send(message);
+            LOGGER.log(Level.INFO, "Email di conferma bonifico inviata a {0}", recipientEmail);
+        } catch (MessagingException e) {
+            LOGGER.log(Level.SEVERE, "Errore nell'invio dell'email di conferma bonifico", e);
         }
     }
 

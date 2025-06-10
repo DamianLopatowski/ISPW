@@ -11,6 +11,7 @@ public class Prodotto {
     private double prezzoVendita;
     private String categoria;
     private byte[] immagine;
+    private boolean ordinato;
 
     private Prodotto(Builder builder) {
         this.id = builder.id;
@@ -23,9 +24,10 @@ public class Prodotto {
         this.prezzoVendita = builder.prezzoVendita;
         this.categoria = builder.categoria;
         this.immagine = builder.immagine;
+        this.ordinato = builder.ordinato;
     }
 
-    // ✅ Getter
+
     public int getId() { return id; }
     public String getNome() { return nome; }
     public int getQuantita() { return quantita; }
@@ -45,6 +47,14 @@ public class Prodotto {
         this.id = id;
     }
 
+    public boolean isOrdinato() {
+        return ordinato;
+    }
+
+    public void setOrdinato(boolean ordinato) {
+        this.ordinato = ordinato;
+    }
+
     public static class Builder {
         private int id;
         private String nome;
@@ -56,6 +66,7 @@ public class Prodotto {
         private double prezzoVendita;
         private String categoria;
         private byte[] immagine;
+        private boolean ordinato;
 
         public Builder id(int id) {
             this.id = id;
@@ -113,6 +124,10 @@ public class Prodotto {
 
         public void setId(int id) {
             this.id = id;
+        }
+        public Builder ordinato(boolean ordinato) {
+            this.ordinato = ordinato;
+            return this;
         }
 
     }

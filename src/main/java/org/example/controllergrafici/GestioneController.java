@@ -7,7 +7,6 @@ import org.example.controllerapplicativo.AuthController;
 import org.example.service.NavigationService;
 import org.example.view.Gestione2View;
 import org.example.view.Gestione1View;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,11 +71,34 @@ public class GestioneController {
         switch (sezione) {
             case "Prodotti" -> {
                 Parent root = navigationService.navigateToGestioneProdottiView();
-                stage.setScene(new Scene(root, 1100, 700));
+                if (root != null) {
+                    stage.setScene(new Scene(root, 1100, 700));
+                    stage.setTitle("Gestione Prodotti");
+                } else {
+                    LOGGER.warning("Errore: root di GestioneProdottiView è null.");
+                }
             }
-            case "Soglia" -> LOGGER.info("⚠️ Navigazione alla gestione 'Soglia' non ancora implementata.");
-            case "Spedizioni" -> LOGGER.info("Navigazione alla gestione 'Spedizioni' non ancora implementata.");
-            default -> LOGGER.log(Level.WARNING, "Sezione di gestione non riconosciuta: {0}", sezione);
+            case "Soglia" -> {
+                Parent root = navigationService.navigateToGestioneSogliaView();
+                if (root != null) {
+                    stage.setScene(new Scene(root, 1100, 700));
+                    stage.setTitle("Gestione Soglia");
+                } else {
+                    LOGGER.warning("Errore: root di GestioneSogliaView è null.");
+                }
+            }
+            case "Spedizioni" -> {
+                Parent root = navigationService.navigateToGestioneSpedizioniView();
+                if (root != null) {
+                    stage.setScene(new Scene(root, 1100, 700));
+                    stage.setTitle("Gestione Spedizioni");
+                } else {
+                    LOGGER.warning("Errore: root di GestioneSpedizioniView è null.");
+                }
+            }
+            default -> {
+                LOGGER.log(Level.WARNING, "Sezione di gestione non riconosciuta: {0}", sezione);
+            }
         }
     }
 

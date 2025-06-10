@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.bean.ProdottoBean;
 import org.example.model.Prodotto;
 
 import java.util.List;
@@ -8,6 +9,7 @@ public interface ProdottoDAO {
 
     // Usato per mostrare tutti i prodotti (interfaccia cliente e gestione)
     List<Prodotto> getAllProdotti();
+    List<ProdottoBean> getAllProdottiBean();
 
     // Usato per salvare un nuovo prodotto
     void saveProdotto(Prodotto prodotto);
@@ -32,6 +34,8 @@ public interface ProdottoDAO {
     default List<Prodotto> getAll() {
         return getAllProdotti();
     }
+    void aggiornaOrdinato(int id, boolean ordinato);
+
 
     // Alias di saveProdotto() richiesto da GestioneProdottiController
     default void salva(Prodotto prodotto) {

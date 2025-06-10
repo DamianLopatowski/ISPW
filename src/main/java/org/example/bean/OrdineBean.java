@@ -14,12 +14,14 @@ public class OrdineBean {
     private Map<ProdottoBean, Integer> prodotti;
     private double totale;
 
+    private boolean spedito;
+    private String codiceSpedizione;
+
     public OrdineBean() {
         this.data = LocalDateTime.now();
         this.prodotti = new HashMap<>();
     }
 
-    // Conversione in model Ordine
     public Ordine toOrdine() {
         Map<Prodotto, Integer> prodottiModel = new HashMap<>();
         for (Map.Entry<ProdottoBean, Integer> entry : prodotti.entrySet()) {
@@ -28,14 +30,17 @@ public class OrdineBean {
 
         Ordine ordine = new Ordine();
         ordine.setId(id);
-        ordine.setCliente(cliente.toCliente());
+        ordine.setCliente(cliente != null ? cliente.toCliente() : null);
         ordine.setData(data);
         ordine.setProdotti(prodottiModel);
         ordine.setTotale(totale);
+
+        ordine.setSpedito(spedito);
+        ordine.setCodiceSpedizione(codiceSpedizione);
+
         return ordine;
     }
 
-    // 🔙 Metodo utile se serve la descrizione in una tabella
     public String getDescrizioneProdotti() {
         if (prodotti == null || prodotti.isEmpty()) return "Nessun prodotto";
         StringBuilder sb = new StringBuilder();
@@ -48,7 +53,6 @@ public class OrdineBean {
         return sb.substring(0, sb.length() - 2); // rimuove l'ultima virgola
     }
 
-    // Getter e Setter
     public int getId() {
         return id;
     }
@@ -82,5 +86,19 @@ public class OrdineBean {
     }
     public void setTotale(double totale) {
         this.totale = totale;
+    }
+
+    public boolean isSpedito() {
+        return spedito;
+    }
+    public void setSpedito(boolean spedito) {
+        this.spedito = spedito;
+    }
+
+    public String getCodiceSpedizione() {
+        return codiceSpedizione;
+    }
+    public void setCodiceSpedizione(String codiceSpedizione) {
+        this.codiceSpedizione = codiceSpedizione;
     }
 }

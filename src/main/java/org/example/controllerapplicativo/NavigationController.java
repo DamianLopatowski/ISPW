@@ -4,10 +4,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.controllergrafici.*;
-import org.example.dao.ClienteDAOImpl;
-import org.example.dao.GestoreDAOImpl;
-import org.example.dao.ProdottoDAO;
-import org.example.dao.ProdottoDAOImpl;
+import org.example.dao.*;
 import org.example.model.Cliente;
 import org.example.service.NavigationService;
 import org.example.view.*;
@@ -203,7 +200,34 @@ public class NavigationController implements NavigationService {
         return controller.getRoot();
     }
 
+    @Override
+    public Parent navigateToGestioneSpedizioniView() {
+        LOGGER.info("Navigazione alla GestioneSpedizioniView...");
 
+        boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
+
+        GestioneSpedizioniView view = new GestioneSpedizioniView();
+
+        OrdineDAO ordineDAO = isOnlineMode ? new OrdineDAOImpl(true) : null;
+        new GestioneSpedizioniController(view, ordineDAO);
+
+        Parent root = view.getRoot();
+
+        if (root != null) {
+            LOGGER.info("GestioneSpedizioniView caricata con successo.");
+        } else {
+            LOGGER.warning("Errore: GestioneSpedizioniView è NULL!");
+        }
+
+        return root;
+    }
+
+    @Override
+    public Parent navigateToGestioneSogliaView() {
+        LOGGER.info("Navigazione alla SogliaView...");
+        SogliaController controller = new SogliaController(stage);
+        return controller.getRoot();
+    }
 
     @Override
     public void setClienteLoggato(Cliente cliente) {
