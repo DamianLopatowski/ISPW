@@ -11,27 +11,26 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PagamentoServiceTest {
+class PagamentoServiceTest {
 
     private PagamentoDAO pagamentoDAOMock;
     private PagamentoService pagamentoService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         pagamentoDAOMock = mock(PagamentoDAO.class);
         pagamentoService = new PagamentoService(pagamentoDAOMock);
     }
 
-
     @Test
-    public void testRegistraPagamento() {
+    void testRegistraPagamento() {
         Pagamento pagamento = new Pagamento();
         pagamentoService.registraPagamento(pagamento);
         verify(pagamentoDAOMock, times(1)).registraPagamento(pagamento);
     }
 
     @Test
-    public void testGetPagamentiPerCliente() {
+    void testGetPagamentiPerCliente() {
         Pagamento pagamento1 = new Pagamento();
         Pagamento pagamento2 = new Pagamento();
         List<Pagamento> pagamenti = Arrays.asList(pagamento1, pagamento2);
