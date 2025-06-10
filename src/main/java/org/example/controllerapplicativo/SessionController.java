@@ -72,12 +72,7 @@ public class SessionController {
         View view = context.getMainView();
 
         if (!isOnlineMode && !offlineGiaResettato) {
-            ClienteDAOImpl.resetClientiOffline();
-            ordiniOffline.clear();
-            pagamentiOffline.clear();
-            carrello.clear();
-            offlineGiaResettato = true;
-            LOGGER.info("Dati offline azzerati all’avvio OFFLINE.");
+            resettaOfflineData();
         }
 
         if (LOGGER.isLoggable(Level.INFO)) {
@@ -181,10 +176,11 @@ public class SessionController {
     }
 
     public static void resettaOfflineData() {
-        ClienteDAOImpl.resetClientiOffline();  // esistente
+        ClienteDAOImpl.resetClientiOffline();
         ordiniOffline.clear();
         pagamentiOffline.clear();
         carrello.clear();
+        offlineGiaResettato = true;
         LOGGER.info("Dati offline azzerati all’avvio OFFLINE.");
     }
 
