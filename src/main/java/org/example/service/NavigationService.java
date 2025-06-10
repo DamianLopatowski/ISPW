@@ -18,6 +18,4 @@ public interface NavigationService {
     Parent navigateToGestioneSpedizioniView();
     Parent navigateToGestioneSogliaView();
 
-
-
 }

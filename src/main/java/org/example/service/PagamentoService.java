@@ -7,7 +7,6 @@ import java.util.List;
 
 public class PagamentoService {
     private final PagamentoDAO pagamentoDAO;
-
     public PagamentoService(PagamentoDAO pagamentoDAO) {
         this.pagamentoDAO = pagamentoDAO;
     }

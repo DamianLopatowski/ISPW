@@ -12,7 +12,6 @@ public class OrdineMapper {
     private OrdineMapper() {
         // Costruttore privato per evitare istanziazione
     }
-
     public static OrdineBean toBean(Ordine ordine) {
         OrdineBean bean = new OrdineBean();
         bean.setId(ordine.getId());

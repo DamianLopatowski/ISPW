@@ -8,7 +8,6 @@ public class ProdottoMapper {
     private ProdottoMapper() {
         //riempimento
     }
-
     public static ProdottoBean toBean(Prodotto prodotto) {
         ProdottoBean bean = new ProdottoBean();
         bean.setId(prodotto.getId());

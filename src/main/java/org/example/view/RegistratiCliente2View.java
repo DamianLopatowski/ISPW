@@ -233,5 +233,4 @@ public class RegistratiCliente2View {
         return registratiButton;
     }
 
-
 }

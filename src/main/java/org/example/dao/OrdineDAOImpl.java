@@ -92,7 +92,6 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
     }
 
-
     @Override
     public List<Ordine> getOrdiniPerCliente(String username) {
         if (!isOnlineMode) {

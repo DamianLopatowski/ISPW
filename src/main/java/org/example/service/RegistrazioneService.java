@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 public class RegistrazioneService {
     private static final Logger LOGGER = Logger.getLogger(RegistrazioneService.class.getName());
-
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
     private static final Pattern PARTITA_IVA_PATTERN = Pattern.compile("^\\d{11}$");

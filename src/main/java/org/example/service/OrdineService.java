@@ -8,15 +8,12 @@ import org.example.dao.*;
 import org.example.facade.ClienteFacade;
 import org.example.model.Cliente;
 import org.example.model.Ordine;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OrdineService {
-
     private static final Logger LOGGER = Logger.getLogger(OrdineService.class.getName());
     private final NavigationService navigationService;
     private final Consumer<String> notifica;

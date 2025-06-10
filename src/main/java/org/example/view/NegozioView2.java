@@ -13,7 +13,6 @@ public class NegozioView2 {
     private final Label disponibilitaLabel;
     private final TextField quantitaField;
     private final Button aggiungiButton;
-
     private final VBox carrelloBox;
     private final VBox righeCarrelloBox; //VBox per righe dinamiche del carrello
     private final Label totaleLabel;     //Etichetta per il totale

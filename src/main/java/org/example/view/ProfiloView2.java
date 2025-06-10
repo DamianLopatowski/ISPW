@@ -9,11 +9,9 @@ public class ProfiloView2 {
     private final VBox root;
     private final VBox datiPersonaliPane;
     private final VBox passwordPane;
-
     private final TextField nomeField = new TextField();
     private final TextField cognomeField = new TextField();
     private final TextField usernameField = new TextField();
-
     private final PasswordField oldPasswordField = new PasswordField();
     private final PasswordField newPasswordField = new PasswordField();
     private final PasswordField confirmPasswordField = new PasswordField();

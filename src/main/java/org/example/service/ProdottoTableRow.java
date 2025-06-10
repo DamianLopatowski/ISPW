@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 
 public class ProdottoTableRow {
     private final ProdottoBean prodottoOriginale;
-
     private final StringProperty nome;
     private final StringProperty quantita;
     private final StringProperty scaffale;

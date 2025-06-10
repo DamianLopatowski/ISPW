@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 public class PagamentoTableRow {
     private final StringProperty data;
     private final DoubleProperty importo;
-
     private final PagamentoBean pagamentoOriginale;
 
     public PagamentoTableRow(PagamentoBean pagamento) {

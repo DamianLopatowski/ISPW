@@ -78,7 +78,6 @@ public class OrdineTableRow {
         return codiceSpedizione;
     }
 
-    // Getter ausiliari per il controller
     public String getClienteUsername() {
         return ordineBean.getCliente() != null ? ordineBean.getCliente().getUsername() : "N/D";
     }

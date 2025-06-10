@@ -11,7 +11,6 @@ public class View {
     private final Button loginButton;
     private final Button loginClienteButton;
     private final Button registratiClienteButton;
-
     public View() {
         root = new VBox(15);
 

@@ -52,7 +52,6 @@ public class OrdineBean {
         }
         return sb.substring(0, sb.length() - 2); // rimuove l'ultima virgola
     }
-
     public int getId() {
         return id;
     }

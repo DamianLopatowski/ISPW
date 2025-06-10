@@ -8,5 +8,4 @@ public interface ClienteDAO {
     Cliente findByUsername(String username);
     boolean update(Cliente cliente, String vecchioUsername);
 
-
 }

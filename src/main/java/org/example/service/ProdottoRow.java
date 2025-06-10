@@ -8,7 +8,6 @@ public class ProdottoRow {
     private final IntegerProperty quantita;
     private final IntegerProperty soglia;
     private final BooleanProperty ordinato;
-
     public ProdottoRow(int id, String nome, int quantita, int soglia, boolean ordinato) {
         this.id = new SimpleIntegerProperty(id);
         this.nome = new SimpleStringProperty(nome);

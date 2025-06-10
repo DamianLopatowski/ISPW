@@ -13,7 +13,6 @@ public class ClienteFacade {
 
     public ClienteFacade(PagamentoDAO pagamentoDAO) {
     }
-
     public void inviaConfermaPagamento(ClienteBean cliente, double importoBonificato, double totalePagato, double residuo) {
         if (cliente == null || cliente.getEmail() == null || cliente.getNome() == null) {
             Logger.getLogger(ClienteFacade.class.getName()).warning("Cliente o dati mancanti, impossibile inviare email di conferma pagamento.");

@@ -15,7 +15,6 @@ public class ApplicationContext {
     public Stage getStage() {
         return stage;
     }
-
     public View getMainView() {
         return mainView;
     }
