@@ -24,6 +24,7 @@ public class RegistrazioneService {
     private int tentativiErrati = 0;
     private static final int MAX_TENTATIVI = 3;
 
+
     public RegistrazioneService(ClienteDAO clienteDAO, String codiceUnivoco) {
         this.clienteDAO = clienteDAO;
         this.codiceUnivoco = codiceUnivoco;

@@ -241,4 +241,9 @@ public class SessionController {
     public static List<Ordine> getOrdiniOffline() {
         return new ArrayList<>(ordiniOffline.values());
     }
+
+    public static void setCarrello(Map<ProdottoBean, Integer> nuovoCarrello) {
+        carrello.clear();
+        carrello.putAll(nuovoCarrello);
+    }
 }

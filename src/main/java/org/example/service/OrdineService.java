@@ -11,6 +11,7 @@ import org.example.model.Ordine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,9 +19,17 @@ public class OrdineService {
 
     private static final Logger LOGGER = Logger.getLogger(OrdineService.class.getName());
     private final NavigationService navigationService;
+    private final Consumer<String> notifica;
 
+    // Costruttore di default: usa Alert per mostrare conferma
     public OrdineService(NavigationService navigationService) {
+        this(navigationService, msg -> new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait());
+    }
+
+    // Costruttore con Consumer custom (utile per i test)
+    public OrdineService(NavigationService navigationService, Consumer<String> notifica) {
         this.navigationService = navigationService;
+        this.notifica = notifica;
     }
 
     public void procediOrdine() {
@@ -30,7 +39,6 @@ public class OrdineService {
             return;
         }
 
-        // Recupera carrello e modalità
         Map<ProdottoBean, Integer> carrello = new HashMap<>(SessionController.getCarrello());
         boolean isOnline = SessionController.getIsOnlineModeStatic();
 
@@ -39,7 +47,7 @@ public class OrdineService {
             return;
         }
 
-        //Calcola il totale dell'ordine
+        // Calcolo del totale
         double totale = 0.0;
         for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
             ProdottoBean prodotto = entry.getKey();
@@ -56,25 +64,27 @@ public class OrdineService {
             LOGGER.info(String.format("Totale: €%.2f", totale));
         }
 
+        // Creazione e salvataggio ordine
         Ordine ordine = Ordine.creaDaBean(cliente, carrello, totale);
         new OrdineDAOImpl(isOnline).salvaOrdine(ordine);
 
+        // Riduzione quantità disponibili
         ProdottoDAO prodottoDAO = new ProdottoDAOImpl(isOnline);
         for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
             prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
         }
 
+        // Invio email
         LOGGER.info("Invio email riepilogo a " + cliente.getEmail() + "...");
-        PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic());
+        PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(isOnline);
         ClienteFacade facade = new ClienteFacade(pagamentoDAO);
         facade.inviaEmailRiepilogoOrdine(cliente, ordine.getProdotti());
 
-
-        //Svuota il carrello
+        // Svuota carrello
         SessionController.svuotaCarrello();
 
-        //Notifica di conferma
+        // Notifica finale
         LOGGER.info("Ordine confermato per il cliente: " + cliente.getUsername());
-        new Alert(Alert.AlertType.INFORMATION, "Ordine inviato correttamente!", ButtonType.OK).showAndWait();
+        notifica.accept("Ordine inviato correttamente!");
     }
 }
