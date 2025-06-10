@@ -225,7 +225,9 @@ public class NavigationController implements NavigationService {
     @Override
     public Parent navigateToGestioneSogliaView() {
         LOGGER.info("Navigazione alla SogliaView...");
-        SogliaController controller = new SogliaController(stage);
+
+        // Passiamo anche 'this' come NavigationService per evitare dipendenza diretta
+        SogliaController controller = new SogliaController(stage, this);
         return controller.getRoot();
     }
 

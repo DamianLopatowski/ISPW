@@ -7,11 +7,11 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.Stage;
 import org.example.bean.ProdottoBean;
 import org.example.controllerapplicativo.AuthController;
-import org.example.controllerapplicativo.NavigationController;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.GestoreDAOImpl;
 import org.example.dao.ProdottoDAO;
 import org.example.dao.ProdottoDAOImpl;
+import org.example.service.NavigationService;
 import org.example.service.ProdottoRow;
 import org.example.view.SogliaView;
 
@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 public class SogliaController {
     private final SogliaView view;
     private final Stage stage;
+    private final NavigationService navigationService;
 
-    public SogliaController(Stage stage) {
+    public SogliaController(Stage stage, NavigationService navigationService) {
         this.stage = stage;
+        this.navigationService = navigationService;
         this.view = new SogliaView();
         setup();
     }
@@ -71,12 +73,13 @@ public class SogliaController {
         });
 
         // Bottone "Indietro"
-        view.getIndietroButton().setOnAction(e -> stage.setScene(new Scene(new GestioneController(
-                stage,
-                SessionController.getIsInterfaccia1Static(),
-                new NavigationController(stage),
-                new AuthController(new GestoreDAOImpl())
-        ).getRootView(), 1100, 700)));
+        view.getIndietroButton().setOnAction(e -> {
+            Parent gestioneRoot = navigationService.navigateToGestioneView(
+                    !SessionController.getIsOnlineModeStatic(),
+                    SessionController.getIsInterfaccia1Static()
+            );
+            stage.setScene(new Scene(gestioneRoot, 1100, 700));
+        });
     }
 
     public Parent getRoot() {
