@@ -79,7 +79,7 @@ public class LoginController {
         ClienteBean cliente = ClienteMapper.toBean(clienteDAO.findByUsername(username));
 
         if (cliente == null) {
-            LOGGER.warning("Utente non trovato: " + username);
+            LOGGER.log(Level.WARNING, "Utente non trovato: {0}", username);
             statusLabel.setText("Errore: utente inesistente.");
             return;
         }

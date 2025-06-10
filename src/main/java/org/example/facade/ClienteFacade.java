@@ -5,16 +5,13 @@ import org.example.dao.PagamentoDAO;
 import org.example.model.Cliente;
 import org.example.model.Prodotto;
 import org.example.service.EmailService;
-import org.example.service.PagamentoService;
+
 import java.util.Map;
 import java.util.logging.Logger;
 
 public class ClienteFacade {
 
-    private final PagamentoService pagamentoService;
-
     public ClienteFacade(PagamentoDAO pagamentoDAO) {
-        this.pagamentoService = new PagamentoService(pagamentoDAO);
     }
 
     public void inviaConfermaPagamento(ClienteBean cliente, double importoBonificato, double totalePagato, double residuo) {
@@ -56,5 +53,4 @@ public class ClienteFacade {
                 codiceSpedizione
         );
     }
-
 }

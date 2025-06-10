@@ -148,13 +148,10 @@ public class ClienteDAOImpl implements ClienteDAO {
             }
         } else {
             LOGGER.log(Level.INFO, "Ricerca cliente in RAM (OFFLINE): {0}", username);
-            if (clientiOffline == null) {
-                LOGGER.warning("Lista clienti offline non inizializzata.");
-                return null;
-            }
+
             Cliente cliente = clientiOffline.get(username);
             if (cliente == null) {
-                LOGGER.warning("Cliente offline non trovato: " + username);
+                LOGGER.log(Level.WARNING, "Cliente offline non trovato: {0}", username);
             }
             return cliente;
         }

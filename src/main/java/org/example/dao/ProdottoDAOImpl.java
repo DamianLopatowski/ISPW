@@ -167,7 +167,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                     try (PreparedStatement stmt = connection.prepareStatement(
                             "UPDATE prodotti SET quantita = ?, ordinato = ? WHERE id = ?")) {
                         stmt.setInt(1, nuovaQuantita);
-                        stmt.setBoolean(2, resetOrdinato ? false : p.isOrdinato());
+                        stmt.setBoolean(2, !resetOrdinato && p.isOrdinato()); // ✅ corretto
                         stmt.setInt(3, id);
                         stmt.executeUpdate();
                     }

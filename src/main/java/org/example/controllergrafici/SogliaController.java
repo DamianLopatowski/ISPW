@@ -58,9 +58,7 @@ public class SogliaController {
 
         // Listener per aggiornare lo stato "ordinato"
         view.getTabella().getItems().forEach(row -> {
-            row.ordinatoProperty().addListener((obs, oldVal, newVal) -> {
-                dao.aggiornaOrdinato(row.getId(), newVal);
-            });
+            row.ordinatoProperty().addListener((obs, oldVal, newVal) -> dao.aggiornaOrdinato(row.getId(), newVal));
 
             // Listener per rimuovere dalla tabella se la quantità supera la soglia
             row.quantitaProperty().addListener((obs, oldVal, newVal) -> {

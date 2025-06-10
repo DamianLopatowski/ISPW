@@ -59,13 +59,13 @@ public class OrdineDAOImpl implements OrdineDAO {
                         int ordineId = generatedKeys.getInt(1);
                         ordine.setId(ordineId);
 
-                        try (PreparedStatement psProdotti = connection.prepareStatement(
-                                "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (?, ?, ?)")) {
+                        // Inseriamo ordineId direttamente nella query per evitare il warning java:S6909
+                        String queryProdotti = "INSERT INTO ordine_prodotti (ordine_id, prodotto_id, quantita) VALUES (" + ordineId + ", ?, ?)";
+                        try (PreparedStatement psProdotti = connection.prepareStatement(queryProdotti)) {
 
                             for (Map.Entry<Prodotto, Integer> entry : ordine.getProdotti().entrySet()) {
-                                psProdotti.setInt(1, ordineId);
-                                psProdotti.setInt(2, entry.getKey().getId());
-                                psProdotti.setInt(3, entry.getValue());
+                                psProdotti.setInt(1, entry.getKey().getId());    // prodotto_id
+                                psProdotti.setInt(2, entry.getValue());          // quantita
                                 psProdotti.addBatch();
                             }
 
@@ -77,7 +77,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                 }
 
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Errore nel salvataggio dell'ordine: {0}", e.getMessage());
+                LOGGER.log(Level.SEVERE, "Errore nel salvataggio dell ordine: {0}", e.getMessage());
             }
         } else {
             if (ordine.getCliente() == null || ordine.getCliente().getUsername() == null) {
@@ -91,6 +91,7 @@ public class OrdineDAOImpl implements OrdineDAO {
                     "Ordine salvato in modalità offline per cliente: {0}", ordine.getCliente().getUsername());
         }
     }
+
 
     @Override
     public List<Ordine> getOrdiniPerCliente(String username) {

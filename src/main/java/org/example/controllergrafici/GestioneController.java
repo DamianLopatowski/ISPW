@@ -96,9 +96,7 @@ public class GestioneController {
                     LOGGER.warning("Errore: root di GestioneSpedizioniView è null.");
                 }
             }
-            default -> {
-                LOGGER.log(Level.WARNING, "Sezione di gestione non riconosciuta: {0}", sezione);
-            }
+            default -> LOGGER.log(Level.WARNING, "Sezione di gestione non riconosciuta: {0}", sezione);
         }
     }
 
