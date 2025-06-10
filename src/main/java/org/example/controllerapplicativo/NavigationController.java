@@ -209,7 +209,8 @@ public class NavigationController implements NavigationService {
         GestioneSpedizioniView view = new GestioneSpedizioniView();
 
         OrdineDAO ordineDAO = isOnlineMode ? new OrdineDAOImpl(true) : null;
-        new GestioneSpedizioniController(view, ordineDAO);
+
+        new GestioneSpedizioniController(view, ordineDAO, this);
 
         Parent root = view.getRoot();
 
@@ -221,6 +222,7 @@ public class NavigationController implements NavigationService {
 
         return root;
     }
+
 
     @Override
     public Parent navigateToGestioneSogliaView() {

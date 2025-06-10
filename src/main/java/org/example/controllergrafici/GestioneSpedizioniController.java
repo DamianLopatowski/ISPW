@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import org.example.bean.ClienteBean;
 import org.example.bean.OrdineBean;
 import org.example.bean.PagamentoBean;
-import org.example.controllerapplicativo.NavigationController;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAO;
 import org.example.dao.OrdineDAOImpl;
@@ -18,6 +17,7 @@ import org.example.dao.PagamentoDAOImpl;
 import org.example.facade.ClienteFacade;
 import org.example.service.*;
 import org.example.view.GestioneSpedizioniView;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
@@ -30,9 +30,11 @@ public class GestioneSpedizioniController {
     private final OrdineDAO ordineDAO;
     private final PagamentoService pagamentoService;
     private final Logger logger = Logger.getLogger(getClass().getName());
+    private final NavigationService navigationService;
 
-    public GestioneSpedizioniController(GestioneSpedizioniView view, OrdineDAO ordineDAO) {
+    public GestioneSpedizioniController(GestioneSpedizioniView view, OrdineDAO ordineDAO, NavigationService navigationService) {
         this.view = view;
+        this.navigationService = navigationService;
         this.isOnline = SessionController.getIsOnlineModeStatic();
 
         this.ordineDAO = (ordineDAO != null) ? ordineDAO : new OrdineDAOImpl(false);
@@ -56,13 +58,13 @@ public class GestioneSpedizioniController {
         view.getSegnaSpeditoButton().setOnAction(e -> {
             OrdineTableRow selezionato = view.getOrdiniTable().getSelectionModel().getSelectedItem();
             if (selezionato == null) {
-                showAlert(Alert.AlertType.WARNING, "⚠ Nessun ordine selezionato");
+                showAlert(Alert.AlertType.WARNING, "Nessun ordine selezionato");
                 return;
             }
 
             String codice = view.getCodiceSpedizioneField().getText().trim();
             if (codice.isEmpty()) {
-                showAlert(Alert.AlertType.WARNING, "⚠ Inserisci un codice di spedizione");
+                showAlert(Alert.AlertType.WARNING, "Inserisci un codice di spedizione");
                 return;
             }
 
@@ -75,7 +77,6 @@ public class GestioneSpedizioniController {
             PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic());
             ClienteFacade facade = new ClienteFacade(pagamentoDAO);
             facade.inviaConfermaSpedizione(ordine.getCliente(), codice);
-
 
             showAlert(Alert.AlertType.INFORMATION, "Ordine marcato come spedito e email inviata!");
             caricaOrdini();
@@ -144,10 +145,6 @@ public class GestioneSpedizioniController {
         view.getTornaIndietroButton().setOnAction(e -> {
             boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
             boolean isOffline = !SessionController.getIsOnlineModeStatic();
-
-            NavigationService navigationService = new NavigationController(
-                    (Stage) view.getRoot().getScene().getWindow()
-            );
 
             Parent gestioneRoot = navigationService.navigateToGestioneView(isOffline, isInterfaccia1);
             if (gestioneRoot != null) {
@@ -227,7 +224,6 @@ public class GestioneSpedizioniController {
                         return pb.getImporto();
                     }).sum();
 
-            // Usa il primo ordine per ottenere i dati del cliente
             ClienteBean cliente = ordiniCliente.isEmpty() ? new ClienteBean() : ordiniCliente.get(0).getCliente();
             return new ClienteRiepilogoRow(cliente.getUsername(), cliente.getNome(), totaleOrdini, totalePagato);
         }).collect(Collectors.toList());
