@@ -12,7 +12,6 @@ import org.example.bean.PagamentoBean;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.OrdineDAO;
 import org.example.dao.OrdineDAOImpl;
-import org.example.dao.PagamentoDAO;
 import org.example.dao.PagamentoDAOImpl;
 import org.example.facade.ClienteFacade;
 import org.example.service.*;
@@ -50,91 +49,11 @@ public class GestioneSpedizioniController {
     }
 
     private void setupListeners() {
-        view.getAggiornaButton().setOnAction(e -> {
-            caricaOrdini();
-            caricaRiepilogoClienti();
-        });
+        view.getAggiornaButton().setOnAction(e -> aggiornaDati());
 
-        view.getSegnaSpeditoButton().setOnAction(e -> {
-            OrdineTableRow selezionato = view.getOrdiniTable().getSelectionModel().getSelectedItem();
-            if (selezionato == null) {
-                showAlert(Alert.AlertType.WARNING, "Nessun ordine selezionato");
-                return;
-            }
+        view.getSegnaSpeditoButton().setOnAction(e -> gestisciSpedizione());
 
-            String codice = view.getCodiceSpedizioneField().getText().trim();
-            if (codice.isEmpty()) {
-                showAlert(Alert.AlertType.WARNING, "Inserisci un codice di spedizione");
-                return;
-            }
-
-            OrdineBean ordine = selezionato.toOrdineBean();
-            ordine.setSpedito(true);
-            ordine.setCodiceSpedizione(codice);
-
-            ordineDAO.aggiornaStatoSpedizione(ordine.toOrdine());
-
-            PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic());
-            ClienteFacade facade = new ClienteFacade(pagamentoDAO);
-            facade.inviaConfermaSpedizione(ordine.getCliente(), codice);
-
-            showAlert(Alert.AlertType.INFORMATION, "Ordine marcato come spedito e email inviata!");
-            caricaOrdini();
-            caricaRiepilogoClienti();
-        });
-
-        view.getRegistraBonificoButton().setOnAction(e -> {
-            String username = view.getClienteBonificoComboBox().getValue();
-            if (username == null || username.trim().isEmpty()) {
-                showAlert(Alert.AlertType.WARNING, "Seleziona un cliente a cui assegnare il bonifico");
-                return;
-            }
-
-            String input = view.getCampoImportoBonifico().getText().trim();
-            double importo;
-            try {
-                importo = Double.parseDouble(input);
-                if (importo <= 0) throw new NumberFormatException();
-            } catch (NumberFormatException ex) {
-                showAlert(Alert.AlertType.ERROR, "Importo non valido");
-                return;
-            }
-
-            PagamentoBean pagamento = new PagamentoBean();
-            pagamento.setClienteUsername(username);
-            pagamento.setImporto(importo);
-            pagamento.setDataPagamento(LocalDateTime.now());
-
-            pagamentoService.registraPagamento(pagamento.toPagamento());
-            showAlert(Alert.AlertType.INFORMATION, "Bonifico registrato con successo!");
-
-            caricaRiepilogoClienti();
-
-            List<OrdineBean> ordiniCliente = ordineDAO.getOrdiniPerCliente(username).stream()
-                    .map(o -> {
-                        OrdineBean bean = new OrdineBean();
-                        bean.setId(o.getId());
-                        bean.setCliente(new ClienteBean()); // minimamente riempito per ottenere email
-                        bean.getCliente().setEmail(o.getCliente().getEmail());
-                        bean.getCliente().setNome(o.getCliente().getNome());
-                        bean.setTotale(o.getTotale());
-                        return bean;
-                    }).collect(Collectors.toList());
-
-            double totaleOrdini = ordiniCliente.stream().mapToDouble(OrdineBean::getTotale).sum();
-            double totalePagato = pagamentoService.getPagamentiPerCliente(username).stream()
-                    .mapToDouble(p -> new PagamentoBean() {{
-                        setImporto(p.getImporto());
-                    }}.getImporto()).sum();
-            double residuo = totaleOrdini - totalePagato;
-
-            if (!ordiniCliente.isEmpty()) {
-                ClienteBean cliente = ordiniCliente.get(0).getCliente();
-                PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic());
-                ClienteFacade facade = new ClienteFacade(pagamentoDAO);
-                facade.inviaConfermaPagamento(cliente, importo, totalePagato, residuo);
-            }
-        });
+        view.getRegistraBonificoButton().setOnAction(e -> registraBonifico());
 
         view.getOrdiniTable().getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -142,19 +61,106 @@ public class GestioneSpedizioniController {
             }
         });
 
-        view.getTornaIndietroButton().setOnAction(e -> {
-            boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
-            boolean isOffline = !SessionController.getIsOnlineModeStatic();
+        view.getTornaIndietroButton().setOnAction(e -> tornaAllaGestione());
+    }
 
-            Parent gestioneRoot = navigationService.navigateToGestioneView(isOffline, isInterfaccia1);
-            if (gestioneRoot != null) {
-                Stage stage = (Stage) view.getRoot().getScene().getWindow();
-                stage.setScene(new Scene(gestioneRoot, 1100, 700));
-                stage.setTitle("Gestione");
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Errore nel caricamento della schermata di gestione.");
-            }
-        });
+    private void aggiornaDati() {
+        caricaOrdini();
+        caricaRiepilogoClienti();
+    }
+
+    private void gestisciSpedizione() {
+        OrdineTableRow selezionato = view.getOrdiniTable().getSelectionModel().getSelectedItem();
+        if (selezionato == null) {
+            showAlert(Alert.AlertType.WARNING, "Nessun ordine selezionato");
+            return;
+        }
+
+        String codice = view.getCodiceSpedizioneField().getText().trim();
+        if (codice.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Inserisci un codice di spedizione");
+            return;
+        }
+
+        OrdineBean ordine = selezionato.toOrdineBean();
+        ordine.setSpedito(true);
+        ordine.setCodiceSpedizione(codice);
+
+        ordineDAO.aggiornaStatoSpedizione(ordine.toOrdine());
+
+        ClienteFacade facade = new ClienteFacade(new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic()));
+        facade.inviaConfermaSpedizione(ordine.getCliente(), codice);
+
+        showAlert(Alert.AlertType.INFORMATION, "Ordine marcato come spedito e email inviata!");
+        aggiornaDati();
+    }
+
+    private void registraBonifico() {
+        String username = view.getClienteBonificoComboBox().getValue();
+        if (username == null || username.trim().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Seleziona un cliente a cui assegnare il bonifico");
+            return;
+        }
+
+        String input = view.getCampoImportoBonifico().getText().trim();
+        double importo;
+        try {
+            importo = Double.parseDouble(input);
+            if (importo <= 0) throw new NumberFormatException();
+        } catch (NumberFormatException ex) {
+            showAlert(Alert.AlertType.ERROR, "Importo non valido");
+            return;
+        }
+
+        PagamentoBean pagamento = new PagamentoBean();
+        pagamento.setClienteUsername(username);
+        pagamento.setImporto(importo);
+        pagamento.setDataPagamento(LocalDateTime.now());
+
+        pagamentoService.registraPagamento(pagamento.toPagamento());
+        showAlert(Alert.AlertType.INFORMATION, "Bonifico registrato con successo!");
+
+        caricaRiepilogoClienti();
+
+        inviaEmailConfermaPagamento(username, importo);
+    }
+
+    private void inviaEmailConfermaPagamento(String username, double importo) {
+        List<OrdineBean> ordiniCliente = ordineDAO.getOrdiniPerCliente(username).stream()
+                .map(o -> {
+                    OrdineBean bean = new OrdineBean();
+                    ClienteBean cliente = new ClienteBean();
+                    cliente.setEmail(o.getCliente().getEmail());
+                    cliente.setNome(o.getCliente().getNome());
+                    bean.setCliente(cliente);
+                    bean.setTotale(o.getTotale());
+                    return bean;
+                }).collect(Collectors.toList());
+
+        double totaleOrdini = ordiniCliente.stream().mapToDouble(OrdineBean::getTotale).sum();
+        double totalePagato = pagamentoService.getPagamentiPerCliente(username).stream()
+                .mapToDouble(p -> p.getImporto()).sum();
+        double residuo = totaleOrdini - totalePagato;
+
+        if (!ordiniCliente.isEmpty()) {
+            ClienteBean cliente = ordiniCliente.get(0).getCliente();
+            ClienteFacade facade = new ClienteFacade(new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic()));
+            facade.inviaConfermaPagamento(cliente, importo, totalePagato, residuo);
+        }
+    }
+
+    private void tornaAllaGestione() {
+        boolean isInterfaccia1 = SessionController.getIsInterfaccia1Static();
+        boolean isOffline = !SessionController.getIsOnlineModeStatic();
+
+        Parent gestioneRoot = navigationService.navigateToGestioneView(isOffline, isInterfaccia1);
+        if (gestioneRoot != null) {
+            Stage stage = (Stage) view.getRoot().getScene().getWindow();
+            stage.setScene(new Scene(gestioneRoot, 1100, 700));
+            stage.setTitle("Gestione");
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Errore nel caricamento della schermata di gestione.");
+        }
     }
 
     private void caricaOrdini() {

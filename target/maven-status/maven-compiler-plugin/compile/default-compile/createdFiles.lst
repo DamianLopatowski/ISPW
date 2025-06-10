@@ -65,7 +65,6 @@ org\example\model\Cliente.class
 org\example\service\EmailService.class
 org\example\service\ProdottoTableRow.class
 org\example\dao\GestoreDAOImpl.class
-org\example\controllergrafici\GestioneSpedizioniController$1.class
 org\example\service\EmailService$4.class
 org\example\controllergrafici\NegozioController.class
 org\example\bean\PagamentoBean.class
