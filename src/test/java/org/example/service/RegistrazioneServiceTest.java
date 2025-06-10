@@ -8,18 +8,19 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class RegistrazioneServiceTest {
+class RegistrazioneServiceTest {
 
     private ClienteDAO clienteDAOMock;
     private RegistrazioneService registrazioneService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         clienteDAOMock = mock(ClienteDAO.class);
         registrazioneService = new RegistrazioneService(clienteDAOMock, "online");
     }
+
     @Test
-    public void testRegistrazioneSuccess() throws RegistrazioneException {
+    void testRegistrazioneSuccess() throws RegistrazioneException {
         ClienteBean clienteBean = new ClienteBean();
         clienteBean.setUsername("utente123");
         clienteBean.setNome("Mario");
@@ -39,7 +40,7 @@ public class RegistrazioneServiceTest {
     }
 
     @Test
-    public void testRegistrazioneUsernameGiaEsistente() throws RegistrazioneException {
+    void testRegistrazioneUsernameGiaEsistente() throws RegistrazioneException {
         ClienteBean clienteBean = new ClienteBean();
         clienteBean.setUsername("utente123");
         clienteBean.setNome("Mario");
