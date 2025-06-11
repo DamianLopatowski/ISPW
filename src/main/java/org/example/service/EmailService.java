@@ -13,8 +13,6 @@ import java.util.logging.Logger;
 
 public class EmailService {
     private static final Logger LOGGER = Logger.getLogger(EmailService.class.getName());
-
-    // Costanti per le chiavi delle proprietà SMTP
     private static final String PROP_MAIL_SMTP_AUTH = "mail.smtp.auth";
     private static final String PROP_MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
     private static final String PROP_MAIL_SMTP_HOST = "mail.smtp.host";

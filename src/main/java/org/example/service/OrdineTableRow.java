@@ -44,12 +44,10 @@ public class OrdineTableRow {
         this.codiceSpedizione = new SimpleStringProperty(ordine.getCodiceSpedizione());
     }
 
-    // Utility per evitare null
     private String nullToEmpty(String s) {
         return s == null ? "" : s.trim();
     }
 
-    // Getter per le proprietà da usare nella tabella
     public SimpleStringProperty clienteProperty() {
         return cliente;
     }

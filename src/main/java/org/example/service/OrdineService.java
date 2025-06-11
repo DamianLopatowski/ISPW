@@ -18,24 +18,15 @@ public class OrdineService {
     private final NavigationService navigationService;
     private final Consumer<String> notifica;
 
-    /**
-     * Costruttore di default: utilizza Alert JavaFX per mostrare la conferma all'utente.
-     */
     public OrdineService(NavigationService navigationService) {
         this(navigationService, OrdineService::mostraConfermaOrdine);
     }
 
-    /**
-     * Costruttore alternativo: permette l’iniezione di una funzione per la notifica (utile per i test).
-     */
     public OrdineService(NavigationService navigationService, Consumer<String> notifica) {
         this.navigationService = navigationService;
         this.notifica = notifica;
     }
 
-    /**
-     * Metodo principale per processare l'ordine.
-     */
     public void procediOrdine() {
         Cliente cliente = navigationService.getClienteLoggato();
         if (cliente == null) {
@@ -67,32 +58,24 @@ public class OrdineService {
             LOGGER.info(String.format("Totale: €%.2f", totale));
         }
 
-        // Salvataggio ordine
         Ordine ordine = Ordine.creaDaBean(cliente, carrello, totale);
         new OrdineDAOImpl(isOnline).salvaOrdine(ordine);
 
-        // Riduzione quantità
         ProdottoDAO prodottoDAO = new ProdottoDAOImpl(isOnline);
         for (Map.Entry<ProdottoBean, Integer> entry : carrello.entrySet()) {
             prodottoDAO.riduciQuantita(entry.getKey().getId(), entry.getValue());
         }
 
-        // Email riepilogo
         PagamentoDAO pagamentoDAO = new PagamentoDAOImpl(isOnline);
         ClienteFacade facade = new ClienteFacade(pagamentoDAO);
         facade.inviaEmailRiepilogoOrdine(cliente, ordine.getProdotti());
 
-        // Svuota carrello
         SessionController.svuotaCarrello();
 
-        // Notifica di conferma
         LOGGER.info("Ordine confermato per il cliente: " + cliente.getUsername());
         notifica.accept("Ordine inviato correttamente!");
     }
 
-    /**
-     * Metodo statico per mostrare conferma ordine (usato solo in modalità normale, non nei test).
-     */
     private static void mostraConfermaOrdine(String messaggio) {
         new Alert(Alert.AlertType.INFORMATION, messaggio, ButtonType.OK).showAndWait();
     }

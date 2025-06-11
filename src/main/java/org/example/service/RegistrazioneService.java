@@ -111,7 +111,6 @@ public class RegistrazioneService {
             throw new RegistrazioneException("Il CAP deve essere di 5 cifre!");
         }
 
-        //Controllo se lo username o l'email sono già registrati
         if (clienteDAO.findByUsername(cliente.getUsername()) != null) {
             throw new RegistrazioneException("Lo username è già in uso. Scegli un altro username.");
         }
@@ -120,11 +119,9 @@ public class RegistrazioneService {
         }
 
         try {
-            //Salvataggio nel database o in RAM
             clienteDAO.saveCliente(cliente);
             LOGGER.log(Level.INFO, "Cliente registrato con successo: {0}", cliente.getUsername());
 
-            //Invio dell'email di conferma
             ClienteFacade facade = new ClienteFacade(new PagamentoDAOImpl(SessionController.getIsOnlineModeStatic()));
             facade.inviaEmailConfermaRegistrazione(cliente.getEmail(), cliente.getUsername());
 
@@ -133,7 +130,6 @@ public class RegistrazioneService {
                     ": " + e.getMessage());
         }
 
-        //Reset dei tentativi di inserimento del codice univoco
         resetTentativiErrati();
     }
 }

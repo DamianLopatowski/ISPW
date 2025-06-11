@@ -22,19 +22,4 @@ public class ClienteMapper {
         bean.setCitta(cliente.getCitta());
         return bean;
     }
-
-    public static Cliente toModel(ClienteBean bean) {
-        return new Cliente.Builder()
-                .username(bean.getUsername())
-                .nome(bean.getNome())
-                .cognome(bean.getCognome())
-                .password(bean.getPassword())
-                .email(bean.getEmail())
-                .partitaIva(bean.getPartitaIva())
-                .indirizzo(bean.getIndirizzo())
-                .civico(bean.getCivico())
-                .cap(bean.getCap())
-                .citta(bean.getCitta())
-                .build();
-    }
 }

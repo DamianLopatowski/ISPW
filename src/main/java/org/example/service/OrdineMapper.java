@@ -10,7 +10,7 @@ import java.util.Map;
 public class OrdineMapper {
 
     private OrdineMapper() {
-        // Costruttore privato per evitare istanziazione
+        //riempimento
     }
     public static OrdineBean toBean(Ordine ordine) {
         OrdineBean bean = new OrdineBean();

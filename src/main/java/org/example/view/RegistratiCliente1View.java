@@ -48,7 +48,7 @@ public class RegistratiCliente1View {
         emailFeedback = new Label();
         emailFeedback.setStyle(TEXT_RED);
         emailFeedback.setVisible(false);
-        emailFeedback.setManaged(false); // Rimuove lo spazio quando non è visibile
+        emailFeedback.setManaged(false);
 
         nomeField = new TextField();
         nomeField.setPromptText("Inserisci nome");

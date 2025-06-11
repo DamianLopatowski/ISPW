@@ -23,9 +23,8 @@ public class MainApp extends Application {
         offlineOption.setToggleGroup(toggleGroup);
         Button startButton = new Button("Avvia");
 
-        startButton.setDisable(true); // Disabilitato finché l'utente non sceglie
+        startButton.setDisable(true);
 
-        // Abilita il bottone solo quando una modalità viene selezionata
         toggleGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) ->
                 startButton.setDisable(newVal == null)
         );

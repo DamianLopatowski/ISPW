@@ -16,7 +16,6 @@ public class ProdottoRow {
         this.ordinato = new SimpleBooleanProperty(ordinato);
     }
 
-    // Costruttore secondario per compatibilità con codice esistente
     public ProdottoRow(int id, String nome, int quantita, int soglia) {
         this(id, nome, quantita, soglia, false);
     }

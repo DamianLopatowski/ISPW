@@ -23,18 +23,4 @@ public class ProdottoMapper {
         return bean;
     }
 
-    public static Prodotto toModel(ProdottoBean bean) {
-        return new Prodotto.Builder()
-                .id(bean.getId())
-                .nome(bean.getNome())
-                .quantita(bean.getQuantita())
-                .scaffale(bean.getScaffale())
-                .codiceAbarre(bean.getCodiceAbarre())
-                .soglia(bean.getSoglia())
-                .prezzoAcquisto(bean.getPrezzoAcquisto())
-                .prezzoVendita(bean.getPrezzoVendita())
-                .categoria(bean.getCategoria())
-                .immagine(bean.getImmagine())
-                .build();
-    }
 }

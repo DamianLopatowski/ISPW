@@ -38,7 +38,6 @@ public class Cliente {
     public String getCap() { return cap; }
     public String getCitta() { return citta; }
 
-    //Classe Builder interna per costruire oggetti Cliente
     public static class Builder {
         private String username;
         private String nome;
@@ -50,8 +49,6 @@ public class Cliente {
         private String civico;
         private String cap;
         private String citta;
-
-        //Metodi Fluent per impostare i campi
         public Builder username(String username) {
             this.username = username;
             return this;

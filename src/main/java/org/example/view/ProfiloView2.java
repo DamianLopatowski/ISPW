@@ -26,7 +26,6 @@ public class ProfiloView2 {
         root.setPadding(new Insets(30));
         root.setStyle("-fx-background-color: #f0f0f0;");
 
-        // Pannello 1: Dati personali
         datiPersonaliPane = new VBox(10);
         datiPersonaliPane.getChildren().addAll(
                 new Label("Nome"), nomeField,
@@ -35,7 +34,6 @@ public class ProfiloView2 {
                 avantiButton
         );
 
-        // Pannello 2: Password
         passwordPane = new VBox(10);
         passwordPane.getChildren().addAll(
                 new Label("Password Attuale"), oldPasswordField,
@@ -44,11 +42,9 @@ public class ProfiloView2 {
                 indietroButton, saveButton
         );
 
-        // Mostra inizialmente il primo pannello
         root.getChildren().addAll(datiPersonaliPane, backButton);
         passwordPane.setVisible(false);
 
-        // Gestione navigazione
         avantiButton.setOnAction(e -> {
             if (validateDatiPersonali()) {
                 root.getChildren().remove(datiPersonaliPane);

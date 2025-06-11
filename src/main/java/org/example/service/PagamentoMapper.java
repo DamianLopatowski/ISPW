@@ -16,11 +16,4 @@ public class PagamentoMapper {
         return bean;
     }
 
-    public static Pagamento toModel(PagamentoBean bean) {
-        Pagamento pagamento = new Pagamento();
-        pagamento.setClienteUsername(bean.getClienteUsername());
-        pagamento.setImporto(bean.getImporto());
-        pagamento.setDataPagamento(bean.getDataPagamento());
-        return pagamento;
-    }
 }

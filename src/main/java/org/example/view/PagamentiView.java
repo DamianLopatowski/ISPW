@@ -23,11 +23,9 @@ public class PagamentiView {
         root = new VBox(15);
         root.setPadding(new Insets(20));
 
-        // Titolo
         Label title = new Label("Storico Pagamenti e Ordini");
         title.setFont(new Font(20));
 
-        // Etichette di riepilogo
         totaleOrdiniLabel = new Label();
         totalePagatoLabel = new Label();
         residuoLabel = new Label();
@@ -43,7 +41,6 @@ public class PagamentiView {
         datiBonificoArea.setStyle("-fx-control-inner-background: #f9f9f9;");
         datiBonificoArea.setPrefRowCount(5);
 
-        // Tabella ordini
         ordiniTable = new TableView<>();
         ordiniTable.setPrefHeight(250);
 
@@ -57,7 +54,6 @@ public class PagamentiView {
 
         ordiniTable.getColumns().addAll(dataCol, importoCol, prodottiCol);
 
-        // Tabella pagamenti
         pagamentiTable = new TableView<>();
         pagamentiTable.setPrefHeight(200);
 
@@ -69,11 +65,9 @@ public class PagamentiView {
 
         pagamentiTable.getColumns().addAll(dataPagamentoCol, importoPagamentoCol);
 
-        // Bottone per tornare al negozio
-        tornaAlNegozioButton = new Button("🏠 Torna al Negozio");
+        tornaAlNegozioButton = new Button("Torna al Negozio");
         tornaAlNegozioButton.setPrefWidth(200);
 
-        // Composizione finale
         root.getChildren().addAll(
                 title,
                 infoBox,
@@ -86,7 +80,6 @@ public class PagamentiView {
         );
     }
 
-    // Getter per MVC
     public VBox getRoot() {
         return root;
     }

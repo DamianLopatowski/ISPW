@@ -3,8 +3,8 @@ C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\PagamentiView.j
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\dao\OrdineDAO.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\ClienteRiepilogoRow.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\bean\OrdineBean.java
-C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\RegistrazioneException.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\view\RegistratiCliente2View.java
+C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\RegistrazioneException.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\service\PagamentoMapper.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\controllergrafici\SogliaController.java
 C:\Users\Damian\IdeaProjects\ISPW\src\main\java\org\example\exception\DatabaseConfigurationException.java

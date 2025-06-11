@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Ordine {
-    private int id; // solo per il DB
+    private int id;
     private Cliente cliente;
     private LocalDateTime data;
     private Map<Prodotto, Integer> prodotti;
@@ -13,7 +13,6 @@ public class Ordine {
     private String codiceSpedizione;
 
 
-    // Costruttore usato normalmente per creare un ordine
     public Ordine(Cliente cliente, Map<Prodotto, Integer> prodotti, double totale) {
         this.cliente = cliente;
         this.prodotti = prodotti;
@@ -21,10 +20,8 @@ public class Ordine {
         this.totale = totale;
     }
 
-    // Costruttore vuoto usato dal DAO (per riempire dopo)
     public Ordine() {}
 
-    // Descrizione leggibile dei prodotti per la tabella
     public String getDescrizioneProdotti() {
         if (prodotti == null || prodotti.isEmpty()) return "Nessun prodotto";
         StringBuilder sb = new StringBuilder();
@@ -34,7 +31,7 @@ public class Ordine {
                     .append(entry.getValue())
                     .append(", ");
         }
-        return sb.substring(0, sb.length() - 2); // Rimuove l'ultima virgola
+        return sb.substring(0, sb.length() - 2);
     }
 
     public int getId() {

@@ -26,11 +26,9 @@ public class NegozioView2 {
     public NegozioView2() {
         root = new BorderPane();
 
-        // Lista prodotti a sinistra
         listaProdotti = new ListView<>();
         listaProdotti.setPrefWidth(200);
 
-        // Dettagli prodotto al centro
         dettagliBox = new VBox(10);
         dettagliBox.setPadding(new Insets(10));
         imageView = new ImageView();
@@ -44,7 +42,6 @@ public class NegozioView2 {
 
         dettagliBox.getChildren().addAll(imageView, disponibilitaLabel, quantitaField, aggiungiButton);
 
-        // Box carrello a destra
         carrelloBox = new VBox(10);
         carrelloBox.setPadding(new Insets(10));
         carrelloBox.setPrefWidth(270);
@@ -59,7 +56,7 @@ public class NegozioView2 {
         Label titoloCarrello = new Label("Carrello");
         titoloCarrello.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        righeCarrelloBox = new VBox(5); // contiene solo righe dinamiche
+        righeCarrelloBox = new VBox(5);
 
         totaleLabel = new Label("Totale: €0.00");
         totaleLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5 0 0 0;");
@@ -74,7 +71,6 @@ public class NegozioView2 {
                 visualizzaPagamentiButton
         );
 
-        //ScrollPane per mantenere leggibilità in caso di overflow
         ScrollPane scrollCarrello = new ScrollPane(carrelloBox);
         scrollCarrello.setFitToWidth(true);
         scrollCarrello.setStyle("-fx-background-color: transparent;");

@@ -24,7 +24,6 @@ org\example\service\PagamentoTableRow.class
 org\example\view\Login1View.class
 org\example\service\EmailService$2.class
 org\example\controllerapplicativo\SessionController.class
-org\example\service\RegistrazioneException.class
 org\example\dao\ClienteDAOImpl.class
 org\example\service\ClienteRiepilogoRow.class
 org\example\view\Gestione2View.class
@@ -35,6 +34,7 @@ org\example\view\NegozioView2.class
 org\example\service\ProdottoRow.class
 org\example\model\Pagamento.class
 org\example\service\OrdineMapper.class
+org\example\exception\RegistrazioneException.class
 org\example\bean\ClienteBean.class
 org\example\view\Login2View.class
 org\example\view\Gestione1View.class

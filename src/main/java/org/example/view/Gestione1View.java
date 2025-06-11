@@ -12,15 +12,12 @@ public class Gestione1View {
     public Gestione1View() {
         root = new VBox(15);
 
-        // Menu a tendina con le opzioni disponibili
         menuTendina = new ComboBox<>();
         menuTendina.getItems().addAll("Gestione Prodotti", "Gestione Soglia", "Gestione Spedizioni");
 
-        // Bottone di conferma inizialmente disabilitato finché l'utente non sceglie un'opzione
         confermaButton = new Button("Seleziona un'opzione");
         confermaButton.setDisable(true);
 
-        // Attiva il bottone e aggiorna il testo quando viene selezionata un'opzione
         menuTendina.setOnAction(e -> {
             String selected = menuTendina.getValue();
             if (selected != null) {
@@ -29,7 +26,6 @@ public class Gestione1View {
             }
         });
 
-        // Bottone di logout
         logoutButton = new Button("Logout");
 
         root.getChildren().addAll(menuTendina, confermaButton, logoutButton);

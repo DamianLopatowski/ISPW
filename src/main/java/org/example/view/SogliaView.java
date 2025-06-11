@@ -17,30 +17,23 @@ public class SogliaView {
 
         tabella = new TableView<>();
 
-        // Colonna Nome
         TableColumn<ProdottoRow, String> nomeCol = new TableColumn<>("Nome");
         nomeCol.setCellValueFactory(data -> data.getValue().nomeProperty());
 
-        // Colonna Quantità
         TableColumn<ProdottoRow, Integer> quantitaCol = new TableColumn<>("Quantità");
         quantitaCol.setCellValueFactory(data -> data.getValue().quantitaProperty().asObject());
 
-        // Colonna Soglia
         TableColumn<ProdottoRow, Integer> sogliaCol = new TableColumn<>("Soglia");
         sogliaCol.setCellValueFactory(data -> data.getValue().sogliaProperty().asObject());
 
-        // NB: la colonna "Ordinato" viene aggiunta nel controller per seguire MVC
         tabella.getColumns().addAll(nomeCol, quantitaCol, sogliaCol);
 
-        // Pulsanti
         indietroButton = new Button("Indietro");
         vaiAGestioneProdottiButton = new Button("Gestione Prodotti");
 
-        // Box pulsanti
         HBox pulsantiBox = new HBox(10, indietroButton, vaiAGestioneProdottiButton);
         pulsantiBox.setPadding(new Insets(10, 0, 0, 0));
 
-        // Composizione finale
         root.getChildren().addAll(tabella, pulsantiBox);
     }
 

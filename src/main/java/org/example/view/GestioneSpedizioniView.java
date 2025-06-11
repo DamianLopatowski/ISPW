@@ -62,14 +62,13 @@ public class GestioneSpedizioniView {
         HBox azioniBox = new HBox(10, codiceSpedizioneField, segnaSpeditoButton);
         azioniBox.setPadding(new Insets(10, 0, 10, 0));
 
-        // ------------------ Bonifico Manuale -------------------
         Label pagamentoLabel = new Label("Pagamento Ricevuto");
 
         campoImportoBonifico = new TextField();
         campoImportoBonifico.setPromptText("Importo bonificato");
 
         clienteBonificoComboBox = new ComboBox<>();
-        clienteBonificoComboBox.setPromptText("Seleziona cliente"); // ✅ ComboBox per selezionare il cliente
+        clienteBonificoComboBox.setPromptText("Seleziona cliente");
 
         registraBonificoButton = new Button("Registra Bonifico");
 
@@ -81,7 +80,6 @@ public class GestioneSpedizioniView {
         );
         bonificoBox.setStyle("-fx-border-color: gray; -fx-padding: 10; -fx-background-color: #f9f9f9;");
 
-        // ------------------ Tabella Riepilogo Clienti -------------------
         tabellaRiepilogoClienti = new TableView<>();
         tabellaRiepilogoClienti.setPrefHeight(200);
         tabellaRiepilogoClienti.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -100,7 +98,6 @@ public class GestioneSpedizioniView {
 
         tabellaRiepilogoClienti.getColumns().addAll(usernameCol, totaleOrdiniCol, pagatoCol, residuoCol);
 
-        // Composizione finale
         root.getChildren().addAll(
                 title,
                 ordiniTable,

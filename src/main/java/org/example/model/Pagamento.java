@@ -42,7 +42,6 @@ public class Pagamento {
         this.dataPagamento = dataPagamento;
     }
 
-    // Metodo comodo per visualizzare la data in formato leggibile
     public String getDataPagamentoFormattata() {
         if (dataPagamento == null) return "N/D";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
