@@ -76,6 +76,12 @@ public class SogliaController {
             );
             stage.setScene(new Scene(gestioneRoot, 1100, 700));
         });
+
+        // Bottone "Gestione Prodotti"
+        view.getVaiAGestioneProdottiButton().setOnAction(e -> {
+            Parent gestioneProdottiRoot = navigationService.navigateToGestioneProdottiView();
+            stage.setScene(new Scene(gestioneProdottiRoot, 1100, 700));
+        });
     }
 
     public Parent getRoot() {

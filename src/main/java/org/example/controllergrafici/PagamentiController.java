@@ -74,7 +74,18 @@ public class PagamentiController {
         view.getTotaleOrdiniLabel().setText("Totale ordini: € " + String.format("%.2f", totaleOrdini));
         view.getTotalePagatoLabel().setText("Totale pagato: € " + String.format("%.2f", totalePagato));
         view.getResiduoLabel().setText("Residuo da pagare: € " + String.format("%.2f", daPagare));
+
+        // Dati fittizi per il bonifico
+        String datiBonifico = """
+        Dati per il bonifico B2B BikeGarage:
+        IBAN: IT60X0542811101000000123456
+        Intestatario: BikeGarage S.r.l.
+        Banca: Banca di Roma
+    """;
+
+        view.getDatiBonificoArea().setText(datiBonifico);
     }
+
 
     private void popolaTabellaOrdini(List<OrdineBean> ordini) {
         TableView<OrdineTableRow> tabella = view.getOrdiniTable();

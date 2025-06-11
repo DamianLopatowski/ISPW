@@ -13,6 +13,7 @@ public class PagamentiView {
     private final Label totaleOrdiniLabel;
     private final Label totalePagatoLabel;
     private final Label residuoLabel;
+    private final TextArea datiBonificoArea;
     private final TableView<OrdineTableRow> ordiniTable;
     private final TableView<PagamentoTableRow> pagamentiTable;
     private final Button tornaAlNegozioButton;
@@ -34,6 +35,13 @@ public class PagamentiView {
         VBox infoBox = new VBox(5, totaleOrdiniLabel, totalePagatoLabel, residuoLabel);
         infoBox.setPadding(new Insets(10));
         infoBox.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: gray;");
+
+        datiBonificoArea = new TextArea();
+
+        datiBonificoArea.setEditable(false);
+        datiBonificoArea.setWrapText(true);
+        datiBonificoArea.setStyle("-fx-control-inner-background: #f9f9f9;");
+        datiBonificoArea.setPrefRowCount(5);
 
         // Tabella ordini
         ordiniTable = new TableView<>();
@@ -69,6 +77,7 @@ public class PagamentiView {
         root.getChildren().addAll(
                 title,
                 infoBox,
+                datiBonificoArea,
                 new Label("Storico Ordini:"),
                 ordiniTable,
                 new Label("Storico Pagamenti:"),
@@ -92,6 +101,10 @@ public class PagamentiView {
 
     public Label getResiduoLabel() {
         return residuoLabel;
+    }
+
+    public TextArea getDatiBonificoArea() {
+        return datiBonificoArea;
     }
 
     public TableView<OrdineTableRow> getOrdiniTable() {

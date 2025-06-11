@@ -9,6 +9,7 @@ public class SogliaView {
     private final VBox root;
     private final TableView<ProdottoRow> tabella;
     private final Button indietroButton;
+    private final Button vaiAGestioneProdottiButton;
 
     public SogliaView() {
         root = new VBox(10);
@@ -31,9 +32,16 @@ public class SogliaView {
         // NB: la colonna "Ordinato" viene aggiunta nel controller per seguire MVC
         tabella.getColumns().addAll(nomeCol, quantitaCol, sogliaCol);
 
+        // Pulsanti
         indietroButton = new Button("Indietro");
+        vaiAGestioneProdottiButton = new Button("Gestione Prodotti");
 
-        root.getChildren().addAll(tabella, indietroButton);
+        // Box pulsanti
+        HBox pulsantiBox = new HBox(10, indietroButton, vaiAGestioneProdottiButton);
+        pulsantiBox.setPadding(new Insets(10, 0, 0, 0));
+
+        // Composizione finale
+        root.getChildren().addAll(tabella, pulsantiBox);
     }
 
     public VBox getRoot() {
@@ -46,5 +54,9 @@ public class SogliaView {
 
     public Button getIndietroButton() {
         return indietroButton;
+    }
+
+    public Button getVaiAGestioneProdottiButton() {
+        return vaiAGestioneProdottiButton;
     }
 }
