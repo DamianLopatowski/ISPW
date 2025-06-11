@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
+import org.example.exception.RegistrazioneException;
 import org.example.model.Cliente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.example.bean.ClienteBean;
 import org.example.dao.ClienteDAO;
-import org.example.service.RegistrazioneException;
+import org.example.exception.RegistrazioneException;
 import org.example.service.RegistrazioneService;
 import org.example.service.NavigationService;
 import org.example.view.RegistratiCliente1View;

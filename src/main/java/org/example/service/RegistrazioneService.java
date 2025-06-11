@@ -4,6 +4,7 @@ import org.example.bean.ClienteBean;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;
 import org.example.dao.PagamentoDAOImpl;
+import org.example.exception.RegistrazioneException;
 import org.example.facade.ClienteFacade;
 import org.example.model.Cliente;
 import java.util.regex.Pattern;
