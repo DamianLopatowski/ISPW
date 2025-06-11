@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: org.example.service.PagamentoServiceTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.361 s - in org.example.service.PagamentoServiceTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.307 s - in org.example.service.PagamentoServiceTest
