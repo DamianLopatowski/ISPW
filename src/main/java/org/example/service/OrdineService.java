@@ -58,10 +58,14 @@ public class OrdineService {
             double subtotale = prodotto.getPrezzoVendita() * q;
             totale += subtotale;
 
-            LOGGER.info(String.format("- %s x%d → €%.2f", prodotto.getNome(), q, subtotale));
+            if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+                LOGGER.info(String.format("- %s x%d → €%.2f", prodotto.getNome(), q, subtotale));
+            }
         }
 
-        LOGGER.info(String.format("Totale: €%.2f", totale));
+        if (LOGGER.isLoggable(java.util.logging.Level.INFO)) {
+            LOGGER.info(String.format("Totale: €%.2f", totale));
+        }
 
         // Salvataggio ordine
         Ordine ordine = Ordine.creaDaBean(cliente, carrello, totale);
