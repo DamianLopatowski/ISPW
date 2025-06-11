@@ -1,4 +1,3 @@
+org\example\service\GestoreDAOImplTest.class
 org\example\service\PagamentoServiceTest.class
-org\example\service\OrdineServiceTest.class
 org\example\service\RegistrazioneServiceTest.class
-org\example\service\OrdineServiceTest$1.class
