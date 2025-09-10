@@ -27,35 +27,30 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
         <!-- Dipendenza per MySQL JDBC -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.23</version>
         </dependency>
-
         <!-- Dipendenza per SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.30</version>
         </dependency>
-
         <!-- Dipendenza per Logback -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
-
         <!-- Dipendenza per invio email -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
-
         <!-- Dipendenze JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -82,14 +77,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <repositories>
         <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
-
     <build>
         <plugins>
             <!-- Plugin JavaFX -->
@@ -108,7 +101,6 @@
                     <mainClass>org.example.MainApp</mainClass>
                 </configuration>
             </plugin>
-
             <!-- Plugin SonarQube -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
@@ -122,7 +114,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <!-- Plugin Surefire per JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -134,5 +125,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
