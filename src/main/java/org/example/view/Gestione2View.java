@@ -1,5 +1,4 @@
 package org.example.view;
-
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 

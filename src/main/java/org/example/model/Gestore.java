@@ -1,5 +1,4 @@
 package org.example.model;
-
 public class Gestore {
     private String username;
     private String password;

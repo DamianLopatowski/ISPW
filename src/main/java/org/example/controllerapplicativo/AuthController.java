@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 public class AuthController {
     private static final Logger LOGGER = Logger.getLogger(AuthController.class.getName());
     private final GestoreDAOImpl gestoreDAO;
-
     public AuthController(GestoreDAOImpl gestoreDAO) {
         this.gestoreDAO = gestoreDAO;
     }

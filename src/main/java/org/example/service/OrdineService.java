@@ -1,5 +1,4 @@
 package org.example.service;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.example.bean.ProdottoBean;

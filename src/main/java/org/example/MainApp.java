@@ -1,5 +1,4 @@
 package org.example;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -10,7 +9,6 @@ import javafx.scene.layout.VBox;
 import org.example.controllerapplicativo.NavigationController;
 import org.example.controllerapplicativo.SessionController;
 import org.example.service.NavigationService;
-
 public class MainApp extends Application {
 
     @Override

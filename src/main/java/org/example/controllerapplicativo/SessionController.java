@@ -28,7 +28,6 @@ import org.example.view.View;
 
 public class SessionController {
     private static final Logger LOGGER = Logger.getLogger(SessionController.class.getName());
-
     private final Stage stage;
     private final ApplicationContext context;
     private final NavigationService navigationService;

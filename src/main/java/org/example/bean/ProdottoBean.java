@@ -16,7 +16,7 @@ public class ProdottoBean {
     private boolean ordinato;
 
     public ProdottoBean() {
-        //riempimento
+        // riempimento
     }
 
     public Prodotto toProdotto() {

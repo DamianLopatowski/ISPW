@@ -1,5 +1,4 @@
 package org.example.service;
-
 import javafx.beans.property.*;
 
 public class ProdottoRow {

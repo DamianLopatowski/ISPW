@@ -1,5 +1,4 @@
 package org.example.dao;
-
 import org.example.exception.DatabaseConfigurationException;
 import org.example.exception.GestoreInitializationException;
 import org.example.model.Gestore;

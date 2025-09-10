@@ -1,5 +1,4 @@
 package org.example.service;
-
 import org.example.bean.ClienteBean;
 import org.example.controllerapplicativo.SessionController;
 import org.example.dao.ClienteDAO;

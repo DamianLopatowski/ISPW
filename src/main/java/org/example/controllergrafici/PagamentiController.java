@@ -1,5 +1,4 @@
 package org.example.controllergrafici;
-
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;

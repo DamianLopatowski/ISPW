@@ -1,5 +1,4 @@
 package org.example.dao;
-
 import org.example.bean.ProdottoBean;
 import org.example.model.Prodotto;
 

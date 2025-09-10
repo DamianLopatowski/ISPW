@@ -1,5 +1,4 @@
 package org.example.view;
-
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;

@@ -1,5 +1,4 @@
 package org.example.service;
-
 import org.example.dao.GestoreDAOImpl;
 import org.example.model.Gestore;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +14,6 @@ class GestoreDAOImplTest {
     void setUp() {
         gestoreDAO = new GestoreDAOImpl(); // Usa config.properties già presente
     }
-
     @Test
     void testOfflineGestoreCaricatoCorrettamente() {
         Gestore gestore = gestoreDAO.getGestore();

@@ -1,5 +1,4 @@
 package org.example;
-
 import javafx.stage.Stage;
 import org.example.view.View;
 

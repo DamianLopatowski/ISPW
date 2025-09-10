@@ -20,7 +20,6 @@ public class NavigationController implements NavigationService {
     private final Stage stage;
     private static final String CONFIG_FILE_PATH = "config.properties";
     private Cliente clienteLoggato;
-
     public NavigationController(Stage stage) {
         this.stage = stage;
     }

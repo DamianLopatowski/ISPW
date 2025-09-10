@@ -1,5 +1,4 @@
 package org.example.service;
-
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.example.bean.ClienteBean;

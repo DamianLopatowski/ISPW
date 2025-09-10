@@ -9,7 +9,6 @@ public class PagamentoBean {
     private String clienteUsername;
     private double importo;
     private LocalDateTime dataPagamento;
-
     public PagamentoBean() {
         this.dataPagamento = LocalDateTime.now();
     }

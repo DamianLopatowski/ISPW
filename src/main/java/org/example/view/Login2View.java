@@ -1,5 +1,4 @@
 package org.example.view;
-
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 

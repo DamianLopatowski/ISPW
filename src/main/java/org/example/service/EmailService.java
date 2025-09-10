@@ -1,5 +1,4 @@
 package org.example.service;
-
 import org.example.model.Prodotto;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

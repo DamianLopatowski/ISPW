@@ -1,5 +1,4 @@
 package org.example.service;
-
 import org.example.bean.PagamentoBean;
 import org.example.model.Pagamento;
 

@@ -1,5 +1,4 @@
 package org.example.model;
-
 public class Cliente {
     private final String username;
     private final String nome;

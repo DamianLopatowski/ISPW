@@ -1,5 +1,4 @@
 package org.example.view;
-
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;

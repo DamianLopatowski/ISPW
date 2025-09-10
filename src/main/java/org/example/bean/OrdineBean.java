@@ -13,7 +13,6 @@ public class OrdineBean {
     private LocalDateTime data;
     private Map<ProdottoBean, Integer> prodotti;
     private double totale;
-
     private boolean spedito;
     private String codiceSpedizione;
 

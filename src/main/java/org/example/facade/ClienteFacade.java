@@ -1,5 +1,4 @@
 package org.example.facade;
-
 import org.example.bean.ClienteBean;
 import org.example.dao.PagamentoDAO;
 import org.example.model.Cliente;

@@ -1,5 +1,4 @@
 package org.example.service;
-
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
