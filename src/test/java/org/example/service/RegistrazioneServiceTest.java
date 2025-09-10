@@ -26,7 +26,7 @@ class RegistrazioneServiceTest {
         clienteBean.setNome("Mario");
         clienteBean.setCognome("Rossi");
         clienteBean.setPassword("Password1!");
-        clienteBean.setEmail("mario@example.com");
+        clienteBean.setEmail("damianlopa17@gmail.com");
         clienteBean.setIndirizzo("Via Roma 1");
         clienteBean.setPartitaIva("12345678901");
         clienteBean.setCivico("1");
@@ -46,7 +46,7 @@ class RegistrazioneServiceTest {
         clienteBean.setNome("Mario");
         clienteBean.setCognome("Rossi");
         clienteBean.setPassword("Password1!");
-        clienteBean.setEmail("mario@example.com");
+        clienteBean.setEmail("damianlopa17@gmail.com");
         clienteBean.setIndirizzo("Via Roma 1");
         clienteBean.setPartitaIva("12345678901");
         clienteBean.setCivico("1");
