@@ -29,6 +29,7 @@ class GestoreDAOImplTest {
         Gestore dopoReset = gestoreDAO.getGestore();
         assertEquals(originale.getUsername(), dopoReset.getUsername());
         assertEquals(originale.getPassword(), dopoReset.getPassword());
+        
     }
 
     @Test
