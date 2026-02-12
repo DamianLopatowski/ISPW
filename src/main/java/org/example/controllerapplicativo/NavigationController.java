@@ -49,20 +49,19 @@ public class NavigationController implements NavigationService {
     }
     @Override
     public Parent navigateToRegistrazioneCliente(boolean isInterfaccia1) {
-        //Acquisiamo la modalità online una volta SOLA e la passiamo
+        //Acquisisco la modalità online una volta SOLA e la passo
         boolean isOnlineMode = SessionController.getIsOnlineModeStatic();
 
         //Stampa di debug per verificare il valore corretto
         LOGGER.log(Level.INFO, "Modalità selezionata: {0} | Interfaccia: {1}",
                 new Object[]{isOnlineMode ? "ONLINE" : "OFFLINE", isInterfaccia1 ? "1" : "2"});
 
-        //Creiamo il DAO con la modalità corretta
+        //DAO con la modalità corretta
         ClienteDAOImpl clienteDAO = new ClienteDAOImpl(isOnlineMode);
 
-        //Carichiamo il codice univoco dal file di configurazione
         String codiceUnivoco = caricaCodiceUnivoco();
 
-        //Creiamo il controller della registrazione con le scelte separate
+        //Creo il controller della registrazione con le scelte separate
         RegistratiClienteController registratiClienteController = new RegistratiClienteController(clienteDAO, this, codiceUnivoco, isInterfaccia1);
         Parent registrazioneView = registratiClienteController.getView();
 
@@ -143,7 +142,7 @@ public class NavigationController implements NavigationService {
         LOGGER.log(Level.INFO, "Modalità: {0} | Interfaccia: {1}",
                 new Object[]{isOnlineMode ? "ONLINE" : "OFFLINE", isInterfaccia1 ? "1" : "2"});
 
-        NegozioController controller = new NegozioController(isOnlineMode, isInterfaccia1, this);
+        OrdineController controller = new OrdineController(isOnlineMode, isInterfaccia1, this);
         Parent root = controller.getRootView();
 
         if (root != null) {
